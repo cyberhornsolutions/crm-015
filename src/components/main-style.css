@@ -1,0 +1,206 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+* {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: rgb(73, 73, 73);
+}
+
+h1 {
+    font-size: 25px;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+.content {
+    display: grid;
+    grid-template-rows: 110px 1fr;
+    height: 100%;
+}
+
+.header {
+    background-color: lightgray;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.header-item {
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.balance, .trade, .my-orders, .account {
+    height: 60px;
+    width: 100px;
+}
+
+.main {
+    display: grid;
+    padding-bottom: 20px;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    margin-bottom: 17px;
+}
+
+.main-chart {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.main-order {
+    margin-left: 15px;
+    margin-right: 15px;
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+}
+
+.order-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.order-item {
+    text-align: start;
+    margin-top: 5px;
+    width: 75%;
+}
+
+#stopLoss, #takeProfit, #orderVolume, #usdValue, #orderPrice, #orderAsset{
+    width: 150px;
+}
+.order-boundaries {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.hidden {
+    display: none;
+  }
+
+.main-balance {
+    align-items: center;
+    justify-content: center;
+}
+.main-balance-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.main-balance-grid {
+    display: grid; 
+    grid-template-rows: 1fr 1fr 1fr 3fr; 
+    align-items: center; 
+    text-align: center;
+    height: 100%;
+    border: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 15px;
+    background-color: lightgrey;
+    justify-content: center;
+    width: 50%;
+}
+
+.main-account {
+    align-items: center;
+    justify-content: center;
+}
+.main-account-grid {
+    display: grid;
+    grid-template-rows: 6fr 1fr;
+    align-items: center; 
+    text-align: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.my-ac-info {
+    border: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 15px;
+    background-color: lightgrey;
+    height: 100%;
+    align-items: center;
+    width: 700px;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.my-ac-info-item {
+    margin-bottom: 15px;
+    align-items: center; 
+    text-align: center;
+    justify-content: center;
+}
+
+.my-ac-additional {
+    margin-top: 25px;
+    border: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 15px;
+    background-color: lightgrey;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center; 
+    text-align: center;
+    justify-content: center;
+}
+  /* Style the table container */
+.table-container {
+    max-height: 658px; /* Adjust this value to your preference */
+    overflow-y: auto;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+/* Optional: Style the table */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Style for binance-api-symbols */
+.dropdown {
+    max-height: 150px; /* Set the maximum height you prefer */
+    max-width: 100px;
+    overflow-y: auto; /* Add scrollbars if content overflows */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    background-color: white;
+    z-index: 1;
+}
+
+.dropdown-option {
+    padding: 5px;
+    cursor: pointer;
+}

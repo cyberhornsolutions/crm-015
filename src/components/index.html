@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="main-style.css">
+    
+    <!----===== Boxicons CSS ===== -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <title>MVP - RETEN</title> 
+</head>
+<body>
+    <nav class="sidebar">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                    <img src="lp.png" alt="">
+                </span>
+
+                <div class="text logo-text">
+                    <span class="name">Ваш брэнд</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="menu-bar">
+            <div class="menu">
+
+                <ul class="menu-links">
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class='bx bx-candles icon' ></i>
+                            <span class="text nav-text">Торговля</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class='bx bx-bar-chart-alt-2 icon' ></i>
+                            <span class="text nav-text">Сделки</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class='bx bx-wallet icon' ></i>
+                            <span class="text nav-text">Кошелек</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="bottom-content">
+                <li class="">
+                    <a href="#">
+                        <i class='bx bx-log-out icon' ></i>
+                        <span class="text nav-text">Выйти</span>
+                    </a>
+                </li>
+
+                <li class="mode">
+                    <div class="sun-moon">
+                        <i class='bx bx-moon icon moon'></i>
+                        <i class='bx bx-sun icon sun'></i>
+                    </div>
+                    <span class="mode-text text">Режим</span>
+
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+                
+            </div>
+        </div>
+
+    </nav>
+
+    <section class="home">
+        <div class="text">Торговая платформа</div>
+        <div class="text">Доступный баланс: $100.00</div>
+        <div class="trading-chart">
+            <div class="tradingview-widget-container">
+                <div id="tradingview_c902b">
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script type="text/javascript">
+                    new TradingView.widget(
+                        {
+                        "symbol": "NASDAQ:AAPL",
+                        "interval": "D",
+                        "timezone": "Etc/UTC",
+                        "theme": "light",
+                        "style": "1",
+                        "locale": "en",
+                        "enable_publishing": true,
+                        "withdateranges": true,
+                        "hide_side_toolbar": false,
+                        "allow_symbol_change": true,
+                        "details": true,
+                        "calendar": true,
+                        "container_id": "tradingview_c902b"
+                        }
+                    );
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="text">
+            <div class="order-form">
+                <form id="myForm" onsubmit="processForm(event)">
+                    <div class="form-group">
+                        <h2>Позиция</h2>
+                        <select id="cryptoDropdown">
+                            <option value="BTC">Bitcoin (BTC)</option>
+                            <option value="ETH">Ethereum (ETH)</option>
+                            <option value="XRP">XRP (XRP)</option>
+                            <option value="ADA">Cardano (ADA)</option>
+                            <option value="LTC">Litecoin (LTC)</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Сумма</label>
+                        <input type="number" id="amount" name="amount" step="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="takeProfit">Take profit</label>
+                        <input type="number" id="takeProfit" name="takeProfit" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stopLoss">Stop loss</label>
+                        <input type="number" id="stopLoss" name="stopLoss" step="0.01" required>
+                    </div>
+                    <button id="button-buy" type="submit">Купить</button>
+                    <button id="button-sell" type="submit2">Продать</button>
+                </form>
+            </div>
+        </div>
+        <div class="text2">Открытые ордера
+            <ul>
+                ___ ID _ | _ Дата _______ |  _  Актив   |   _  Сумма  |  _  Цена открытия  _ |  _  T/P _ | _ S/L _ |  _  Статус _ |<br>
+                _______________________________________________________________
+                <div id="submittedData"></div>
+            </ul>
+        </div>
+        <div class="text2">Редактировать сделку по ID<br>
+            <input type="number" id="editID" name="editID" required>
+            <button id="button-edit" type="button" onclick="editEntry()">Изменить</button>
+            <button id="button-delete" type="button" onclick="deleteEntry()">Удалить</button>
+        </div>
+    </section>
+    <script src="script.jsx"></script>
+</body>
+</html>
