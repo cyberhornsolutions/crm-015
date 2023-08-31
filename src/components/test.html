@@ -14,56 +14,34 @@
 <body>
   <div class="content">
     <div class="header">
-      <div class="header-item" style="flex: 1; text-align: center; background-color: white; height: 60px; width: 100px;"></div>
+      <div class="header-item" style="flex: 1;">
+        <img src="logo.png" alt="logo" style="display: flex; width: 100px; height: 65px;">
+      </div>
       <div class="header-item" style="flex: 3; text-align: center;">
       <button id="balance" class="balance">Баланс</button></div>
       <div class="header-item" style="flex: 3; text-align: center;">
       <button id="trade" class="trade">Торговля</button></div>
       <div class="header-item" style="flex: 3; text-align: center;">
-      <button id="my-orders" class="my-orders">Мои Сделки</button></div>
+      <button id="my-orders" class="my-orders">Сделки</button></div>
       <div class="header-item" style="flex: 3; text-align: center;">testlead@gmail.com</div>
       <div class="header-item" style="flex: 1; text-align: center;">
       <button id="account" class="account">Аккаунт</button></div>
     </div>
     <div class="main">
       <div id="main-content" class="main-content">
-        <div class="main-chart" style="background-color: lightgrey">
+        <div class="main-chart" style="background-color: rgb(32, 32, 43);">
           <div class="trading-chart">
             <div class="tradingview-widget-container">
                 <div id="tradingview_c902b">
                     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                    <script type="text/javascript">
-                    new TradingView.widget(
-                        {
-                        "symbol": "BTCUSDT",
-                        "width" : "100%",
-                        "height" : "666px",
-                        "interval": "H",
-                        "timezone": "Etc/UTC",
-                        "theme": "light",
-                        "style": "1",
-                        "locale": "ru",
-                        "enable_publishing": false,
-                        "withdateranges": true,
-                        "hide_side_toolbar": false,
-                        "allow_symbol_change": true,
-                        "details": false,
-                        "calendar": false,
-                        "container_id": "tradingview_c902b"
-                        }
-                    );
-                    </script>
+                    <script type="text/javascript" src="tradingview.js"></script>
                 </div>
             </div>
           </div>
         </div>
         <div class="main-order">
-          <div class="order-info" style="background-color: lightgrey;">
-            <div class="order-item" style="
-              background-color: lightgrey; 
-              flex: 1; 
-              display: grid;
-              grid-template-columns: 1fr 1fr;">
+          <div class="order-info" ">
+            <div class="order-item">
               <div style="display: grid;
               grid-template-rows: 1fr 1fr;
               align-items: center;
@@ -73,41 +51,28 @@
                 <div>
                   <input type="text" id="symbolInput" placeholder="Поиск котировки">
                   <div id="symbolDropdown" class="dropdown"></div>
-                  <button onclick="fetchSymbolValue()">Подтвердить</button>
-                  <p id="symbolValue"></p>
+                  <button style="margin-left: 20px;" onclick=fetchSymbolValue()>Подтвердить</button>
                   <script src="./binance-api-symbols.js"></script>
                 </div>
               </div>
             </div>
-            <div class="order-item" style="
-              background-color: lightgrey; 
-              flex: 1;
-              display: grid;
-              grid-template-columns: 1fr 1fr;">
+            <div class="order-item">
               <div>
-                <label for="orderPrice">Цена:</label>
+                <label for="orderPrice">Цена (USD):</label>
               </div>
               <div>
-                <input type="" id="orderPrice" name="orderPrice" placeholder="" />
+                <input type="number" id="orderPrice" name="orderPrice" placeholder="" />
               </div>
             </div>
-            <div class="order-item" style="
-              background-color: lightgrey; 
-              flex: 1;
-              display: grid;
-              grid-template-columns: 1fr 1fr;">
+            <div class="order-item">
               <div>
-                <label for="usdValue">Сумма в USD:</label>
+                <label for="usdValue">Сумма (USD):</label>
               </div>
               <div>
                 <input type="number" id="usdValue" name="usdValue" min="10" max="100"/> <!-- max = balance -->
               </div>
             </div>
-            <div class="order-item" style="
-              background-color: lightgrey; 
-              flex: 1;
-              display: grid;
-              grid-template-columns: 1fr 1fr;">
+            <div class="order-item">
               <div>
                 <label for="orderVolume">Объём:</label>
               </div>
@@ -115,11 +80,7 @@
                 <input type="number" id="orderVolume" name="orderVolume" min="10" max="100" />
               </div>
             </div>
-            <div class="order-item" style="
-              background-color: lightgrey; 
-              flex: 1;
-              display: grid;
-              grid-template-columns: 1fr 1fr;">
+            <div class="order-item">
               <div>
                 <label for="stopLoss">Cтоп Лосс:</label>
               </div>
@@ -127,11 +88,7 @@
                 <input type="number" id="stopLoss" name="stopLoss" min="10" max="100" />
               </div>
             </div>
-            <div class="order-item" style="
-              background-color: lightgrey; 
-              flex: 1;
-              display: grid;
-              grid-template-columns: 1fr 1fr;">
+            <div class="order-item">
               <div>
                 <label for="takeProfit">Тейк Профит:</label>
               </div>
@@ -142,9 +99,9 @@
           </div>
           <div class="order-buttons" style="
           display: grid; 
-          grid-template-rows: 1fr 1fr;">
-            <button>Купить</button>
-            <button>Продать</button>
+          grid-template-columns: 1fr 1fr;">
+            <button id="buy-button">Купить</button>
+            <button id="sell-button">Продать</button>
           </div>
         </div>
       </div>
@@ -201,8 +158,10 @@
             </div>
           </div>
           <div class="my-ac-additional">
-            <div>Поддержка</div>
-            <div>Логи (для менеджера) </div>
+            <div style="margin-top: 11px; display: grid; justify-content: center;">
+              <button style="margin-top: 7px;">Поддержка</button>
+              <button style="margin-top: 7px;">Выход</button>
+            </div>
           </div>
         </div>
       </div>

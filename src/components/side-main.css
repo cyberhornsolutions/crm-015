@@ -1,0 +1,392 @@
+* {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: rgb(39, 39, 53);
+}
+
+h2 {
+  color: lightgray;
+  font-size: 19px;
+  margin-top: 24px;
+  margin-left: 0;
+  margin-right: 75px;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  width: 100%; /* Make body take up the full width of the viewport */
+  height: 100vh; /* Make body take up the full height of the viewport */
+  border: 3px solid rgb(39, 39, 53); /* Example border style */
+  border-radius: 5px;
+
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  color: lightgray;
+}
+
+form {
+  border: 1px solid rgb(24, 24, 36);
+  padding: 0;
+  padding-bottom: 5%;
+}
+
+label {
+  margin-top: 10px;
+  color: whitesmoke;
+  font-weight: 500;
+}
+
+input {
+  margin-top: 2%;
+  margin-bottom: 2%;
+  background-color: rgb(17, 17, 23);
+  border: 2px solid rgb(24, 24, 36);
+  border-radius: 5px;
+  height: 24px;
+  color: whitesmoke;
+  text-align: center;
+}
+
+input:disabled {
+  background-color: rgb(27, 27, 37);
+}
+
+#header {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  height: 100%;
+  border-radius: 5px;
+  margin: 0;
+  padding: 0;
+  
+}
+
+#logo {
+  display: flex;
+  flex: 1;
+  border: 2px solid rgb(24, 24, 36); /* Example border style */
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(24, 24, 36);
+  margin-left: 2px;
+}
+
+#header-info {
+  display: flex;
+  flex-direction: row;
+  flex: 11;
+  background-color: rgb(24, 24, 36);
+  border: none;
+  margin: 2px;
+  margin-left: 4px;
+  border-radius: 3px;
+}
+
+#balance {
+  display: flex;
+  flex: 10;
+  border: 3px solid rgb(24, 24, 36);
+  border-radius: 10px;
+  margin-right: 35px;
+  margin-left: 6px;
+  text-align: center;
+}
+
+#deposit {
+  display: flex;
+  flex: 2;
+  border-radius: 3px;
+  justify-content: center;
+  align-items: center;
+  margin-right: 34px;
+  padding: 0;
+  background-color: rgb(24, 24, 36);
+}
+
+#deposit-button {
+  border: 2px solid rgb(14, 68, 185);
+  border-radius: 10px;
+  height: 70%;
+  width: 100%;
+  background-color:   rgb(12, 63, 171);
+  color: whitesmoke;
+  margin: 0;
+  font-size: 16px;
+}
+
+#deposit-button:hover {
+  cursor: pointer;
+  background-color: rgb(0, 81, 255);
+  box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.4);
+}
+
+#deposit-button:active {
+  opacity: 50%;
+}
+
+#body {
+  background-color: rgb(39, 39, 53);
+  flex: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  width: 100%; /* Make body take up the full width of the viewport */
+  height: 100vh; /* Make body take up the full height of the viewport */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border: 2px solid rgb(24, 24, 36);
+  border-radius: 3px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 2px;
+  background-color: rgb(24, 24, 36);
+}
+
+#side-main-menu {
+  flex: 9;
+  display: flex;
+  flex-direction: column;
+  margin: 6px;
+  margin-bottom: 10%;
+  border-radius: 10px;
+  border: 3px solid rgb(24, 24, 36);
+}
+
+#side-out-menu {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  margin: 6px;
+  margin-top: 5%;
+  margin-bottom: 7%;
+  border-radius: 5px;
+}
+
+#side-trade, #side-assets, #side-account {
+  flex: 1;
+  margin: 0;
+  margin-top: 40%;
+  margin-bottom: 5%;
+  text-align: center;
+  width: 100%;
+}
+
+#side-out-extra, #side-logout {
+  flex: 1;
+  margin: 0;
+  margin-top: 25%;
+  margin-bottom: 5%;
+  text-align: center;
+  width: 100%;
+}
+
+.side-button {
+  border: none;
+  border-radius: 3px;
+  height: 35%;
+  width: 75%;
+  color: whitesmoke;
+  margin: 0;
+}
+
+.side-button:active {
+  opacity: 70%;
+  box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.9);
+}
+
+.side-button:hover, .side-out-button:hover {
+  cursor: pointer;
+  border: 2px solid rgb(29, 92, 193);
+  border-radius: 3px;
+  background-color: rgb(0, 81, 255);
+  box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.4);
+}
+
+.side-out-button {
+  border: none;
+  border-radius: 3px;
+  height: 50%;
+  width: 75%;
+  color: whitesmoke;
+  margin: 0;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+  flex: 11;
+  border: 2px solid rgb(39, 39, 53); /* Example border style */
+  border-radius: 5px;
+  background-color: rgb(24, 24, 36);
+}
+
+#trade {
+  display: flex;
+  flex-direction: row;
+  flex: 5;
+  background-color: rgb(24, 24, 36);
+  margin: 10px;
+}
+
+#newOrder {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border: 2px solid rgb(39, 39, 53); /* Example border style */
+  border-radius: 5px;
+}
+
+#newOrderData {
+  flex: 5;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 5%;
+}
+
+#newOrderForm {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 90%;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  margin-left: 5%;
+  margin-top: 3%;
+  height: 84%;
+}
+
+.newOrderButton {
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 50%;
+}
+
+#buyButton {
+  border: 1px solid rgb(1, 154, 1);
+  border-radius: 5px;
+  background-color: rgb(15, 174, 15);
+  color: whitesmoke;
+  margin-top: 5%;
+}
+
+#sellButton {
+  border: 1px solid rgb(208, 2, 2);
+  border-radius: 5px;
+  background-color: rgb(191, 36, 36);
+  color: whitesmoke;
+  margin-top: 5%;
+}
+
+#buyButton:hover, #sellButton:hover {
+  box-shadow: 0px 4px 8px rgba(100, 100, 100, 0.4);
+}
+
+#buyButton:active, #sellButton:active {
+  opacity: 60%;
+}
+
+#chart{
+  flex: 3;
+  border: 2px solid rgb(39, 39, 53); /* Example border style */
+  border-radius: 5px;
+  background-color: rgb(17, 17, 23);
+  margin-left: 10px;
+  margin-right: 10px;
+  color: whitesmoke;
+  text-align: center;
+}
+
+#assets {
+  flex: 1;
+  border: 2px solid rgb(39, 39, 53); /* Example border style */
+  border-radius: 5px;
+  background-color: rgb(17, 17, 23);
+  max-height: 100%; /* Set the maximum height of the container */
+  overflow: auto; /* Add a scrolling bar when content overflows */
+}
+
+#orders {
+  flex: 2;
+  border: 1px solid rgb(39, 39, 53); /* Example border style */
+  border-radius: 5px;
+  margin: 10px;
+  background-color: rgb(17, 17, 23);
+  max-height: 200px; /* Set the maximum height of the container */
+  overflow: auto; /* Add a scrolling bar when content overflows */
+}
+
+/* Apply some basic styling to the table */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background-color: rgb(24, 24, 36);
+  padding: 0;
+  margin: 0;
+  table-layout: auto;
+  font-size: 14px;
+}
+
+.sticky-header {
+  position: sticky;
+  border: 3px solid rgb(39, 39, 53);
+  top: 0;
+  background-color: white; /* Ensure header remains visible */
+  z-index: 1; /* Ensure header is above table rows */
+}
+
+th, td {
+  border: 1px solid rgb(39, 39, 53);
+  padding: 8px;
+  text-align: left;
+  color: rgb(166, 166, 166);
+  background-color: rgb(17, 17, 23);
+  margin: 0;
+  /* Add maximum width to prevent overflowing content */
+  max-width: 100px;
+  white-space: nowrap; /* Prevent content from wrapping */
+  overflow: hidden; /* Hide content that exceeds cell boundaries */
+  text-overflow: ellipsis; /* Show ellipsis for hidden content */
+}
+
+/* Adjust position of table body to accommodate fixed header */
+.table-body {
+  margin-top: 40px; /* Adjust this value based on the header height */
+}
+
+
+/* ionic icons */
+
+ion-icon {
+  color: lightgray;
+  width: 35px;
+  height: 35%;
+  margin: 0;
+  padding: 0;
+}

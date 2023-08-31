@@ -1,27 +1,30 @@
-function handleSubmit(event) {
+
+
+const form = document.getElementById('newOrderForm');
+  const buyButton = document.getElementById('buyButton');
+  const sellButton = document.getElementById('sellButton');
+  
+  buyButton.addEventListener('click', function(event) {
     event.preventDefault();
-
-    // Gather form data
-    const symbolInput = document.getElementById('symbolInput').value;
-    const orderPrice = document.getElementById('orderPrice').value;
-    const usdValue = document.getElementById('usdValue').value;
-    const orderVolume = document.getElementById('orderVolume').value;
-    const stopLoss = document.getElementById('stopLoss').value;
-    const takeProfit = document.getElementById('takeProfit').value;
-
-    // Create an object to store the form data
-    const formData = {
-      symbol: symbolInput,
-      price: orderPrice,
-      usdAmount: usdValue,
-      volume: orderVolume,
-      stopLoss: stopLoss,
-      takeProfit: takeProfit
-    };
-
-    // Save form data to local storage
-    localStorage.setItem('formData', JSON.stringify(formData));
-
-    // Optional: Display a success message
-    alert('Form data submitted and saved to local storage.');
-  }
+    
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+    
+    localStorage.setItem('userData', JSON.stringify(data));
+    
+    const alert = document.querySelector('ion-alert');
+    alert.buttons = ['OK'];
+    form.reset();
+  });
+  
+  sellButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    
+    localStorage.removeItem('userData');
+    
+    alert('Data cleared from local storage!');
+    form.reset();
+  });

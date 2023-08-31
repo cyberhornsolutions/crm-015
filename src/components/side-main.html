@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main</title>
+  <link rel="stylesheet" href="./side-main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="header">
+    <div id="logo">
+      <img src="logo.png" style="width: 45%; background-color: rgb(24, 24, 36);">
+    </div>
+    <div id="header-info">
+      <div id="balance">
+        <h2>Баланс: 100 $</h2>
+        <h2>Cвободно: 0.00</h2>
+        <h2>Профит: 0.00</h2>
+      </div>
+      <div id="deposit">
+        <button id="deposit-button">
+          Депозит</button>
+      </div>
+    </div>
+  </div>
+  <div id="body">
+    <div id="sidebar">
+      <div id="side-main-menu">
+        <div id="side-trade">
+          <ion-icon name="stats-chart-sharp"></ion-icon>
+          <button class="side-button">
+            Торговля
+          </button>
+        </div>
+        <div id="side-assets">
+          <ion-icon name="list"></ion-icon>
+          <button class="side-button">
+            Позиции
+          </button>
+        </div>
+        <div id="side-account">
+          <ion-icon name="person-circle"></ion-icon>
+          <button class="side-button">
+            Аккаунт
+          </button>
+        </div>
+      </div>
+      <div id="side-out-menu">
+        <div id="side-out-extra">
+          <ion-icon name="information-circle"></ion-icon>
+          <button class="side-out-button">
+            Помощь
+          </button>
+        </div>
+        <div id="side-logout">
+          <ion-icon name="log-out"></ion-icon>
+          <button class="side-out-button">
+            Выход
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="content">
+      <div id="trade">
+        <div id="newOrder">
+          <div id="newOrderData">
+            <h2 style="margin: 0; width: 70%; height: 7%; margin-top: 4%; margin-bottom: 7px; margin-left: 15%; font-weight: 500;
+             border-radius: 3px;">Детали сделки</h2>
+            <form id="newOrderForm" >
+              <label for="symbol-input">Символ</label>
+              <input type="text" id="symbol-input" placeholder="Поиск...">
+              <label for="symbol-input">Цена</label>
+              <input type="text" id="symbol-current-value" disabled="true">
+              <label for="symbol-amount">Объём</label>
+              <input type="text" id="symbol-amount" value="0.00">
+              <label for="stop-loss">SL</label>
+              <input type="text" id="stop-loss">
+              <label for="take-profit">TP</label>
+              <input type="text" id="take-profit">
+              <ion-button class="newOrderButton" id="buyButton">Купить</ion-button>
+              <ion-alert
+                trigger="buyButton"
+                header="Alert"
+                sub-header="Important message"
+                message="This is an alert!"
+              ></ion-alert>
+              <button class="newOrderButton" id="sellButton">Продать</button>
+            </form>
+            <script src="./order-form.js"></script>
+          </div>
+        </div>
+        <div id="chart">
+          <div class="tradingview-widget-container">
+            <div id="tradingview_c902b">
+                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                <script type="text/javascript" src="tradingview.js"></script>
+            </div>
+          </div>
+        </div>
+        <div id="assets">
+          <table>
+            <thead class="sticky-header">
+              <tr>
+                <th>Cимвол</th>
+                <th>Продажа</th>
+                <th>Покупка</th>
+              </tr>
+            </thead>
+            <tbody class="table-body">
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="orders">
+        <table>
+          <thead class="sticky-header">
+            <tr>
+              <th>Символ</th>
+              <th>Номер</th>
+              <th>Тип</th>
+              <th>Объём</th>
+              <th>Дата</th>
+              <th>Цена</th>
+              <th>Параметры</th>
+              <th>Текущая цена</th>
+              <th>Прибыль</th>
+            </tr>
+          </thead>
+          <tbody class="table-body">
+            <tr>
+              <td>EURUSD</td>
+              <td>ID001</td>
+              <td>Покупка</td>
+              <td>100</td>
+              <td>25/08/2023</td>
+              <td>1.029</td>
+              <td>105.70 / 0.00 / 0.00</td>
+              <td>1.031</td>
+              <td>0.2</td>
+            </tr>
+            <tr>
+              <td>EURUSD</td>
+              <td>ID001</td>
+              <td>Покупка</td>
+              <td>100</td>
+              <td>25/08/2023</td>
+              <td>1.029</td>
+              <td>105.70 / 0.00 / 0.00</td>
+              <td>1.031</td>
+              <td>0.2</td>
+            </tr>
+            <tr>
+              <td>EURUSD</td>
+              <td>ID001</td>
+              <td>Покупка</td>
+              <td>100</td>
+              <td>25/08/2023</td>
+              <td>1.029</td>
+              <td>105.70 / 0.00 / 0.00</td>
+              <td>1.031</td>
+              <td>0.2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

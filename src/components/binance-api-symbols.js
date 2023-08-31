@@ -1,3 +1,6 @@
+
+
+
 const symbolInput = document.getElementById("symbolInput");
   const symbolDropdown = document.getElementById("symbolDropdown");
   let symbolsList = [];
@@ -21,10 +24,19 @@ const symbolInput = document.getElementById("symbolInput");
     });
   }
 
+  fetch('https://api.binance.com/api/v3/exchangeInfo')
+  .then(response => response.json())
+  .then(data => {
+    symbolsList = data.symbols.map(symbolObj => symbolObj.symbol);
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
+
   function fetchSymbolValue() {
     var symbol = symbolInput.value;
     if (!symbol) {
-      document.getElementById("symbolValue").textContent = "Please select a symbol";
+      document.getElementById("symbolValue").textContent = "Пожалуйста выберите котировку";
       return;
     }
 
@@ -34,20 +46,9 @@ const symbolInput = document.getElementById("symbolInput");
       .then(response => response.json())
       .then(data => {
         var symbolValue = data.price;
-          //document.getElementById("symbolValue").textContent = symbol + ": " + symbolValue + " USDT";
           document.getElementById("orderPrice").setAttribute("value", symbolValue);
         })
       .catch(error => {
-        console.error("Error fetching symbol value:", error);
-        document.getElementById("symbolValue").textContent = "Error fetching symbol value";
+        document.getElementById("orderPrice").setAttribute("value", 0);
       });
   }
-
-fetch('https://api.binance.com/api/v3/exchangeInfo')
-  .then(response => response.json())
-  .then(data => {
-    symbolsList = data.symbols.map(symbolObj => symbolObj.symbol);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
