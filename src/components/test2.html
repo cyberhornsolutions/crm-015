@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Submission Without Page Reload</title>
+</head>
+<body>
+
+<h2>Submit Data Without Page Reload</h2>
+
+<form id="dataForm">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" required><br><br>
+  
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required><br><br>
+  
+  <button type="submit" id="submitButton">Submit</button>
+</form>
+
+<table id="dataTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody id="dataBody">
+  </tbody>
+</table>
+
+<select id="dropdown">
+  <option value="Option 1">Option 1</option>
+  <option value="Option 2">Option 2</option>
+  <option value="Option 3">Option 3</option>
+</select>
+
+<input type="number" id="inputNumber">
+
+<script>
+  // Get references to the dropdown and input elements
+  const dropdown = document.getElementById('dropdown');
+  const inputNumber = document.getElementById('inputNumber');
+
+  // Add an event listener to the dropdown
+  dropdown.addEventListener('change', function () {
+    // Set the value of the input to the selected option's value
+    inputNumber.value = 1;
+});
+
+</script>
+
+<script>
+  const form = document.getElementById('dataForm');
+  const submitButton = document.getElementById('submitButton');
+  const dataBody = document.getElementById('dataBody');
+  
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+    
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+    
+    // Create a new table row
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `<td>${data.name}</td><td>${data.email}</td>`;
+    
+    // Append the new row to the dataBody
+    dataBody.appendChild(newRow);
+    
+    // Clear form inputs
+    form.reset();
+  });
+</script>
+
+</body>
+</html>

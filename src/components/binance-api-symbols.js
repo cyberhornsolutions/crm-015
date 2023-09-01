@@ -1,13 +1,16 @@
 
+const symbolInput = document.getElementById("symbol-input");
+const symbolDropdown = document.getElementById("symbol-dropdown");
 
+let symbolsList = [];
 
-const symbolInput = document.getElementById("symbolInput");
-  const symbolDropdown = document.getElementById("symbolDropdown");
-  let symbolsList = [];
+symbolInput.addEventListener('change', function () {
+    fetchSymbolValue();
+})
 
-  symbolInput.addEventListener("input", handleInput);
+symbolInput.addEventListener("input", handleInput);
 
-  function handleInput() {
+function handleInput() {
     const userInput = symbolInput.value.toLowerCase();
     const filteredSymbols = symbolsList.filter(symbol => symbol.toLowerCase().includes(userInput));
             
@@ -22,33 +25,37 @@ const symbolInput = document.getElementById("symbolInput");
       });
       symbolDropdown.appendChild(option);
     });
-  }
+}
 
-  fetch('https://api.binance.com/api/v3/exchangeInfo')
+fetch('https://api.binance.com/api/v3/exchangeInfo')
   .then(response => response.json())
   .then(data => {
     symbolsList = data.symbols.map(symbolObj => symbolObj.symbol);
   })
   .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+  console.error('Error fetching data:', error);
+});
 
-  function fetchSymbolValue() {
-    var symbol = symbolInput.value;
-    if (!symbol) {
-      document.getElementById("symbolValue").textContent = "Пожалуйста выберите котировку";
-      return;
-    }
+function fetchSymbolValue() {
+  var symbol = symbolInput.value;
+  if (!symbol) {
+    document.getElementById("symbol-current-value").textContent = "Пожалуйста выберите котировку";
+    return;
+  }
 
-    var apiUrl = "https://api.binance.com/api/v3/ticker/price?symbol=" + symbol;
+  var apiUrl = "https://api.binance.com/api/v3/ticker/price?symbol=" + symbol;
 
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        var symbolValue = data.price;
-          document.getElementById("orderPrice").setAttribute("value", symbolValue);
-        })
-      .catch(error => {
-        document.getElementById("orderPrice").setAttribute("value", 0);
-      });
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      // Replace the comma with a period and convert to a float
+      const numericValue = parseFloat(data.price.replace(',', '.'));
+      // Round the numeric value to two decimal places
+      const roundedValue = numericValue.toFixed(2);
+
+      document.getElementById("symbol-current-value").setAttribute("value", roundedValue);
+      })
+    .catch(error => {
+      document.getElementById("symbol-current-value").setAttribute("value", 0);
+    });
   }
