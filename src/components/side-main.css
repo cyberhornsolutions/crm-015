@@ -12,17 +12,31 @@ input[type=number] {
 * {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   background-color: rgb(39, 39, 53);
+  /* box-sizing: border-box; */
 }
 
 h2 {
   color: lightgray;
-  font-size: 19px;
-  margin-top: 24px;
+  font-size: 18px;
+  margin-top: 1.66%;
   margin-left: 0;
   margin-right: 0;
   font-weight: 500;
   flex: 1;
   text-align: center;
+}
+
+h3 {
+  color: lightgray;
+  margin-top: 5%;
+}
+
+h4 {
+  color: rgba(0, 255, 110, 0.952);
+}
+
+h5 {
+  color: rgb(166, 166, 166);
 }
 
 html, body {
@@ -45,14 +59,8 @@ button {
   color: lightgray;
 }
 
-form {
-  border: 1px solid rgb(24, 24, 36);
-  padding: 0;
-  padding-bottom: 5%;
-}
-
 label {
-  margin-top: 10px;
+  margin-top: 8px;
   color: whitesmoke;
   font-weight: 500;
 }
@@ -68,8 +76,8 @@ input {
   text-align: center;
 }
 
-input:disabled {
-  background-color: rgb(27, 27, 37);
+.hidden {
+  display: none;
 }
 
 #header {
@@ -107,17 +115,18 @@ input:disabled {
 
 #balance {
   display: flex;
-  flex: 10;
+  flex: 4;
   border: 3px solid rgb(24, 24, 36);
   border-radius: 10px;
   margin-right: 35px;
-  margin-left: 6px;
+  margin: 10px;
   text-align: center;
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
 .balance-nums {
   margin: 0;
-  margin-top: 1.66%;
+  margin-top: 1.05%;
   margin-right: 10%;
   width: 10%;
   height: 50%;
@@ -125,11 +134,11 @@ input:disabled {
 
 #deposit {
   display: flex;
-  flex: 2;
+  flex: 1;
   border-radius: 3px;
   justify-content: center;
   align-items: center;
-  margin-right: 34px;
+  margin-right: 13px;
   padding: 0;
   background-color: rgb(24, 24, 36);
 }
@@ -137,12 +146,14 @@ input:disabled {
 #deposit-button {
   border: 2px solid rgb(14, 68, 185);
   border-radius: 10px;
-  height: 70%;
-  width: 100%;
-  background-color:   rgb(12, 63, 171);
+  height: 50%;
+  width: 90%;
+  background-color: rgb(0, 81, 255);
   color: whitesmoke;
   margin: 0;
-  font-size: 16px;
+  margin-left: 13%;
+  margin-right: 5%;
+  font-size: 17px;
 }
 
 #deposit-button:hover {
@@ -153,6 +164,17 @@ input:disabled {
 
 #deposit-button:active {
   opacity: 50%;
+}
+
+#lang {
+  width: 12%;
+  margin: 0;
+  margin-left: 10%;
+}
+
+#lang:hover {
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.4);
 }
 
 #body {
@@ -190,6 +212,7 @@ input:disabled {
   margin-bottom: 10%;
   border-radius: 10px;
   border: 3px solid rgb(24, 24, 36);
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
 #side-out-menu {
@@ -200,6 +223,8 @@ input:disabled {
   margin-top: 5%;
   margin-bottom: 7%;
   border-radius: 5px;
+  border: 3px solid rgb(24, 24, 36);
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
 #side-trade, #side-assets, #side-account {
@@ -240,6 +265,8 @@ input:disabled {
   border-radius: 3px;
   background-color: rgb(0, 81, 255);
   box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.4);
+
+  color: whitesmoke;
 }
 
 .side-out-button {
@@ -255,9 +282,173 @@ input:disabled {
   display: flex;
   flex-direction: column;
   flex: 11;
-  border: 2px solid rgb(39, 39, 53); /* Example border style */
+  border: 2px solid rgb(39, 39, 53);
   border-radius: 5px;
   background-color: rgb(24, 24, 36);
+}
+
+#account {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  border: 2px solid rgb(24, 24, 36);
+  border-radius: 5px;
+  background-color: rgb(24, 24, 36);
+  margin: 10px;
+}
+
+#account-profile, #account-info {
+  flex: 2;
+  background-color: rgb(39, 39, 53);
+  border-radius: 5px;
+  margin: 0;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+}
+
+#account-profile {
+  display: flex;
+  flex-direction: column;
+}
+
+#acc-img-placeholder {
+  flex: 1.8;
+  width: 40%;
+  margin-top: 10%;
+  margin-bottom: 5%;
+  margin-left: 30%;
+}
+
+#acc-profile-main {
+  margin-left: 10%;
+  width: 80%;
+  border-top: 2px solid rgb(24, 24, 36);
+  border-bottom: 2px solid rgb(24, 24, 36);
+  flex: 6;
+}
+
+.acc-profile-main-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  margin-top: 2%;
+}
+
+#acc-info-personal {
+  margin-left: 10%;
+  width: 80%;
+  border-top: 2px solid rgb(24, 24, 36);
+  border-bottom: 2px solid rgb(24, 24, 36);
+  flex: 7;
+  margin-bottom: 6%;
+}
+
+.acc-info-personal-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  margin-top: 2%;
+}
+
+#acc-edit-button, #acc-save-button {
+  flex: 1;
+  width: 50%;
+  margin-left: 25%;
+  border-radius: 5px;
+  border: 1px solid rgb(33, 101, 249);
+  background-color: rgb(0, 81, 255);
+}
+
+#acc-edit-button {
+  margin-bottom: 10px;
+}
+
+#acc-save-button {
+  margin-bottom: 20px;
+}
+
+#documents-button {
+  flex: 1;
+  width: 50%;
+  margin-left: 25%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid rgb(33, 101, 249);
+  background-color: rgb(0, 81, 255);
+}
+
+#account-info {
+  margin-right: 10px;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+#account-transactions {
+  display: flex;
+  flex-direction: column;
+  flex: 3;
+  background-color: rgb(39, 39, 53);
+  border-radius: 5px;
+  margin: 0;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+}
+
+#trans-his, #withdraw-request {
+  align-items: center;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-bottom: 2%;
+}
+
+#trans-his {
+  flex: 11;
+  max-height: 500px;
+  background-color: rgb(17, 17, 23);
+  border: 1px solid rgb(39, 39, 53); /* Example border style */
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(17, 17, 23, 0.5);
+}
+
+#withdraw-request {
+  display: flex;
+  flex-direction: column;
+  flex: 6;
+}
+
+#transactions-his-table {
+  max-height: 500px;
+  width: 100%;
+  overflow-y: auto; 
+  border-collapse: collapse;
+}
+
+#transactions-t-body {
+  font-size: 13px;
+}
+
+#withdraw-amount, #withdraw-card {
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  margin-bottom: 2%;
+  width: 50%;
+}
+
+#withdraw-request-button {
+  flex: 1;
+  width: 40%;
+  margin-left: 2%;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid rgb(33, 101, 249);
+  background-color: rgb(0, 81, 255);
 }
 
 #trade {
@@ -265,15 +456,15 @@ input:disabled {
   flex-direction: row;
   flex: 5;
   background-color: rgb(24, 24, 36);
-  margin: 10px;
+  margin: 12px;
 }
 
 #newOrder {
   display: flex;
   flex-direction: column;
   flex: 1;
-  border: 2px solid rgb(39, 39, 53); /* Example border style */
   border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
 #newOrderData {
@@ -281,7 +472,7 @@ input:disabled {
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin-top: 5%;
+  margin-top: 4%;
 }
 
 #newOrderForm {
@@ -293,8 +484,8 @@ input:disabled {
   align-items: center;
   margin: 0;
   margin-left: 5%;
-  margin-top: 3%;
-  height: 84%;
+  margin-top: 2%;
+  height: 85%;
 }
 
 .newOrderButton {
@@ -340,6 +531,7 @@ input:disabled {
   margin-right: 10px;
   color: whitesmoke;
   text-align: center;
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
 #assets {
@@ -349,6 +541,7 @@ input:disabled {
   background-color: rgb(17, 17, 23);
   max-height: 100%; /* Set the maximum height of the container */
   overflow: auto; /* Add a scrolling bar when content overflows */
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
 #orders {
@@ -399,9 +592,7 @@ th, td {
   margin-top: 40px; /* Adjust this value based on the header height */
 }
 
-
 /* ionic icons */
-
 ion-icon {
   color: lightgray;
   width: 35px;
@@ -409,3 +600,11 @@ ion-icon {
   margin: 0;
   padding: 0;
 }
+
+.active {
+  /* Change the background color to indicate it's active */
+  color: rgb(0, 81, 255); /* Change the text color for visibility */
+  font-weight: bold; /* Optionally, make the text bold for emphasis */
+}
+
+/* MODAL DEPOSIT */

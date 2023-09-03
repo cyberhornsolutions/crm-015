@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main</title>
+  <link rel="stylesheet" href="./side-main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="header">
+    <div id="logo">
+      <img src="logo.png" style="width: 45%; background-color: rgb(24, 24, 36);">
+    </div>
+    <div id="header-info">
+      <div id="balance">
+        <h2>Баланс:</h2>
+        <input type="number" class="balance-nums" readonly="true" value="100.00">
+        <h2 style="margin-right: 1%;">Доступно:</h2>
+        <input type="number" class="balance-nums" readonly="true" value="100.00">
+        <h2>Профит:</h2>
+        <input type="number" class="balance-nums" readonly="true" value="00.00">
+      </div>
+      <div id="deposit">
+        <img id="lang" src="./russia-flag-png-xl.png" alt="">
+        <button id="deposit-button">Депозит</button>
+        <div class="deposit-modal hidden" id="deposit-modal">
+          <div class="modal-inner"></div>
+          <h1>Данные для депозита</h1>
+          <button id="modal-inner-close-button">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="body">
+    <div id="sidebar">
+      <div id="side-main-menu">
+        <div id="side-trade">
+          <ion-icon id="side-button-trade-icon" class="active" name="stats-chart-sharp"></ion-icon>
+          <button id="side-button-trade" class="side-button active">
+            Торговля
+          </button>
+        </div>
+        <div id="side-assets">
+          <ion-icon id="side-button-assets-icon" name="list"></ion-icon>
+          <button id="side-button-assets" class="side-button">
+            Позиции
+          </button>
+        </div>
+        <div id="side-account">
+          <ion-icon id="side-button-account-icon" name="person-circle"></ion-icon>
+          <button id="side-button-account" class="side-button">
+            Аккаунт
+          </button>
+        </div>
+      </div>
+      <div id="side-out-menu">
+        <div id="side-out-extra">
+          <ion-icon name="information-circle"></ion-icon>
+          <button class="side-out-button">
+            Помощь
+          </button>
+        </div>
+        <div id="side-logout">
+          <ion-icon name="log-out"></ion-icon>
+          <button id="side-out-button" class="side-out-button">
+            Выход
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="content">
+      <div id="trade">
+        <div id="newOrder" class="">
+          <div id="newOrderData" class="">
+            <h2 style="margin: 0; width: 70%; height: 6%; margin-top: 4%; margin-bottom: 5px; margin-left: 15%; font-weight: 500;
+             border-radius: 3px;">Детали сделки</h2>
+            <form id="newOrderForm" >
+              <label for="symbol-input">Символ</label>
+              <input type="text" id="symbol-input" name="symbolInput" placeholder="Поиск..." required>
+              <div id="symbol-dropdown" class="dropdown"></div>
+              <label for="symbol-current-value">Цена</label>
+              <input type="number" id="symbol-current-value" name="symbolCurrentValue" readonly="true" required>
+              <label for="symbol-amount">Объём</label>
+              <input type="number" id="symbol-amount" name="symbolAmount" value="0.00" max="100" required>
+              <label for="stop-loss">SL</label>
+              <input type="number" id="stop-loss" name="stopLoss" required>
+              <label for="take-profit">TP</label>
+              <input type="number" id="take-profit" name="takeProfit" required>
+              <button class="newOrderButton" id="buyButton">Купить</button>
+              <button class="newOrderButton" id="sellButton">Продать</button>
+            </form>
+            <script src="./binance-api-symbols.js"></script>
+            <script src="./order-form.js"></script>
+          </div>
+        </div>
+        <div id="chart" class="">
+          <div class="tradingview-widget-container">
+            <div id="tradingview_c902b">
+                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                <script type="text/javascript" src="tradingview.js"></script>
+            </div>
+          </div>
+        </div>
+        <div id="assets" class="hidden">
+          <!-- TradingView Widget BEGIN -->
+          <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+  {
+  "colorTheme": "dark",
+  "dateRange": "1D",
+  "showChart": false,
+  "locale": "ru",
+  "width": "100%",
+  "height": "100%",
+  "largeChartUrl": "",
+  "isTransparent": true,
+  "showSymbolLogo": true,
+  "showFloatingTooltip": false,
+  "tabs": [
+  {
+      "title": "Форекс",
+      "symbols": [
+        {
+          "s": "FX:EURUSD",
+          "d": "EUR to USD"
+        },
+        {
+          "s": "FX:GBPUSD",
+          "d": "GBP to USD"
+        },
+        {
+          "s": "FX:USDJPY",
+          "d": "USD to JPY"
+        },
+        {
+          "s": "FX:USDCHF",
+          "d": "USD to CHF"
+        },
+        {
+          "s": "FX:AUDUSD",
+          "d": "AUD to USD"
+        },
+        {
+          "s": "FX:USDCAD",
+          "d": "USD to CAD"
+        }
+      ],
+      "originalTitle": "Forex"
+    },
+    {
+      "title": "Индексы",
+      "symbols": [
+        {
+          "s": "FOREXCOM:SPXUSD",
+          "d": "S&P 500"
+        },
+        {
+          "s": "FOREXCOM:NSXUSD",
+          "d": "US 100"
+        },
+        {
+          "s": "FOREXCOM:DJI",
+          "d": "Dow 30"
+        },
+        {
+          "s": "INDEX:NKY",
+          "d": "Nikkei 225"
+        },
+        {
+          "s": "INDEX:DEU40",
+          "d": "DAX Index"
+        },
+        {
+          "s": "FOREXCOM:UKXGBP",
+          "d": "UK 100"
+        }
+      ],
+      "originalTitle": "Indices"
+    }
+  ]
+}
+          </script>
+        </div>
+<!-- TradingView Widget END -->
+          <!-- <table>
+            <thead class="sticky-header">
+              <tr>
+                <th>Cимвол</th>
+                <th>Продажа</th>
+                <th>Покупка</th>
+              </tr>
+            </thead>
+            <tbody class="table-body">
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+              <tr>
+                <td>AUDCAD</td>
+                <td>0.91</td>
+                <td>0.92</td>
+              </tr>
+            </tbody>
+          </table> -->
+        </div>
+      </div>
+      <div id="account" style="display: none;">
+        <div id="account-profile">
+          <img id="acc-img-placeholder" src="acc-img-placeholder.png">
+          <h4 style="margin: 0; margin-bottom: 15px;">Test Lead #0001</h4>
+          <div id="acc-profile-main">
+            <div class="acc-profile-main-item">
+              <h5>Баланс (USD):</h5>
+              <h5>100.00</h5>
+            </div>
+            <div class="acc-profile-main-item">
+              <h5>Залог (USD):</h5>
+              <h5>00.00</h5>
+            </div>
+            <div class="acc-profile-main-item">
+              <h5>Уровень маржи (в %):</h5>
+              <h5>100.00</h5>
+            </div>
+            <div class="acc-profile-main-item">
+              <h5>Общая прибыль (профит в USD):</h5>
+              <h5>100.00</h5>
+            </div>
+            <div class="acc-profile-main-item">
+              <h5>Общий депозит (USD):</h5>
+              <h5>100.00</h5>
+            </div>
+            <div class="acc-profile-main-item">
+              <h5>Всего выведено (USD):</h5>
+              <h5>00.00</h5>
+            </div>
+          </div>
+          <button id="documents-button">Мои документы</button>
+        </div>
+        <div id="account-info">
+          <h3>Личная информация</h3>
+          <div id="acc-info-personal">
+            <div class="acc-info-personal-item">
+              <h5>Имя:</h5>
+              <h5>ТЕСТ</h5>
+            </div>
+            <div class="acc-info-personal-item">
+              <h5>Фамилия:</h5>
+              <h5>ЛИД</h5>
+            </div>
+            <div class="acc-info-personal-item">
+              <h5>Почта:</h5>
+              <h5>testlead1@gmail.com</h5>
+            </div>
+            <div class="acc-info-personal-item">
+              <h5>Телефон:</h5>
+              <h5>+7777038475</h5>
+            </div>
+            <div class="acc-info-personal-item">
+              <h5>Страна:</h5>
+              <h5>ТЕСТ</h5>
+            </div>
+            <div class="acc-info-personal-item">
+              <h5>Город:</h5>
+              <h5>ТЕСТ</h5>
+            </div>
+            <div class="acc-info-personal-item">
+              <h5>Дата регистрации:</h5>
+              <h5>02/07/2023</h5>
+            </div>
+            <div class="acc-info-personal-item">
+              <h5>Комментарий:</h5>
+              <h5></h5>
+            </div>
+          </div>
+          <button id="acc-edit-button">Редактировать</button>
+          <button id="acc-save-button">Сохранить</button>
+        </div>
+        <div id="account-transactions">
+          <h3 style="height: 5%; margin-left: 10%; margin-top: 3.5%; padding-bottom: 4px; border-bottom: 2px solid rgb(24, 24, 36); width: 80%;">Транзакции</h3>
+          <div id="trans-his">
+            <table id="transactions-his-table">
+              <thead class="sticky-header" style="border-radius: 5px; border: 1px solid rgb(39, 39, 23);">
+                <tr>
+                  <th>ID</th>
+                  <th>Тип</th>
+                  <th>Сумма (USD)</th>
+                  <th>Метод</th>
+                  <th>Статус</th>
+                  <th>Дата</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-t-body" class="table-body">
+                <tr>
+                  <th>ID001</th>
+                  <th>Депозит</th>
+                  <th>100</th>
+                  <th>VISA</th>
+                  <th>Успешно</th>
+                  <th>08/08/2022</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="withdraw-request">
+            <h2 style="padding: 20px; margin: 0; margin-top: 3%; width: 80%; border-top: 1px solid rgb(17, 17, 23);">Запрос на вывод</h2>
+            <input type="number" id="withdraw-amount" placeholder="Сумма (USD)">
+            <input type="number" id="withdraw-card" placeholder="Номер карты">
+            <button id="withdraw-request-button">Отправить</button>
+          </div>
+        </div>
+      </div>
+      <div id="orders">
+        <table>
+          <thead class="sticky-header">
+            <tr>
+              <th>ID</th>
+              <th>Дата</th>
+              <th>Символ</th>
+              <th>Тип</th>
+              <th>Объём</th>
+              <th>Цена</th>
+              <th>SL/TP</th>
+              <th>Статус</th>
+              <th>Прибыль</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody" class="table-body">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="./tabs.js"></script>
+</body>
+</html>
