@@ -414,19 +414,14 @@ input {
   border: 1px solid rgb(39, 39, 53); /* Example border style */
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(17, 17, 23, 0.5);
-}
-
-#withdraw-request {
-  display: flex;
-  flex-direction: column;
-  flex: 6;
+  width: 90%;
 }
 
 #transactions-his-table {
   max-height: 500px;
-  width: 100%;
   overflow-y: auto; 
   border-collapse: collapse;
+  overflow-x: auto;
 }
 
 #transactions-t-body {
@@ -439,6 +434,13 @@ input {
   flex: 1;
   margin-bottom: 2%;
   width: 50%;
+}
+
+
+#withdraw-request {
+  display: flex;
+  flex-direction: column;
+  flex: 6;
 }
 
 #withdraw-request-button {
@@ -550,8 +552,9 @@ input {
   border-radius: 5px;
   margin: 10px;
   background-color: rgb(17, 17, 23);
-  max-height: 200px; /* Set the maximum height of the container */
+  max-height: 152px; /* Set the maximum height of the container */
   overflow: auto; /* Add a scrolling bar when content overflows */
+  position: relative;
 }
 
 /* Apply some basic styling to the table */
@@ -563,6 +566,11 @@ table {
   margin: 0;
   table-layout: auto;
   font-size: 14px;
+}
+
+
+orders-table {
+  max-height: 100%; /* Set the maximum height of the container */
 }
 
 .sticky-header {
@@ -580,10 +588,7 @@ th, td {
   color: rgb(166, 166, 166);
   background-color: rgb(17, 17, 23);
   margin: 0;
-  /* Add maximum width to prevent overflowing content */
-  max-width: 100px;
   white-space: nowrap; /* Prevent content from wrapping */
-  overflow: hidden; /* Hide content that exceeds cell boundaries */
   text-overflow: ellipsis; /* Show ellipsis for hidden content */
 }
 
@@ -624,4 +629,10 @@ ion-icon {
   cursor: pointer;
 }
 
+thead {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Set the desired background color */
+  z-index: 1;
+}
 /* MODAL DEPOSIT */

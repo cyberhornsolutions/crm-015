@@ -79,7 +79,7 @@
              border-radius: 3px;">Детали сделки</h2>
             <form id="newOrderForm" >
               <label for="symbol-input">Символ</label>
-              <input type="text" id="symbol-input" name="symbolInput" placeholder="Поиск..." required>
+              <input type="text" id="symbol-input" name="symbolInput" placeholder="Поиск..." style="text-transform:uppercase" required>
               <div id="symbol-dropdown" class="dropdown"></div>
               <label for="symbol-current-value">Цена</label>
               <input type="number" id="symbol-current-value" name="symbolCurrentValue" readonly="true" required>
@@ -343,7 +343,7 @@
                 <tr>
                   <th>ID</th>
                   <th>Тип</th>
-                  <th>Сумма (USD)</th>
+                  <th>Сумма $</th>
                   <th>Метод</th>
                   <th>Статус</th>
                   <th>Дата</th>
@@ -358,6 +358,14 @@
                   <th>Успешно</th>
                   <th>08/08/2022</th>
                 </tr>
+                <tr>
+                  <th>ID002</th>
+                  <th>Вывод</th>
+                  <th>100</th>
+                  <th>VISA</th>
+                  <th>В обработке</th>
+                  <th>11/08/2022</th>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -370,7 +378,7 @@
         </div>
       </div>
       <div id="orders">
-        <table>
+        <table id="orders-table">
           <thead class="sticky-header">
             <tr>
               <th>ID</th>

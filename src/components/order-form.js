@@ -1,6 +1,37 @@
 const form = document.getElementById('newOrderForm');
 const buyButton = document.getElementById('buyButton');
 const sellButton = document.getElementById('sellButton');
+
+document.getElementById('symbol-input').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent form submission on Enter key press
+  }
+});
+
+document.getElementById('symbol-current-value').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent form submission on Enter key press
+  }
+});
+
+document.getElementById('symbol-amount').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent form submission on Enter key press
+  }
+});
+
+document.getElementById('stop-loss').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent form submission on Enter key press
+  }
+});
+
+document.getElementById('take-profit').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent form submission on Enter key press
+  }
+});
+
   
 buyButton.addEventListener('click', function(event){
   event.preventDefault()
