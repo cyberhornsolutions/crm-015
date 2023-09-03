@@ -607,4 +607,21 @@ ion-icon {
   font-weight: bold; /* Optionally, make the text bold for emphasis */
 }
 
+/* Style for binance-api-symbols */
+.dropdown {
+  max-height: 180px; /* Set the maximum height you prefer */
+  max-width: 100px;
+  overflow-y: auto; /* Add scrollbars if content overflows */
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  background-color: rgb(32, 32, 43);
+  z-index: 1;
+}
+
+.dropdown-option {
+  padding: 5px;
+  cursor: pointer;
+}
+
 /* MODAL DEPOSIT */
