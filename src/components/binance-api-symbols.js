@@ -2,6 +2,7 @@
 const symbolInput = document.getElementById("symbol-input");
 const symbolDropdown = document.getElementById("symbol-dropdown");
 const symbolValue = document.getElementById("symbol-current-value");
+const symbolModal = document.getElementById("symbol-modal");
 
 let symbolsList = [];
 
@@ -9,25 +10,51 @@ symbolInput.addEventListener('submit', function () {
     fetchSymbolValue();
 })
 
+
+
 symbolInput.addEventListener("input", handleInput);
 
 function handleInput() {
-    const userInput = symbolInput.value.toLowerCase();
-    const filteredSymbols = symbolsList.filter(symbol => symbol.toLowerCase().includes(userInput));
-            
-    symbolDropdown.innerHTML = "";
-    filteredSymbols.forEach(symbol => {
+  const userInput = symbolInput.value.toLowerCase();
+  const filteredSymbols = symbolsList.filter(symbol => symbol.toLowerCase().includes(userInput));
+          
+  symbolDropdown.innerHTML = "";
+  filteredSymbols.forEach(symbol => {
       const option = document.createElement("div");
       option.classList.add("dropdown-option");
       option.textContent = symbol;
       option.addEventListener("click", () => {
-        symbolInput.value = symbol;
-        fetchSymbolValue(symbol); // Fetch the symbol value
-        symbolDropdown.innerHTML = "";
+          symbolInput.value = symbol;
+          fetchSymbolValue(symbol); // Fetch the symbol value
+          symbolModal.style.display = "none"; // Hide the modal after selection
       });
       symbolDropdown.appendChild(option);
-    });
+  });
+
+  if (filteredSymbols.length > 0) {
+    // Calculate the position based on the input field's position
+    const inputRect = symbolInput.getBoundingClientRect();
+    symbolModal.style.top = `${inputRect.bottom + window.scrollY}px`;
+    symbolModal.style.left = `${inputRect.left + window.scrollX}px`;
+
+    // Set the modal dimensions based on the dropdown's dimensions
+    const dropdownRect = symbolDropdown.getBoundingClientRect();
+    symbolModal.style.width =  "100px";
+    symbolModal.style.height = `${dropdownRect.height}px`;
+
+    symbolModal.style.display = "block";
+    } else {
+        symbolModal.style.display = "none";
+    }
 }
+
+document.addEventListener("click", function(event) {
+  if (!symbolDropdown.contains(event.target)) {
+      symbolModal.style.display = "none"; // Hide the modal when clicking outside
+  }
+});
+
+
 
 fetch('https://api.binance.com/api/v3/exchangeInfo')
   .then(response => response.json())

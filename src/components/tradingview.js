@@ -6,7 +6,7 @@ function updateWidget(symb){
     {
         "symbol": symbol,
         "width" : "100%",
-        "height" : "520px",
+        "height" : "100%",
         "interval": "H",
         "timezone": "Etc/UTC",
         "theme": "dark",
