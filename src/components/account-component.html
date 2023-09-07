@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,29 +7,30 @@
   <link rel="stylesheet" href="./side-main.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="header">
     <div id="logo">
-      <img src="logo.png" style="width: 45%; background-color: rgb(24, 24, 36);">
+      <img src="logo.png" style="width: 45%; background-color: var(--main-bgc);">
     </div>
     <div id="header-info">
       <div id="balance">
-        <h2>Баланс:</h2>
-        <input type="number" class="balance-nums" readonly="true" value="100.00">
-        <h2 style="margin-right: 1%;">Доступно:</h2>
-        <input type="number" class="balance-nums" readonly="true" value="100.00">
-        <h2>Профит:</h2>
-        <input type="number" class="balance-nums" readonly="true" value="00.00">
-      </div>
-      <div id="deposit">
-        <img id="lang" src="./russia-flag-png-xl.png" alt="">
-        <button id="deposit-button">Депозит</button>
-        <div class="deposit-modal hidden" id="deposit-modal">
-          <div class="modal-inner"></div>
-          <h1>Данные для депозита</h1>
-          <button id="modal-inner-close-button">Close</button>
+        <div class="balance-item">
+          <h2 class="balance-title">Баланс:</h2>
+          <input type="number" class="balance-nums" readonly="true" value="100.00">
+        </div>
+        <div class="balance-item">
+          <h2 class="balance-title">Свободная маржа:</h2>
+          <input type="number" class="balance-nums" readonly="true" value="100.00">
+        </div>
+        <div class="balance-item">
+          <h2 class="balance-title">Профит:</h2>
+          <input type="number" class="balance-nums" readonly="true" value="00.00">
+        </div>
+        <div class="balance-item" style="border: none;">
+          <img id="lang" src="./russia-flag-png-xl.png">
         </div>
       </div>
     </div>
@@ -73,37 +74,6 @@
     </div>
     <div id="content">
       <div id="trade">
-        <div id="newOrder" class="">
-          <div id="newOrderData" class="">
-            <h2 style="margin: 0; width: 70%; height: 6%; margin-top: 4%; margin-bottom: 5px; margin-left: 15%; font-weight: 500;
-             border-radius: 3px;">Детали сделки</h2>
-            <form id="newOrderForm" >
-              <label for="symbol-input">Символ</label>
-              <input type="text" id="symbol-input" name="symbolInput" placeholder="Поиск..." style="text-transform:uppercase" required>
-              <div id="symbol-dropdown" class="dropdown"></div>
-              <label for="symbol-current-value">Цена</label>
-              <input type="number" id="symbol-current-value" name="symbolCurrentValue" readonly="true" required>
-              <label for="symbol-amount">Объём</label>
-              <input type="number" id="symbol-amount" name="symbolAmount" value="0.00" max="100" required>
-              <label for="stop-loss">SL</label>
-              <input type="number" id="stop-loss" name="stopLoss" required>
-              <label for="take-profit">TP</label>
-              <input type="number" id="take-profit" name="takeProfit" required>
-              <button class="newOrderButton" id="buyButton">Купить</button>
-              <button class="newOrderButton" id="sellButton">Продать</button>
-            </form>
-            <script src="./binance-api-symbols.js"></script>
-            <script src="./order-form.js"></script>
-          </div>
-        </div>
-        <div id="chart" class="">
-          <div class="tradingview-widget-container">
-            <div id="tradingview_c902b">
-                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                <script type="text/javascript" src="tradingview.js"></script>
-            </div>
-          </div>
-        </div>
         <div id="assets" class="hidden">
           <!-- TradingView Widget BEGIN -->
           <div class="tradingview-widget-container">
@@ -117,7 +87,7 @@
   "width": "100%",
   "height": "100%",
   "largeChartUrl": "",
-  "isTransparent": true,
+  "isTransparent": false,
   "showSymbolLogo": true,
   "showFloatingTooltip": false,
   "tabs": [
@@ -185,83 +155,39 @@
 }
           </script>
         </div>
-<!-- TradingView Widget END -->
-          <!-- <table>
-            <thead class="sticky-header">
-              <tr>
-                <th>Cимвол</th>
-                <th>Продажа</th>
-                <th>Покупка</th>
-              </tr>
-            </thead>
-            <tbody class="table-body">
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-              <tr>
-                <td>AUDCAD</td>
-                <td>0.91</td>
-                <td>0.92</td>
-              </tr>
-            </tbody>
-          </table> -->
+        </div>
+        <div id="chart" class="">
+          <div class="tradingview-widget-container">
+            <div id="tradingview_c902b">
+                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                <script type="text/javascript" src="tradingview.js"></script>
+            </div>
+          </div>
+        </div>
+        <div id="newOrder" class="">
+          <div id="newOrderData" class="">
+            <h2 style="margin: 0; width: 70%; height: 6%; margin-top: 3%; margin-bottom: 5px; margin-left: 15%;
+             border-radius: 3px; font-size: 18px;">Детали сделки</h2>
+            <form id="newOrderForm" >
+              <label for="symbol-input">Символ</label>
+              <input type="text" id="symbol-input" name="symbolInput" placeholder="Поиск..." style="text-transform:uppercase" required>
+              <div id="symbol-modal" class="modal">
+                <div id="symbol-dropdown" class="dropdown"></div>
+              </div>              
+              <label for="symbol-current-value">Цена</label>
+              <input type="number" id="symbol-current-value" name="symbolCurrentValue" readonly="true" required>
+              <label for="symbol-amount">Объём</label>
+              <input type="number" id="symbol-amount" name="symbolAmount" value="0.00" max="100" required>
+              <label for="stop-loss">SL</label>
+              <input type="number" id="stop-loss" name="stopLoss" required>
+              <label for="take-profit">TP</label>
+              <input type="number" id="take-profit" name="takeProfit" required>
+              <button class="newOrderButton" id="buyButton" style="margin-top: 30px;">Купить</button>
+              <button class="newOrderButton" id="sellButton">Продать</button>
+            </form>
+            <script src="./binance-api-symbols.js"></script>
+            <script src="./order-form.js"></script>
+          </div>
         </div>
       </div>
       <div id="account" style="display: none;">
@@ -270,73 +196,77 @@
           <h4 style="margin: 0; margin-bottom: 15px;">Test Lead #0001</h4>
           <div id="acc-profile-main">
             <div class="acc-profile-main-item">
-              <h5>Баланс (USD):</h5>
-              <h5>100.00</h5>
+              <h6>Баланс (USD):</h6>
+              <h6>100.00</h6>
             </div>
             <div class="acc-profile-main-item">
-              <h5>Залог (USD):</h5>
-              <h5>00.00</h5>
+              <h6>Залог (USD):</h6>
+              <h6>00.00</h6>
             </div>
             <div class="acc-profile-main-item">
-              <h5>Уровень маржи (в %):</h5>
-              <h5>100.00</h5>
+              <h6>Уровень маржи (в %):</h6>
+              <h6>100.00</h6>
             </div>
             <div class="acc-profile-main-item">
-              <h5>Общая прибыль (профит в USD):</h5>
-              <h5>100.00</h5>
+              <h6>Общая прибыль (USD):</h6>
+              <h6>100.00</h6>
             </div>
             <div class="acc-profile-main-item">
-              <h5>Общий депозит (USD):</h5>
-              <h5>100.00</h5>
+              <h6>Общий депозит (USD):</h6>
+              <h6>100.00</h6>
             </div>
             <div class="acc-profile-main-item">
-              <h5>Всего выведено (USD):</h5>
-              <h5>00.00</h5>
+              <h6>Всего выведено (USD):</h6>
+              <h6>00.00</h6>
             </div>
           </div>
-          <button id="documents-button">Мои документы</button>
+          <div id="verif-buttons">
+            <button id="documents-button">Верификация</button>
+          </div>
         </div>
         <div id="account-info">
-          <h3>Личная информация</h3>
+          <h3 style="border-bottom: 2px solid rgb(24, 24, 36); padding-bottom: 15px; padding-top: 0; margin-top: 18px; width: 80%;">Личная информация</h3>
           <div id="acc-info-personal">
             <div class="acc-info-personal-item">
-              <h5>Имя:</h5>
-              <h5>ТЕСТ</h5>
+              <h6>Имя:</h6>
+              <h6>ТЕСТ</h6>
             </div>
             <div class="acc-info-personal-item">
-              <h5>Фамилия:</h5>
-              <h5>ЛИД</h5>
+              <h6>Фамилия:</h6>
+              <h6>ЛИД</h6>
             </div>
             <div class="acc-info-personal-item">
-              <h5>Почта:</h5>
-              <h5>testlead1@gmail.com</h5>
+              <h6>Почта:</h6>
+              <h6>testlead1@gmail.com</h6>
             </div>
             <div class="acc-info-personal-item">
-              <h5>Телефон:</h5>
-              <h5>+7777038475</h5>
+              <h6>Телефон:</h6>
+              <h6>+7777038475</h6>
             </div>
             <div class="acc-info-personal-item">
-              <h5>Страна:</h5>
-              <h5>ТЕСТ</h5>
+              <h6>Страна:</h6>
+              <h6>ТЕСТ</h6>
             </div>
             <div class="acc-info-personal-item">
-              <h5>Город:</h5>
-              <h5>ТЕСТ</h5>
+              <h6>Город:</h6>
+              <h6>ТЕСТ</h6>
             </div>
             <div class="acc-info-personal-item">
-              <h5>Дата регистрации:</h5>
-              <h5>02/07/2023</h5>
+              <h6>Дата регистрации:</h6>
+              <h6>02/07/2023</h6>
             </div>
             <div class="acc-info-personal-item">
-              <h5>Комментарий:</h5>
-              <h5></h5>
+              <h6>Комментарий:</h6>
+              <h6></h6>
             </div>
           </div>
-          <button id="acc-edit-button">Редактировать</button>
-          <button id="acc-save-button">Сохранить</button>
+          <div id="acc-info-buttons">
+            <button id="acc-edit-button">Редактировать</button>
+            <button id="acc-save-button">Сохранить</button>
+          </div>
         </div>
         <div id="account-transactions">
-          <h3 style="height: 5%; margin-left: 10%; margin-top: 3.5%; padding-bottom: 4px; border-bottom: 2px solid rgb(24, 24, 36); width: 80%;">Транзакции</h3>
+          <h3 style="border-bottom: 2px solid rgb(24, 24, 36); padding-bottom: 15px; padding-top: 0; margin-top: 18px; width: 80%;">Транзакции</h3>
           <div id="trans-his">
             <table id="transactions-his-table">
               <thead class="sticky-header" style="border-radius: 5px; border: 1px solid rgb(39, 39, 23);">
@@ -369,11 +299,12 @@
               </tbody>
             </table>
           </div>
-          <div id="withdraw-request">
-            <h2 style="padding: 20px; margin: 0; margin-top: 3%; width: 80%; border-top: 1px solid rgb(17, 17, 23);">Запрос на вывод</h2>
+          <div id="transaction-request">
+            <!-- <h2 style="padding: 20px; margin: 0; margin-top: 3%; width: 80%; border-top: 1px solid rgb(17, 17, 23);">Запрос на вывод</h2>
             <input type="number" id="withdraw-amount" placeholder="Сумма (USD)">
-            <input type="number" id="withdraw-card" placeholder="Номер карты">
-            <button id="withdraw-request-button">Отправить</button>
+            <input type="number" id="withdraw-card" placeholder="Номер карты"> -->
+            <button id="deposit-button">Депозит</button>
+            <button id="withdraw-request-button">Вывод</button>
           </div>
         </div>
       </div>
@@ -401,5 +332,6 @@
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   <script src="./tabs.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
