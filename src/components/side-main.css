@@ -4,6 +4,7 @@
   --main-bgc: #11131a;
   --main-elc: #1e222d;
   --main-bluec: rgb(0, 106, 255);
+  --seco-grayc: rgb(175, 175, 175);
 }
 
 input::-webkit-outer-spin-button,
@@ -44,11 +45,11 @@ h4 {
 }
 
 h5 {
-  color: rgb(166, 166, 166);
+  color: var(--seco-grayc)
 }
 
 h6 {
-  color: rgb(166, 166, 166);
+  color: var(--seco-grayc)
 }
 
 html, body {
@@ -57,7 +58,7 @@ html, body {
   height: 500px;
   margin: 0; /* Remove default margin */
   padding: 0; /* Remove default padding */
-  width: 99.5%; /* Make body take up the full width of the viewport */
+  width: 100%; /* Make body take up the full width of the viewport */
   height: 100vh; /* Make body take up the full height of the viewport */
   border-radius: 5px;
   overflow: hidden;
@@ -146,6 +147,10 @@ input {
   border-right: 2px solid rgb(24, 24, 36);
 }
 
+#balance-item-lang {
+  flex: 0.5;
+}
+
 .balance-nums {
   margin: 0;
   margin-bottom: 2%;
@@ -165,7 +170,7 @@ input {
 #lang {
   width: 25px;
   margin: 0;
-  margin-top: 8%;
+  margin-top: 15%;
 }
 
 #lang:hover {
@@ -187,10 +192,8 @@ input {
 #body {
   background-color: var(--main-elc);
   flex: 10;
-  height: 100%;
   display: flex;
   flex-direction: row;
-  height: 100%;
   margin: 0; /* Remove default margin */
   padding: 0; /* Remove default padding */
   width: 100%; /* Make body take up the full width of the viewport */
@@ -542,6 +545,7 @@ input {
   background-color: rgba(0, 255, 110, 0.814);
   color: whitesmoke;
   margin-top: 5%;
+  margin-top: 30px;
 }
 
 #sellButton {
@@ -701,6 +705,11 @@ thead {
 
 /* CSS for screens smaller than 768px (phones and small tablets) */
 @media (max-width: 767px) {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
   html, body {
     display: block;
     margin: 0;
@@ -708,6 +717,10 @@ thead {
     border-radius: 5px;
     overflow: auto;
   }
+  ion-icon {
+    height: 40%;
+  }
+
   .balance-item {
     margin: 0;
     padding: 0;
@@ -715,17 +728,15 @@ thead {
   .balance-title {
     margin: 0;
     padding: 0;
-    margin-top: 6px;
-    font-size: 8px;
-    margin-bottom: -2px;
+    margin-top: 1.45vh;
+    font-size: 12px;
   }
   .balance-nums {
     margin: 0;
     padding: 0;
-    font-size: 6px;
+    font-size: 9px;
     width: 80%;
     height: 35%;
-    margin-bottom: 10px;
   }
   #free-margi {
     display: none;
@@ -736,39 +747,253 @@ thead {
   #lang {
     width: 20px;
     margin: 0;
-    margin-top: 15%;
+    margin-top: 2.8vh;
   }
   #logo {
-    flex: 2;
+    flex: 3;
   }
   #header {
-    height: 70px;
+    height: 11vh;
+    margin-bottom: auto;
   }
   #body {
     display: block;
+    height: 88vh;
   }
   #sidebar {
     display: block;
-    height: 75px;
+    height: 12vh;
+    margin-bottom: auto;
+    border-radius: 10px;
   }
   #side-main-menu {
     display: flex;
     flex-direction: row;
-    height: 60px;
+    height: 88%;
   }
   #side-trade, #side-assets, #side-account {
     margin: 0;
-    padding: 0;
+    padding: 1px;
     flex: 1;
     width: auto;
-    font-size: 11px;
-    margin-top: 9px;
+    font-size: 16px;
+    margin-top: 2%;
   }
-
-  #content {
+  #side-out-menu { /* make it modal */
     display: none;
   }
-  #side-out-menu {
+
+  /* contents */
+
+  #content {
+    display: block;
+    height: 76vh;
+  }
+  #trade {
+    margin: 10px;
+    padding: 0;
+    border: none;
+    display: block;
+    height: 97%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    border: 2px solid rgb(24, 24, 36);
+  }
+  #assets {
+    margin: 2%;
+    padding: 0;
+    height: 22vh;
+    border-bottom: 3px solid var(--main-elc);
+  }
+  #chart {
+    margin: 0;
+    padding: 0;
+    display: block; /* block */
+    height: 38vh;
+    margin-bottom: 3%;
+    border: 3px solid var(--main-elc);
+  }
+  #nav-buttons {
+    display: block;
+    margin: 1%;
+    height: 11vh;
+    background-color: var(--main-bgc);
+    margin-top: auto;
+    border-top: 1px solid var(--main-elc);
+    border-bottom: 1px solid var(--main-elc);
+    padding-top: 2.8%;
+    padding-bottom: 4%;
+    border-radius: 10px;
+  }
+
+  #nav-buttons button {
+    display: inline;
+    width: 45%;
+    height: 80%;
+    color: var(--main-numbersc);
+    border: 2px solid var(--main-bgc);
+    border-radius: 10px;
+    font-size: 15px;
+    margin-left: 3%;
+    margin-top: 2%;
+    box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  }
+
+  #newOrder {
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: none; /* block */
+    height: 31vh;
+  }
+  #newOrderData {
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: block;
+    height: 100%;
+    margin-top: 1%;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+  }
+  #newOrderData h2 {
+    display: none;
+  }
+  #newOrderForm {
+    border: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 98%;
+    height: 98%;
+    margin-top: 1%;
+    padding-top: 2.5%;
+    margin-left: 1%;
+    border: 2px solid var(--main-bgc);
+    border-radius: 10px;
+  }
+
+  #newOrderForm label {
+    display: inline-block;
+    width: 40vw; /* Adjust the width as needed */
+    text-align: left;
+    font-size: 16px;
+    margin-left: 2%;
+    padding-left: 5px;
+    margin-right: 1%;
+    border-bottom: 1px solid var(--main-bgc)
+  }
+
+  /* Style for inputs */
+  #newOrderForm input[type="text"],
+  #newOrderForm input[type="number"] {
+    display: inline-block;
+    width: 40vw; /* Adjust the width as needed */
+    text-align: center;
+    color: gray;
+    font-size: 14px;
+    margin-left: 1%;
+    margin-right: 2%;
+  }
+
+  /* Style for buttons */
+  .newOrderButton {
+    margin-top: 1vh;
+  }
+
+  /* Style for Buy button */
+  #buyButton, #sellButton {
+    margin: 0;
+    padding: 0;
+    width: 30vw;
+    height: 4.5vh;
+  }
+  #buyButton {
+    float: left;
+    margin-left: 12%;
+    margin-top: 6%;
+  }
+  /* Style for Sell button */
+  #sellButton {
+    float: right;
+    margin-right: 12%;
+    margin-top: 6%;
+  }
+
+  #orders {
+    margin: 0;
+    padding: 0;
+    display: none;
+  }
+  
+  /* ACCOUNT MOBILE */
+  #account {
+    display: block;
+    color: var(--seco-grayc);
+    font-size: 11px;
+    height: 97%;
+    justify-content: center;
+    align-items: center;
+  }
+  #account-profile {
+    height: 82%;
+    justify-content: center;
+    align-items: center;
+    margin: 1%;
+    margin-top: 1.5%;
+  }
+  #account-mobile-buttons {
+    height: 14%;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    font-size: 15px;
+    margin-top: 4%;
+    margin-bottom: auto;
+    border-radius: 10px;
+    width: 94%;
+    margin-left: 3%;
+    box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  }
+  #account-mobile-buttons button {
+    height: 50px;
+    width: 140px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--main-bluec);
+    color: var(--main-numbersc);
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  #account-img-placeholder {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+  }
+  #account h4 {
+    color: lightgray;
+    font-size: 17px;
+    font-weight: bold;
+  }
+  .acc-profile-main-item {
+    margin: 3%;
+  }
+  .acc-profile-main-item h6:nth-child(2) {
+    color: var(--main-numbersc);
+    font-size: 14px;
+  }
+  #verif-buttons {
+    background-color: transparent;
+  }
+  #documents-button {
+    font-size: 16px;
+    height: 50px;
+  }
+
+  #account-info, #account-transactions {
     display: none;
   }
 }
