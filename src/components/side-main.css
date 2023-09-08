@@ -156,14 +156,14 @@ input {
   margin-bottom: 2%;
   margin-top: 2%;
   width: 33%;
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(0, 255, 110, 0.952);
 }
 
 .balance-title {
   margin: 0;
   margin-top: 3%;
-  font-size: 15px;
+  font-size: 16px;
   color: rgb(166, 166, 166);
 }
 
@@ -301,7 +301,6 @@ input {
   display: flex;
   flex-direction: row;
   flex: 1;
-  border: 2px solid rgb(24, 24, 36);
   border-radius: 5px;
   background-color: var(--main-bgc);
   margin: 10px;
@@ -316,40 +315,38 @@ input {
   justify-content: center;
   align-items: center;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
-}
-
-#account-profile {
   display: flex;
   flex-direction: column;
 }
 
 #acc-img-placeholder {
-  flex: 1;
+  flex: 0.5;
   width: 40%;
-  margin-top: 9%;
+  margin-top: 8%;
   margin-bottom: 1%;
+  cursor: pointer;
 }
 
-#acc-profile-main {
+#acc-profile-main, #acc-info-personal {
   width: 80%;
-  border-top: 2px solid rgb(24, 24, 36);
-  flex: 6;
+  border-top: 1px solid var(--main-bgc);
+  margin-top: 3%;
+  padding-top: 7%;
+  margin-bottom: 7%;
 }
 
-.acc-profile-main-item {
+.acc-profile-main-item, .acc-info-personal-item  {
   display: flex;
   justify-content: space-between;
   margin: 0;
   padding: 0;
-  margin-top: 1%;
+  margin-top: 5%;
+  color: var(--seco-grayc);
 }
 
 #documents-button {
-  flex: 1;
   width: 140px;
   height: 45px;
-  margin-top: 15px;
-  margin-bottom: 15px;
   border-radius: 10px;
   border: 1px solid rgb(33, 101, 249);
   background-color: var(--main-bluec);
@@ -363,18 +360,10 @@ input {
   margin-left: 10px;
 }
 
-#acc-info-personal {
-  width: 80%;
-  flex: 4;
+acc-info-personal h3 {
+  flex: 0.5;
 }
 
-.acc-info-personal-item {
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  padding: 0;
-  margin-top: 1%;
-}
 
 #acc-info-buttons, #verif-buttons {
   align-items: center;
@@ -384,7 +373,8 @@ input {
   display: flex;
   flex-direction: row;
   flex: 1;
-  border-top: 2px solid rgb(24, 24, 36);
+  border-top: 1px solid var(--main-bgc);
+  margin-bottom: 20px;
 }
 
 #acc-edit-button, #acc-save-button {
@@ -427,17 +417,17 @@ input {
 
 #trans-his {
   flex: 4;
-  max-height: 500px;
+  max-height: 340px;
   background-color: rgb(17, 17, 23);
   border: 1px solid rgb(39, 39, 53);
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(17, 17, 23, 0.5);
-  width: 84%;
+  width: 88%;
   margin-bottom: 5%;
 }
 
 #transactions-his-table {
-  max-height: 500px;
+  max-height: 340px;
   overflow-y: auto; 
   border-collapse: collapse;
   overflow-x: auto;
@@ -451,7 +441,7 @@ input {
   display: flex;
   flex-direction: row;
   flex: 1;
-  border-top: 2px solid rgb(24, 24, 36);
+  border-top: 1px solid rgb(24, 24, 36);
 }
 
 #deposit-button {
@@ -492,12 +482,17 @@ input {
   width: 50%;
 }
 
+#trade-div {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 #trade {
   display: flex;
   flex-direction: row;
-  flex: 5;
-  background-color: var(--main-bgc);
-  margin: 12px;
+  flex: 9;
+  margin: 10px;
 }
 
 #newOrder {
@@ -569,9 +564,6 @@ input {
   border: 2px solid rgb(39, 39, 53); /* Example border style */
   border-radius: 5px;
   background-color: var(--main-bgc);
-  margin-left: 10px;
-  margin-right: 10px;
-  color: whitesmoke;
   text-align: center;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
@@ -584,6 +576,55 @@ input {
   max-height: 100%; /* Set the maximum height of the container */
   overflow: auto; /* Add a scrolling bar when content overflows */
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+}
+
+
+#history-div {
+  flex: 4;
+  background-color: var(--main-bgc);
+  height: 100%;
+  margin: 10px;
+  margin-top: 0;
+}
+
+#nav-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  height: 50px;
+}
+
+#nav-buttons button {
+  color: var(--seco-grayc);
+  border-radius: 10px;
+  border: none;
+  height: 40px;
+  width: 155px;
+  margin: 0;
+  padding: 0;
+  background-color: var(--main-bgc);
+}
+
+#new-order-button:active {
+  color: var(--main-numbersc);
+  border-radius: 10px;
+  border: 1px solid var(--main-numbersc);
+  height: 40px;
+  width: 155px;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  background-color: var(--main-elc);
+  box-shadow: 0px 3px 3px var(--main-bgc);
+}
+
+#nav-buttons button:nth-child(1) {
+  margin-left: 7%;
+}
+#nav-buttons button:nth-child(3){
+  margin-right: 7%;
 }
 
 #orders {
@@ -838,6 +879,10 @@ thead {
     margin-left: 3%;
     margin-top: 2%;
     box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  }
+
+  #nav-buttons button:nth-child(3) {
+    display: none;
   }
 
   #newOrder {
