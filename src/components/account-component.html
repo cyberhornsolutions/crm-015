@@ -49,7 +49,7 @@
         <div id="side-assets">
           <ion-icon id="side-button-assets-icon" name="list"></ion-icon>
           <button id="side-button-assets" class="side-button">
-            История
+            Позиции
           </button>
         </div>
         <div id="side-account">
@@ -61,14 +61,14 @@
       </div>
       <div id="side-out-menu">
         <div id="side-out-extra">
-          <ion-icon name="information-circle"></ion-icon>
-          <button class="side-out-button">
+          <ion-icon id="information-circle-icon" name="information-circle"></ion-icon>
+          <button id="help-button" class="side-out-button">
             Помощь
           </button>
         </div>
         <div id="side-logout">
           <ion-icon name="log-out"></ion-icon>
-          <button id="side-out-button" class="side-out-button">
+          <button id="logout-button" class="side-out-button">
             Выход
           </button>
         </div>
@@ -77,85 +77,134 @@
     <div id="content">
       <div id="trade-div">
         <div id="trade">
-          <div id="assets">
+          <div id="assets" class="hidden">
             <!-- TradingView Widget BEGIN -->
             <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-    {
-    "colorTheme": "dark",
-    "dateRange": "1D",
-    "showChart": false,
-    "locale": "ru",
-    "width": "100%",
-    "height": "100%",
-    "largeChartUrl": "",
-    "isTransparent": false,
-    "showSymbolLogo": true,
-    "showFloatingTooltip": false,
-    "tabs": [
-    {
-        "title": "Форекс",
-        "symbols": [
-          {
-            "s": "FX:EURUSD",
-            "d": "EUR to USD"
-          },
-          {
-            "s": "FX:GBPUSD",
-            "d": "GBP to USD"
-          },
-          {
-            "s": "FX:USDJPY",
-            "d": "USD to JPY"
-          },
-          {
-            "s": "FX:USDCHF",
-            "d": "USD to CHF"
-          },
-          {
-            "s": "FX:AUDUSD",
-            "d": "AUD to USD"
-          },
-          {
-            "s": "FX:USDCAD",
-            "d": "USD to CAD"
-          }
-        ],
-        "originalTitle": "Forex"
-      },
-      {
-        "title": "Индексы",
-        "symbols": [
-          {
-            "s": "FOREXCOM:SPXUSD",
-            "d": "S&P 500"
-          },
-          {
-            "s": "FOREXCOM:NSXUSD",
-            "d": "US 100"
-          },
-          {
-            "s": "FOREXCOM:DJI",
-            "d": "Dow 30"
-          },
-          {
-            "s": "INDEX:NKY",
-            "d": "Nikkei 225"
-          },
-          {
-            "s": "INDEX:DEU40",
-            "d": "DAX Index"
-          },
-          {
-            "s": "FOREXCOM:UKXGBP",
-            "d": "UK 100"
-          }
-        ],
-        "originalTitle": "Indices"
-      }
-    ]
-  }
+                {
+              "colorTheme": "dark",
+              "dateRange": "1D",
+              "showChart": false,
+              "locale": "ru",
+              "largeChartUrl": "",
+              "isTransparent": false,
+              "showSymbolLogo": true,
+              "showFloatingTooltip": false,
+              "width": "100%",
+              "height": "100%",
+              "tabs": [
+                {
+                  "title": "Форекс",
+                  "symbols": [
+                    {
+                      "s": "FX:EURUSD",
+                      "d": "Euro"
+                    },
+                    {
+                      "s": "FX:GBPUSD",
+                      "d": "Pound"
+                    },
+                    {
+                      "s": "FX:USDJPY",
+                      "d": "Yen"
+                    },
+                    {
+                      "s": "FX:USDCHF",
+                      "d": "Franc"
+                    },
+                    {
+                      "s": "FX:AUDUSD",
+                      "d": "Australian"
+                    },
+                    {
+                      "s": "FX:USDCAD",
+                      "d": "Canadian"
+                    }
+                  ],
+                  "originalTitle": "Forex"
+                },
+                {
+                  "title": "Крипто",
+                  "symbols": [
+                    {
+                      "s": "BINANCE:BTCUSDT",
+                      "d": "Bitcoin"
+                    },
+                    {
+                      "s": "BINANCE:ETHUSDT",
+                      "d": "Ethereum"
+                    },
+                    {
+                      "s": "BINANCE:SOLUSDT",
+                      "d": "Solana"
+                    },
+                    {
+                      "s": "BINANCE:XRPUSDT",
+                      "d": "Ripple"
+                    },
+                    {
+                      "s": "BINANCE:MATICUSDT",
+                      "d": "Matic"
+                    },
+                    {
+                      "s": "BINANCE:BNBUSDT",
+                      "d": "Binance Coin"
+                    },
+                    {
+                      "s": "BINANCE:ADAUSDT",
+                      "d": "Cardano"
+                    },
+                    {
+                      "s": "BINANCE:DOGEUSDT",
+                      "d": "Dogecoin"
+                    },
+                    {
+                      "s": "BINANCE:SHIBUSDT",
+                      "d": "Shiba Inu"
+                    },
+                    {
+                      "s": "BINANCE:DOTUSDT",
+                      "d": "Polkadot"
+                    },
+                    {
+                      "s": "BINANCE:LTCUSDT",
+                      "d": "Litecoin"
+                    }
+                  ]
+                },
+                {
+                  "title": "Индексы",
+                  "symbols": [
+                    {
+                      "s": "FOREXCOM:SPXUSD",
+                      "d": "S&P 500"
+                    },
+                    {
+                      "s": "FOREXCOM:NSXUSD",
+                      "d": "US 100"
+                    },
+                    {
+                      "s": "FOREXCOM:DJI",
+                      "d": "Dow 30"
+                    },
+                    {
+                      "s": "INDEX:NKY",
+                      "d": "Nikkei 225"
+                    },
+                    {
+                      "s": "INDEX:DEU40",
+                      "d": "DAX Index"
+                    },
+                    {
+                      "s": "FOREXCOM:UKXGBP",
+                      "d": "UK 100"
+                    }
+                  ],
+                  "originalTitle": "Indices"
+                }
+              ]
+            }
             </script>
           </div>
           </div>
@@ -167,7 +216,7 @@
               </div>
             </div>
           </div>
-          <div id="newOrder">
+          <div id="newOrder" style="display: none;">
             <div id="newOrderData" class="">
               <h2 style="margin: 0; width: 70%; height: 6%; margin-top: 3%; margin-bottom: 5px; margin-left: 15%;
                border-radius: 3px; font-size: 18px;">Детали сделки</h2>
@@ -195,12 +244,11 @@
         </div>
         <div id="history-div">
           <div id="nav-buttons">
-            <button>Инструменты</button>
-            <button id="new-order-button" class="active">Новая сделка</button>
-            <button>Полный отчёт</button>
+            <button id="newDealButton">Открыть сделку</button>
+            <button id="ordersHistoryButton">История сделок</button>
           </div>
           <div id="orders">
-            <table id="orders-table">
+            <table id="orders-table" class="table-dark table-striped table-responsive">
               <thead class="sticky-header">
                 <tr>
                   <th>ID</th>
@@ -340,6 +388,42 @@
           <button>Личная информация</button>
           <button>Транзакции</button>
         </div>
+      </div>
+      <div id="faq" style="display: none;">
+        <h1>Frequently Asked Questions</h1>
+
+    <h2>General Questions</h2>
+    <dl>
+        <dt>Q: What is our trading platform?</dt>
+        <dd>A: Our trading platform is an online system that allows you to buy and sell various financial instruments such as stocks, bonds, and cryptocurrencies.</dd>
+
+        <dt>Q: How do I create an account?</dt>
+        <dd>A: To create an account, click on the "Sign Up" button on our homepage and follow the registration process.</dd>
+
+        <!-- Add more general questions and answers here -->
+    </dl>
+
+    <h2>Account Management</h2>
+    <dl>
+        <dt>Q: How can I reset my password?</dt>
+        <dd>A: You can reset your password by clicking on the "Forgot Password" link on the login page and following the instructions sent to your registered email address.</dd>
+
+        <dt>Q: Can I have multiple trading accounts?</dt>
+        <dd>A: Yes, you can have multiple trading accounts with us. Contact our support team for assistance with setting up additional accounts.</dd>
+
+        <!-- Add more account management questions and answers here -->
+    </dl>
+
+    <h2>Trading and Investments</h2>
+    <dl>
+        <dt>Q: How can I place a trade?</dt>
+        <dd>A: To place a trade, log in to your account, select the financial instrument you want to trade, specify the quantity and other details, and click "Place Order."</dd>
+
+        <dt>Q: What are the trading hours?</dt>
+        <dd>A: Our trading platform operates 24/7, but specific trading hours for different assets may vary. Check the asset's trading hours in the platform.</dd>
+
+        <!-- Add more trading and investment questions and answers here -->
+    </dl>
       </div>
     </div>
   </div>

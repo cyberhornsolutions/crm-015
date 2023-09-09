@@ -101,12 +101,11 @@ input {
   border-radius: 5px;
   margin: 0;
   padding: 0;
-  
 }
 
 #logo {
   display: flex;
-  flex: 1;
+  max-width: 120px;
   border: 2px solid rgb(24, 24, 36); /* Example border style */
   border-radius: 5px;
   justify-content: center;
@@ -175,7 +174,7 @@ input {
 
 #lang:hover {
   cursor: pointer;
-  box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.4);
+  box-shadow: 0px 0px 15px rgba(3, 82, 253, 0.4);
 }
 
 #deposit {
@@ -204,7 +203,7 @@ input {
 #sidebar {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  max-width: 120px;
   border: 2px solid rgb(24, 24, 36);
   border-radius: 3px;
   justify-content: center;
@@ -246,6 +245,10 @@ input {
   width: 100%;
 }
 
+ion-icon, button {
+  transition: color 0.3s ease;
+}
+
 #side-out-extra, #side-logout {
   flex: 1;
   margin: 0;
@@ -264,19 +267,13 @@ input {
   margin: 0;
 }
 
-.side-button:active {
-  opacity: 70%;
-  box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.9);
-}
-
 .side-button:hover, .side-out-button:hover {
   cursor: pointer;
-  border: 2px solid rgb(29, 92, 193);
+  border: none;
   border-radius: 3px;
-  background-color: rgb(0, 81, 255);
-  box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.4);
-
-  color: whitesmoke;
+  box-shadow: 0px 0px 5px var(--main-numbersc);
+  width: 86px;
+  font-weight: bold;
 }
 
 .side-out-button {
@@ -286,6 +283,12 @@ input {
   width: 75%;
   color: whitesmoke;
   margin: 0;
+}
+
+#faq {
+  height: 100%;
+  margin: 10px;
+  padding: 50px;
 }
 
 #content {
@@ -590,50 +593,54 @@ acc-info-personal h3 {
 #nav-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: 0;
   padding: 0;
   height: 50px;
 }
 
 #nav-buttons button {
-  color: var(--seco-grayc);
+  color: lightgrey;
   border-radius: 10px;
-  border: none;
+  border: 1px solid rgb(100, 100, 100);
   height: 40px;
   width: 155px;
   margin: 0;
   padding: 0;
   background-color: var(--main-bgc);
+  margin-top: 5px;
+  margin-bottom: 0;
 }
 
-#new-order-button:active {
-  color: var(--main-numbersc);
+#nav-buttons button:hover {
+  cursor: pointer;
+  border: none;
   border-radius: 10px;
+  box-shadow: 0px 0px 5px var(--main-numbersc);
+  font-weight: bold;
+}
+
+#newDealButton:active {
+  color: var(--main-numbersc);
   border: 1px solid var(--main-numbersc);
-  height: 40px;
-  width: 155px;
-  margin: 0;
-  padding: 0;
   font-weight: bold;
   background-color: var(--main-elc);
   box-shadow: 0px 3px 3px var(--main-bgc);
 }
-
-#nav-buttons button:nth-child(1) {
-  margin-left: 7%;
-}
-#nav-buttons button:nth-child(3){
-  margin-right: 7%;
+#ordersHistoryButton:active {
+  color: var(--main-numbersc);
+  border: 1px solid var(--main-numbersc);
+  font-weight: bold;
+  background-color: var(--main-elc);
+  box-shadow: 0px 3px 3px var(--main-bgc);
 }
 
 #orders {
   flex: 2;
   border: 1px solid rgb(39, 39, 53); /* Example border style */
   border-radius: 5px;
-  margin: 10px;
   background-color: var(--main-bgc);
-  max-height: 152px; /* Set the maximum height of the container */
+  max-height: 154px; /* Set the maximum height of the container */
   overflow: auto; /* Add a scrolling bar when content overflows */
   position: relative;
 }
@@ -870,8 +877,8 @@ thead {
 
   #nav-buttons button {
     display: inline;
-    width: 45%;
-    height: 80%;
+    width: 44%;
+    height: 70%;
     color: var(--main-numbersc);
     border: 2px solid var(--main-bgc);
     border-radius: 10px;
