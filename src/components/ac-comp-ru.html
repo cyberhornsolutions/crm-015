@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./side-main.css">
+</head>
+<body>
+  <div id="header">
+    <div id="logo">
+      <img id="logo-img" src="logo.png" style="width: 45%; background-color: var(--main-bgc);">
+    </div>
+    <div id="header-info">
+      <div id="balance">
+        <div class="balance-item">
+          <h2 class="balance-title">Баланс:</h2>
+          <input type="number" class="balance-nums" readonly="true" value="100.00">
+        </div>
+        <div class="balance-item">
+          <h2 class="balance-title" id="free-margi">Свободная маржа:</h2>
+          <h2 class="balance-title hidden" id="free-margi2">Св. маржа:</h2>
+          <input type="number" class="balance-nums" readonly="true" value="100.00">
+        </div>
+        <div class="balance-item">
+          <h2 class="balance-title">Профит:</h2>
+          <input type="number" class="balance-nums" readonly="true" value="00.00">
+        </div>
+        <div id="balance-item-lang" class="balance-item" style="border: none;">
+          <img id="lang" src="./ru-fl.png">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="body">
+    <div id="sidebar">
+      <div id="side-main-menu">
+        <div id="side-trade">
+          <ion-icon id="side-button-trade-icon" class="active" name="stats-chart-sharp"></ion-icon>
+          <button id="side-button-trade" class="side-button active">
+            Торговля
+          </button>
+        </div>
+        <div id="side-assets">
+          <ion-icon id="side-button-assets-icon" name="list"></ion-icon>
+          <button id="side-button-assets" class="side-button">
+            Позиции
+          </button>
+        </div>
+        <div id="side-account">
+          <ion-icon id="side-button-account-icon" name="person-circle"></ion-icon>
+          <button id="side-button-account" class="side-button">
+            Аккаунт
+          </button>
+        </div>
+      </div>
+      <div id="side-out-menu">
+        <div id="side-out-extra">
+          <ion-icon id="information-circle-icon" name="information-circle"></ion-icon>
+          <button id="help-button" class="side-out-button">
+            Помощь
+          </button>
+        </div>
+        <div id="side-logout">
+          <ion-icon name="log-out"></ion-icon>
+          <button id="logout-button" class="side-out-button">
+            Выход
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="content">
+      <div id="trade-div">
+        <div id="trade">
+          <div id="assets" class="hidden">
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                {
+              "colorTheme": "dark",
+              "dateRange": "1D",
+              "showChart": false,
+              "locale": "ru",
+              "largeChartUrl": "",
+              "isTransparent": false,
+              "showSymbolLogo": true,
+              "showFloatingTooltip": false,
+              "width": "100%",
+              "height": "100%",
+              "tabs": [
+                {
+                  "title": "Форекс",
+                  "symbols": [
+                    {
+                      "s": "FX:EURUSD",
+                      "d": "Euro"
+                    },
+                    {
+                      "s": "FX:GBPUSD",
+                      "d": "Pound"
+                    },
+                    {
+                      "s": "FX:USDJPY",
+                      "d": "Yen"
+                    },
+                    {
+                      "s": "FX:USDCHF",
+                      "d": "Franc"
+                    },
+                    {
+                      "s": "FX:AUDUSD",
+                      "d": "Australian"
+                    },
+                    {
+                      "s": "FX:USDCAD",
+                      "d": "Canadian"
+                    }
+                  ],
+                  "originalTitle": "Forex"
+                },
+                {
+                  "title": "Крипто",
+                  "symbols": [
+                    {
+                      "s": "BINANCE:BTCUSDT",
+                      "d": "Bitcoin"
+                    },
+                    {
+                      "s": "BINANCE:ETHUSDT",
+                      "d": "Ethereum"
+                    },
+                    {
+                      "s": "BINANCE:SOLUSDT",
+                      "d": "Solana"
+                    },
+                    {
+                      "s": "BINANCE:XRPUSDT",
+                      "d": "Ripple"
+                    },
+                    {
+                      "s": "BINANCE:MATICUSDT",
+                      "d": "Matic"
+                    },
+                    {
+                      "s": "BINANCE:BNBUSDT",
+                      "d": "Binance Coin"
+                    },
+                    {
+                      "s": "BINANCE:ADAUSDT",
+                      "d": "Cardano"
+                    },
+                    {
+                      "s": "BINANCE:DOGEUSDT",
+                      "d": "Dogecoin"
+                    },
+                    {
+                      "s": "BINANCE:SHIBUSDT",
+                      "d": "Shiba Inu"
+                    },
+                    {
+                      "s": "BINANCE:DOTUSDT",
+                      "d": "Polkadot"
+                    },
+                    {
+                      "s": "BINANCE:LTCUSDT",
+                      "d": "Litecoin"
+                    }
+                  ]
+                },
+                {
+                  "title": "Индексы",
+                  "symbols": [
+                    {
+                      "s": "FOREXCOM:SPXUSD",
+                      "d": "S&P 500"
+                    },
+                    {
+                      "s": "FOREXCOM:NSXUSD",
+                      "d": "US 100"
+                    },
+                    {
+                      "s": "FOREXCOM:DJI",
+                      "d": "Dow 30"
+                    },
+                    {
+                      "s": "INDEX:NKY",
+                      "d": "Nikkei 225"
+                    },
+                    {
+                      "s": "INDEX:DEU40",
+                      "d": "DAX Index"
+                    },
+                    {
+                      "s": "FOREXCOM:UKXGBP",
+                      "d": "UK 100"
+                    }
+                  ],
+                  "originalTitle": "Indices"
+                }
+              ]
+            }
+            </script>
+          </div>
+          </div>
+          <div id="chart">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" id="myTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#h1" style="font-size: 14px;"># 1</a>
+                </li>
+                <li class="nav-item">
+                    <button id="addTabButton" class="btn btn-primary" style="background-color: transparent; border: none;">+</button>
+                </li>
+            </ul>
+        
+            <!-- Tab panes -->
+            <div class="tab-content" style="height: 100%;">
+                <div class="tab-pane container tradingview-widget-container active" style="margin: 0; padding: 0;" id="h1">
+                    <div id="tradingview_first">
+                        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                        <script type="text/javascript" src="tradingview.js"></script>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div id="newOrder" style="display: none;">
+            <div id="newOrderData" class="">
+              <h2 style="margin: 0; width: 70%; height: 5%; margin-left: 15%; font-size: 18px;">Детали сделки</h2>
+              <form id="newOrderForm" >
+                <label for="symbol-input">Символ</label>
+                <input type="text" id="symbol-input" name="symbolInput" placeholder="Поиск..." style="text-transform:uppercase" required>
+                <div id="symbol-modal" class="modal">
+                  <div id="symbol-dropdown" class="dropdown"></div>
+                </div>              
+                <label for="symbol-current-value">Цена</label>
+                <input type="number" id="symbol-current-value" name="symbolCurrentValue" readonly="true" required>
+                <label for="symbol-amount">Объём</label>
+                <input type="number" id="symbol-amount" name="symbolAmount" value="0.00" max="100" required>
+                <label for="stop-loss">SL</label>
+                <input type="number" id="stop-loss" name="stopLoss" required>
+                <label for="take-profit">TP</label>
+                <input type="number" id="take-profit" name="takeProfit" required>
+                <button class="newOrderButton" id="buyButton">Купить</button>
+                <button class="newOrderButton" id="sellButton">Продать</button>
+              </form>
+              <script src="./binance-api-symbols.js"></script>
+              <script src="./order-form.js"></script>
+            </div>
+          </div>
+        </div>
+        <div id="history-div">
+          <div id="nav-buttons">
+            <button id="newDealButton">Открыть сделку</button>
+            <button id="ordersHistoryButton">История сделок</button>
+          </div>
+          <div id="orders">
+            <table id="orders-table" class="table-dark table-striped table-responsive">
+              <thead class="sticky-header">
+                <tr>
+                  <th>ID</th>
+                  <th>Дата</th>
+                  <th>Символ</th>
+                  <th>Тип</th>
+                  <th>Объём</th>
+                  <th>Цена</th>
+                  <th>SL/TP</th>
+                  <th>Статус</th>
+                  <th>Прибыль</th>
+                </tr>
+              </thead>
+              <tbody id="dataBody" class="table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="account" style="display: none;">
+        <div id="account-profile">
+          <img id="acc-img-placeholder" src="acc-img-placeholder.png">
+          <h4 style="margin: 0; margin-bottom: 15px;">Test Lead #0001</h4>
+          <div id="acc-profile-main">
+            <div class="acc-profile-main-item">
+              <h6>Баланс (USD):</h6>
+              <h6>100.00</h6>
+            </div>
+            <div class="acc-profile-main-item">
+              <h6>Залог (USD):</h6>
+              <h6>00.00</h6>
+            </div>
+            <div class="acc-profile-main-item">
+              <h6>Уровень маржи (в %):</h6>
+              <h6>100.00</h6>
+            </div>
+            <div class="acc-profile-main-item">
+              <h6>Общая прибыль (USD):</h6>
+              <h6>100.00</h6>
+            </div>
+            <div class="acc-profile-main-item">
+              <h6>Общий депозит (USD):</h6>
+              <h6>100.00</h6>
+            </div>
+            <div class="acc-profile-main-item">
+              <h6>Всего выведено (USD):</h6>
+              <h6>00.00</h6>
+            </div>
+          </div>
+          <div id="verif-buttons">
+            <button id="documents-button" data-bs-toggle="modal" data-bs-target="#verification-docs">Верификация</button>
+          </div>
+          <!-- The Upload Modal -->
+          <div class="modal fade" id="verification-docs" style="margin-top: 10%; background-color: transparent; border-radius: 10px; height: auto;">
+            <div class="modal-dialog modal-lg" style="display: flex;">
+              <div class="modal-content" style="border-radius: 0px; height: 50vh;">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Загрузите документы для верификации</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <form enctype="multipart/form-data">
+                    <div class="mb-3">
+                      <label for="verificationFile" class="form-label">Выберите файл:</label>
+                      <input type="file" class="form-control" id="verificationFile" name="verificationFile" accept=".pdf, .doc, .docx" style="height: 100%;" placeholder="xx">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="uploadButton" style="color: rgb(0, 255, 110);">Загрузить</button>
+                  </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- The Success Modal -->
+          <div class="modal" id="successModal" style="background-color: transparent; margin-top: 17%;">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Успешно!</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                  Спасибо! Ваши документы приняты на проверку!
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <script>
+            // JavaScript to handle the success modal and auto-close
+            document.getElementById('uploadButton').addEventListener('click', function() {
+              // Assuming the form is valid and the upload is successful
+              // Show the success modal
+              event.preventDefault();
+              var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+              successModal.show();
+
+              // Close the success modal after 5 seconds (5000 milliseconds)
+              setTimeout(function() {
+                successModal.hide();
+              }, 2500);
+            });
+          </script>
+        </div>
+        <div id="account-info">
+          <h3 style="margin-top: 40px; margin-bottom: 20px; width: 80%; font-size: 25px;">Личная информация</h3>
+          <div id="acc-info-personal">
+            <div class="acc-info-personal-item">
+              <h6>Имя:</h6>
+              <h6>ТЕСТ</h6>
+            </div>
+            <div class="acc-info-personal-item">
+              <h6>Фамилия:</h6>
+              <h6>ЛИД</h6>
+            </div>
+            <div class="acc-info-personal-item">
+              <h6>Почта:</h6>
+              <h6>testlead1@gmail.com</h6>
+            </div>
+            <div class="acc-info-personal-item">
+              <h6>Телефон:</h6>
+              <h6>+7777038475</h6>
+            </div>
+            <div class="acc-info-personal-item">
+              <h6>Страна:</h6>
+              <h6>ТЕСТ</h6>
+            </div>
+            <div class="acc-info-personal-item">
+              <h6>Город:</h6>
+              <h6>ТЕСТ</h6>
+            </div>
+            <div class="acc-info-personal-item">
+              <h6>Дата регистрации:</h6>
+              <h6>02/07/2023</h6>
+            </div>
+            <div class="acc-info-personal-item">
+              <h6>Комментарий:</h6>
+              <h6></h6>
+            </div>
+          </div>
+          <div id="acc-info-buttons" class="hidden">
+            <button id="acc-edit-button">Редактировать</button>
+          </div>
+        </div>
+        <div id="account-transactions">
+          <h3 style="border-bottom: 1px solid var(--main-bgc); font-size: 25px; padding-bottom: 25px; padding-top: 0; margin-top: 40px; margin-bottom: 30px; width: 80%;">Транзакции</h3>
+          <div id="trans-his">
+            <table id="transactions-his-table">
+              <thead class="sticky-header" style="border-radius: 5px; border: 1px solid rgb(39, 39, 23);">
+                <tr>
+                  <th>ID</th>
+                  <th>Тип</th>
+                  <th>Сумма $</th>
+                  <th>Метод</th>
+                  <th>Статус</th>
+                  <th>Дата</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-t-body" class="table-body">
+                <tr>
+                  <th>ID001</th>
+                  <th>Депозит</th>
+                  <th>100</th>
+                  <th>VISA</th>
+                  <th>Успешно</th>
+                  <th>08/08/2022</th>
+                </tr>
+                <tr>
+                  <th>ID002</th>
+                  <th>Вывод</th>
+                  <th>100</th>
+                  <th>VISA</th>
+                  <th>В обработке</th>
+                  <th>11/08/2022</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="transaction-request">
+            <!-- <h2 style="padding: 20px; margin: 0; margin-top: 3%; width: 80%; border-top: 1px solid rgb(17, 17, 23);">Запрос на вывод</h2>
+            <input type="number" id="withdraw-amount" placeholder="Сумма (USD)">
+            <input type="number" id="withdraw-card" placeholder="Номер карты"> -->
+            <button id="deposit-button">Депозит</button>
+            <button id="withdraw-request-button">Вывод</button>
+          </div>
+        </div>
+        <div id="account-mobile-buttons" class="hidden">
+          <button>Личная информация</button>
+          <button>Транзакции</button>
+        </div>
+      </div>
+      <div id="faq" style="display: none;">
+        <h1>Frequently Asked Questions</h1>
+        <h2>General Questions</h2>
+        <dl>
+            <dt>Q: What is our trading platform?</dt>
+            <dd>A: Our trading platform is an online system that allows you to buy and sell various financial instruments such as stocks, bonds, and cryptocurrencies.</dd>
+
+            <dt>Q: How do I create an account?</dt>
+            <dd>A: To create an account, click on the "Sign Up" button on our homepage and follow the registration process.</dd>
+
+            <!-- Add more general questions and answers here -->
+        </dl>
+
+        <h2>Account Management</h2>
+        <dl>
+            <dt>Q: How can I reset my password?</dt>
+            <dd>A: You can reset your password by clicking on the "Forgot Password" link on the login page and following the instructions sent to your registered email address.</dd>
+
+            <dt>Q: Can I have multiple trading accounts?</dt>
+            <dd>A: Yes, you can have multiple trading accounts with us. Contact our support team for assistance with setting up additional accounts.</dd>
+
+            <!-- Add more account management questions and answers here -->
+        </dl>
+
+        <h2>Trading and Investments</h2>
+        <dl>
+            <dt>Q: How can I place a trade?</dt>
+            <dd>A: To place a trade, log in to your account, select the financial instrument you want to trade, specify the quantity and other details, and click "Place Order."</dd>
+
+            <dt>Q: What are the trading hours?</dt>
+            <dd>A: Our trading platform operates 24/7, but specific trading hours for different assets may vary. Check the asset's trading hours in the platform.</dd>
+
+            <!-- Add more trading and investment questions and answers here -->
+        </dl>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="./tabs.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./language-switch.js"></script>
+  <script src="./chart-tabs.js"></script>
+</body>
+</html>

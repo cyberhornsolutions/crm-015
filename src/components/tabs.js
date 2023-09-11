@@ -21,11 +21,13 @@ const faqDiv = document.getElementById('faq')
 
 
 // NAV
+const navButtons = document.getElementById('nav-buttons')
 const newDealButton = document.getElementById("newDealButton")
 const ordersHistoryButton = document.getElementById("ordersHistoryButton")
 const newOrder = document.getElementById('newOrder')
 const tradeDiv = document.getElementById('trade-div')
 const tableOrders = document.getElementById('orders')
+
 
 // Add a click event listener to the button
 sideButtonAssets.addEventListener("click", function() {
@@ -39,6 +41,11 @@ sideButtonAssets.addEventListener("click", function() {
     assetsToToggle.classList.add("hidden");
     sideButtonAssets.classList.remove("active");
     iconAssets.classList.remove("active");
+  }
+  if (sideButtonAssets.classList.contains('active') && newDealButton.classList.contains('active')) {
+    tableOrders.style.maxHeight = '150px'
+  } else if (newDealButton.classList.contains('active')) {
+    tableOrders.style.maxHeight = '115px'
   }
 });
 
@@ -59,10 +66,8 @@ sideButtonTrade.addEventListener("click", function() {
     helpButton.classList.remove('active')
     helpIcon.classList.remove('active')
 
-    newDealButton.add('active')
-    ordersHistoryButton.add('active')
-    newDealButton.style.display = 'flex'
-    ordersHistoryButton.style.display = 'flex'
+    newDealButton.style.display = 'block'
+    ordersHistoryButton.style.display = 'block'
   }
 });
 
@@ -92,17 +97,23 @@ sideButtonAcc.addEventListener('click', function() {
 // NAV BUTTONS 
 
 newDealButton.addEventListener("click", function() {
-  if (!newDealButton.classList.contains('active')) {
+  if (!newDealButton.classList.contains('active') && !ordersHistoryButton.classList.contains('active')) {
     newOrder.removeAttribute("style")
     newDealButton.classList.add('active')
     newDealButton.style.backgroundColor = '#1e222d'
     newDealButton.style.border = '1px solid rgb(0, 255, 110)'
     newDealButton.style.color = 'rgb(0, 255, 110)'
     newDealButton.style.fontWeight = 'bold'
-  } else {
+    tableOrders.style.maxHeight = '115px'
+  } else if(!ordersHistoryButton.classList.contains('active')){
     newOrder.style.display = 'none'
     newDealButton.classList.remove('active')
     newDealButton.removeAttribute('style')
+
+    tableOrders.style.maxHeight = '150px'
+  }
+  if (sideButtonAssets.classList.contains('active')) {
+    tableOrders.style.maxHeight = '150px'
   }
 })
 
@@ -114,17 +125,29 @@ ordersHistoryButton.addEventListener("click", function() {
     ordersHistoryButton.style.color = 'rgb(0, 255, 110)'
     ordersHistoryButton.style.fontWeight = 'bold'
 
-    tableOrders.style.maxHeight = '500px'
+    tableOrders.style.maxHeight = '630px'
     tradeToToggle.style.display = 'none'
+    navButtons.setAttribute('style', 'margin-top: 5px;')
+
   } else {
     ordersHistoryButton.classList.remove("active")
     ordersHistoryButton.removeAttribute('style')
 
-    tableOrders.style.maxHeight = '154px'
+    tableOrders.style.maxHeight = '150px'
     tradeToToggle.style.display = 'flex'
     sideButtonTrade.classList.add('active')
     iconTrade.classList.add("active")
+    navButtons.setAttribute('style', 'margin-top: 0;')
+
+    if (newDealButton.classList.contains('active')) {
+      if (sideButtonAssets.classList.contains('active')){
+        tableOrders.style.maxHeight = '150px'
+      } else {
+        tableOrders.style.maxHeight = '115px'
+      }
+    }
   }
+  
 })
 
 // MODAL DEPOSIT LOGIC 
@@ -140,23 +163,19 @@ helpButton.addEventListener("click", function() {
     iconTrade.classList.remove("active")
     iconAssets.classList.remove("active")
     iconAcc.classList.remove("active")
-    newDealButton.remove('active')
-    ordersHistoryButton.remove('active')
+    newDealButton.classList.remove('active')
+    ordersHistoryButton.classList.remove('active')
     
     tradeToToggle.style.display = 'none'
     accToToggle.style.display = 'none'
-    assetsToToggle.style.display = 'none'
+    assetsToToggle.classList.add('hidden')
     tableOrders.style.display = 'none'
     tradeDiv.style.display = 'none'
     
     faqDiv.removeAttribute('style')
     helpButton.classList.add('active')
     helpIcon.classList.add('active')
-  } else {
-    faqDiv.style.display = 'none'
-    helpButton.classList.remove('active')
-    helpIcon.classList.remove('active')
-  }
+  } 
 });
 
 logoutButton.addEventListener("click", function() {

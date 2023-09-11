@@ -23,3 +23,17 @@ function changeImage() {
 
 // Add a click event listener to the image
 imageToChange.addEventListener("click", changeImage);
+
+function toggleLanguage() {
+    var currentLanguage = document.documentElement.lang || 'ru'; // Default to Russian
+    var newLanguage = currentLanguage === 'ru' ? 'en' : 'ru'; // Toggle between 'ru' and 'en'
+
+    // Load the corresponding language version
+    var newPageURL = currentLanguage === 'ru' ? 'ac-comp-en.html' : 'ac-comp-ru.html';
+
+    // Update the document's language attribute
+    document.documentElement.lang = newLanguage;
+
+    // Redirect to the new language version
+    window.location.href = newPageURL;
+}

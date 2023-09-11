@@ -72,15 +72,14 @@ button {
 }
 
 label {
-  margin-top: 8px;
+  margin-top: 5%;
   font-weight: 500;
   font-size: 14px;
   color: var(--main-textc);
 }
 
 input {
-  margin-top: 2%;
-  margin-bottom: 2%;
+  margin-top: 1%;
   background-color: var(--main-bgc);
   border: 2px solid rgb(24, 24, 36);
   border-radius: 5px;
@@ -167,9 +166,11 @@ input {
 }
 
 #lang {
-  width: 25px;
+  width: 40px;
   margin: 0;
-  margin-top: 15%;
+  margin-top: 10%;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 #lang:hover {
@@ -427,6 +428,7 @@ acc-info-personal h3 {
   box-shadow: 0px 0px 10px rgba(17, 17, 23, 0.5);
   width: 88%;
   margin-bottom: 5%;
+  overflow: auto;
 }
 
 #transactions-his-table {
@@ -434,6 +436,7 @@ acc-info-personal h3 {
   overflow-y: auto; 
   border-collapse: collapse;
   overflow-x: auto;
+  width: 100%;
 }
 
 #transactions-t-body {
@@ -501,7 +504,7 @@ acc-info-personal h3 {
 #newOrder {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1.2;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
@@ -511,6 +514,7 @@ acc-info-personal h3 {
   align-items: center;
   text-align: center;
   margin-top: 7%;
+  height: 100%;
 }
 
 #newOrderForm {
@@ -525,7 +529,7 @@ acc-info-personal h3 {
   margin-top: 5%;
   height: 88%;
   border-top: 2px solid rgb(17, 17, 23); 
-  padding-top: 10px;
+  padding-top: 12px;
 }
 
 .newOrderButton {
@@ -538,20 +542,23 @@ acc-info-personal h3 {
 }
 
 #buyButton {
-  border: 1px solid rgba(0, 255, 110, 0.952);
+  border: 5px solid var(--main-numbersc);
   border-radius: 10px;
-  background-color: rgba(0, 255, 110, 0.814);
+  background-color: var(--main-numbersc);
   color: whitesmoke;
-  margin-top: 5%;
-  margin-top: 30px;
+  margin-top: 6%;
+}
+#buyButton:hover, #sellButton:hover {
+  font-weight: bold;
 }
 
 #sellButton {
-  border: 1px solid rgb(255, 0, 0);
+  border: 5px solid rgb(255, 0, 0);
   border-radius: 10px;
-  background-color: rgb(210, 47, 47);
+  background-color: rgb(255, 0, 0);
   color: whitesmoke;
-  margin-top: 5%;
+  margin-top: 4%;
+  margin-bottom: 4%;
 }
 
 #buyButton:hover, #sellButton:hover {
@@ -566,13 +573,19 @@ acc-info-personal h3 {
   flex: 3;
   border: 2px solid rgb(39, 39, 53); /* Example border style */
   border-radius: 5px;
-  background-color: var(--main-bgc);
   text-align: center;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
+.nav-item {
+  color: lightgray;
+}
+.nav-link active {
+  color: var(--main-numbersc);
+}
+
 #assets {
-  flex: 1;
+  flex: 1.05;
   border: 2px solid rgb(39, 39, 53); /* Example border style */
   border-radius: 5px;
   background-color: var(--main-bgc);
@@ -584,7 +597,6 @@ acc-info-personal h3 {
 
 #history-div {
   flex: 4;
-  background-color: var(--main-bgc);
   height: 100%;
   margin: 10px;
   margin-top: 0;
@@ -610,6 +622,7 @@ acc-info-personal h3 {
   background-color: var(--main-bgc);
   margin-top: 5px;
   margin-bottom: 0;
+  box-shadow: 0px 0px 5px rgb(114, 119, 133);
 }
 
 #nav-buttons button:hover {
@@ -638,11 +651,26 @@ acc-info-personal h3 {
 #orders {
   flex: 2;
   border: 1px solid rgb(39, 39, 53); /* Example border style */
-  border-radius: 5px;
+  border-radius: 1px;
   background-color: var(--main-bgc);
-  max-height: 154px; /* Set the maximum height of the container */
+  max-height: 150px; /* Set the maximum height of the container */
   overflow: auto; /* Add a scrolling bar when content overflows */
   position: relative;
+  margin-top: 5px;
+  height: 100%;
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);;
+}
+
+.container {
+  max-width: 2048px;
+}
+
+.nav-link {
+  color: whitesmoke; /* Set the default text color for inactive tabs */
+}
+
+.nav-link.active {
+  color: green; /* Set the text color for the active tab */
 }
 
 /* Apply some basic styling to the table */
@@ -666,11 +694,11 @@ orders-table {
   border: 3px solid rgb(39, 39, 53);
   top: 0;
   background-color: whitesmoke; /* Ensure header remains visible */
-  z-index: 1; /* Ensure header is above table rows */
+  z-index: 100; /* Ensure header is above table rows */
 }
 
 th, td {
-  border: 1px solid rgb(39, 39, 53);
+  border: 1px solid var(--main-elc);  
   padding: 8px;
   text-align: left;
   color: rgb(166, 166, 166);
@@ -726,7 +754,7 @@ thead {
 /* MODALs */
  
 /* Styles for the modal overlay */
-.modal {
+#symbol-modal {
   display: none;
   position: absolute;
   top: 0;
@@ -797,9 +825,11 @@ thead {
     margin: 0;
     margin-top: 2.8vh;
   }
+  
   #logo {
     flex: 3;
   }
+
   #header {
     height: 11vh;
     margin-bottom: auto;
@@ -861,6 +891,7 @@ thead {
     height: 38vh;
     margin-bottom: 3%;
     border: 3px solid var(--main-elc);
+
   }
   #nav-buttons {
     display: block;
