@@ -314,8 +314,8 @@
           </div>
           <!-- The Upload Modal -->
           <div class="modal fade" id="verification-docs" style="margin-top: 10%; background-color: transparent; border-radius: 10px; height: auto;">
-            <div class="modal-dialog modal-lg" style="display: flex;">
-              <div class="modal-content" style="border-radius: 0px; height: 50vh;">
+            <div class="modal-dialog modal-sm" style="display: flex;">
+              <div class="modal-content" style="border-radius: 0px; height: 45vh;">
 
                 <!-- Modal Header -->
                 <div class="modal-header">
@@ -362,22 +362,6 @@
               </div>
             </div>
           </div>
-
-          <script>
-            // JavaScript to handle the success modal and auto-close
-            document.getElementById('uploadButton').addEventListener('click', function() {
-              // Assuming the form is valid and the upload is successful
-              // Show the success modal
-              event.preventDefault();
-              var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-              successModal.show();
-
-              // Close the success modal after 5 seconds (5000 milliseconds)
-              setTimeout(function() {
-                successModal.hide();
-              }, 2500);
-            });
-          </script>
         </div>
         <div id="account-info">
           <h3 style="margin-top: 40px; margin-bottom: 20px; width: 80%; font-size: 25px;">Личная информация</h3>
@@ -458,7 +442,101 @@
             <input type="number" id="withdraw-amount" placeholder="Сумма (USD)">
             <input type="number" id="withdraw-card" placeholder="Номер карты"> -->
             <button id="deposit-button">Депозит</button>
+            <!-- The Modal -->
+            <div class="modal" id="deposit-modal" style="background-color: transparent;">
+              <div class="modal-dialog modal-sm" style="margin-top: 10%;">
+                <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Депозит</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body" style="display: contents; height: 500px;">
+                    <div id="modal-contents" style="height: 100px; display: inherit; height: 500px;">
+                      <label for="">Номер карты:</label>
+                    <input type="text" name="" id="">
+                    <label for="">Сумма:</label>
+                    <input type="text" name="" id="">
+                    </div>
+                  </div>
+
+                  <!-- Modal footer -->
+                  <div class="modal-footer" style="display: flex; align-items: center; justify-content: center;">
+                    <button id="accept-deposit" type="button" class="btn btn-primary" data-bs-dismiss="modal" style="color: aquamarine;">Подтвердить</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- The Success Modal -->
+            <div class="modal" id="dep-successModal" style="background-color: transparent; margin-top: 17%;">
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Успешно!</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    Депозит принят в обработку! <br>
+                    Ожидайте поступление средств на баланс в течении 15 мин.
+                  </div>
+
+                </div>
+              </div>
+            </div>
             <button id="withdraw-request-button">Вывод</button>
+            <!-- The Modal -->
+            <div class="modal" id="withdraw-modal" style="background-color: transparent;">
+              <div class="modal-dialog modal-sm" style="margin-top: 10%;">
+                <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Вывод средств</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body" style="display: contents; height: 500px;">
+                    <div id="modal-contents" style="height: 100px; display: inherit; height: 500px;">
+                      <label for="">Номер карты:</label>
+                    <input type="text" name="" id="">
+                    <label for="">Сумма:</label>
+                    <input type="text" name="" id="">
+                    </div>
+                  </div>
+
+                  <!-- Modal footer -->
+                  <div class="modal-footer" style="display: flex; align-items: center; justify-content: center;">
+                    <button id="accept-withdraw" type="button" class="btn btn-primary" data-bs-dismiss="modal" style="color: aquamarine;">Подтвердить</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- The Success Modal -->
+            <div class="modal" id="wd-successModal" style="background-color: transparent; margin-top: 17%;">
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Успешно!</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    Запрос на вывод принят в обработку! <br>
+                    Ожидайте деталей от менеджера.
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div id="account-mobile-buttons" class="hidden">
@@ -507,6 +585,7 @@
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   <script src="./tabs.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./acc-buttons.js"></script>
   <script src="./language-switch.js"></script>
   <script src="./chart-tabs.js"></script>
 </body>
