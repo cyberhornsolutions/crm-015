@@ -4,8 +4,8 @@ const symbolDropdown = document.getElementById("symbol-dropdown");
 const symbolValue = document.getElementById("symbol-current-value");
 const symbolModal = document.getElementById("symbol-modal");
 
-let stockList = ['AAPL', 'TSLA', 'ORCL', 'WE', 'FORD', 'AMZN', 'NVDA', 'INTC'];
-let symbolsList = ['AAPL', 'TSLA', 'ORCL', 'WE', 'FORD', 'AMZN', 'NVDA', 'INTC'];
+let stockList = [];
+let symbolsList = [];
 
 symbolInput.addEventListener('submit', function () {
     fetchSymbolValue();
@@ -66,6 +66,18 @@ fetch('https://api.binance.com/api/v3/exchangeInfo')
   .catch(error => {
   console.error('Error fetching data:', error);
 });
+
+fetch(`https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${apiKeyFinnhub}`)
+  .then(response => response.json())
+  .then(data => {
+    const newSymbols = data.map(symbolObj => symbolObj.symbol); // Use 'data' directly to access the array
+    stockList = symbolsList.concat(newSymbols);
+    symbolsList = symbolsList.concat(newSymbols);
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
+
 
 function fetchSymbolValue(symbol) {
   if (!symbol) {
