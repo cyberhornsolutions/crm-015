@@ -46,3 +46,33 @@ document.getElementById('uploadButton').addEventListener('click', function() {
     successModal.hide();
   }, 2500);
 });
+
+
+// Get references to the edit and save buttons
+const editButton = document.getElementById("acc-edit-button");
+const saveButton = document.getElementById("acc-save-button");
+const commentField = document.getElementById("comment");
+
+// Add a click event listener to the edit button
+editButton.addEventListener("click", function () {
+    // Hide the edit button
+    editButton.style.display = "none";
+    commentField.removeAttribute('disabled')
+    saveButton.style.display = "inline-block";
+});
+
+// Add a click event listener to the save button
+saveButton.addEventListener("click", function () {
+    // Hide the save button
+    saveButton.style.display = "none";
+    commentField.setAttribute('disabled', 'true')
+    // Display the edit button
+    editButton.style.display = "inline-block";
+});
+
+const newDealButtonMobile = document.getElementById('newDealButtonMobile')
+
+newDealButtonMobile.addEventListener("click", function () {
+  document.getElementById('chart').style.display = 'none'
+  document.getElementById('newOrder').style.display = 'flex'
+})

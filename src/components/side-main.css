@@ -235,6 +235,7 @@ input {
   border-radius: 5px;
   border: 3px solid rgb(24, 24, 36);
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  width: 85%;
 }
 
 #side-trade, #side-assets, #side-account {
@@ -344,8 +345,27 @@ ion-icon, button {
   justify-content: space-between;
   margin: 0;
   padding: 0;
-  margin-top: 5%;
+  margin-top: 7%;
   color: var(--seco-grayc);
+}
+
+.acc-info-personal-item input {
+  width: 140px;
+  margin-top: -1px;
+  color: var(--seco-grayc);
+}
+.acc-info-personal-item {
+  font-size: 13px;
+}
+.acc-info-personal-item h6{
+  font-size: 15px;
+}
+
+.acc-profile-main-item {
+  font-size: 13px;
+}
+.acc-profile-main-item h6{
+  font-size: 15px;
 }
 
 #documents-button {
@@ -389,14 +409,6 @@ acc-info-personal h3 {
   border: 1px solid rgb(33, 101, 249);
   background-color: var(--main-bluec);
   color: var(--main-numbersc);
-}
-
-#acc-edit-button {
-  margin-right: 3%;
-}
-
-#acc-save-button {
-  margin-left: 3%;
 }
 
 #account-transactions {
@@ -633,6 +645,11 @@ acc-info-personal h3 {
   font-weight: bold;
 }
 
+
+#newDealButtonMobile {
+  display: none;
+}
+
 #newDealButton:active {
   color: var(--main-numbersc);
   border: 1px solid var(--main-numbersc);
@@ -843,6 +860,7 @@ thead {
     height: 12vh;
     margin-bottom: auto;
     border-radius: 10px;
+    max-width: 100vw;
   }
   #side-main-menu {
     display: flex;
@@ -861,11 +879,25 @@ thead {
     display: none;
   }
 
+  /* hidden buttons mobile */
+
+  #side-button-assets {
+    display: none;
+  }
+
+  #side-button-assets-mobile {
+    display: block;
+    margin-left: 15px;
+  }
+
   /* contents */
 
   #content {
     display: block;
     height: 76vh;
+  }
+  #trade-div {
+    height: 100%;
   }
   #trade {
     margin: 10px;
@@ -877,6 +909,7 @@ thead {
     justify-content: center;
     border-radius: 5px;
     border: 2px solid rgb(24, 24, 36);
+    flex: auto;
   }
   #assets {
     margin: 2%;
@@ -888,13 +921,12 @@ thead {
     margin: 0;
     padding: 0;
     display: block; /* block */
-    height: 38vh;
+    height: 100%;
     margin-bottom: 3%;
     border: 3px solid var(--main-elc);
 
   }
   #nav-buttons {
-    display: block;
     margin: 1%;
     height: 11vh;
     background-color: var(--main-bgc);
@@ -907,28 +939,35 @@ thead {
   }
 
   #nav-buttons button {
-    display: inline;
-    width: 44%;
+    width: 43%;
     height: 70%;
     color: var(--main-numbersc);
     border: 2px solid var(--main-bgc);
     border-radius: 10px;
     font-size: 15px;
-    margin-left: 3%;
+    margin-left: 1%;
     margin-top: 2%;
     box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
   }
 
-  #nav-buttons button:nth-child(3) {
+  #newDealButtonMobile {
+    display: inline;
+  }
+
+  #newDealButton {
     display: none;
   }
+
+.hidden {
+  display: none;
+}
 
   #newOrder {
     margin: 0;
     padding: 0;
     border: none;
     display: none; /* block */
-    height: 31vh;
+    height: 100%;
   }
   #newOrderData {
     margin: 0;
@@ -947,7 +986,7 @@ thead {
     border: none;
     margin: 0;
     padding: 0;
-    display: block;
+    display: flex;
     width: 98%;
     height: 98%;
     margin-top: 1%;
@@ -972,12 +1011,13 @@ thead {
   #newOrderForm input[type="text"],
   #newOrderForm input[type="number"] {
     display: inline-block;
-    width: 40vw; /* Adjust the width as needed */
+    width: 46vw; /* Adjust the width as needed */
     text-align: center;
     color: gray;
-    font-size: 14px;
+    font-size: 15px;
     margin-left: 1%;
     margin-right: 2%;
+    height: 28px;
   }
 
   /* Style for buttons */
@@ -989,19 +1029,18 @@ thead {
   #buyButton, #sellButton {
     margin: 0;
     padding: 0;
-    width: 30vw;
+    width: 40vw;
     height: 4.5vh;
   }
   #buyButton {
     float: left;
-    margin-left: 12%;
     margin-top: 6%;
   }
   /* Style for Sell button */
   #sellButton {
     float: right;
-    margin-right: 12%;
     margin-top: 6%;
+    margin-bottom: 3%;
   }
 
   #orders {

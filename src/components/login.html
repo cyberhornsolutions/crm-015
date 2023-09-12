@@ -3,9 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Вход</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>LOGIN PAGE</h1>
+  <form class="login_form" action="./ac-comp-ru.html" id="loginForm" onsubmit="addEmailToURL()">
+		<div id="logo_wrapper" class="logo_wrapper">
+			<img class="logo" src="logo.png" alt="logo">
+		</div>
+
+		<div class="fields">
+			<input class="email_input" type="email" placeholder="Электронная почта" name="email" required>
+
+ 			<input class="psw_input" type="password" placeholder="Пароль" name="psw" required>
+		</div>
+
+		<button class="button" type="submit">Войти</button>
+
+		<div class="signup_wrapper">
+			<p class="sign_up">Нет аккаунта?</p>
+			<a class="sign_up_link" href="signup.html">Зарегистрироваться</a>
+		</div>
+  </form>
+	<script>
+		function addEmailToURL() {
+			// Get the user's email from the input field
+			var userEmail = document.querySelector('.email_input').value;
+	
+			// Modify the form action to include the email as a URL parameter
+			document.getElementById('loginForm').action = './ac-comp-ru.html?email=' + encodeURIComponent(userEmail);
+		}
+	</script>	
 </body>
 </html>

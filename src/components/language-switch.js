@@ -19,6 +19,9 @@ function changeImage() {
 
     // Set the new image source
     imageToChange.src = imageSources[currentImageIndex];
+
+    // Call the toggleLanguage function to change the language
+    toggleLanguage();
 }
 
 // Add a click event listener to the image
@@ -33,6 +36,22 @@ function toggleLanguage() {
 
     // Update the document's language attribute
     document.documentElement.lang = newLanguage;
+
+    var currentURL = window.location.href;
+
+    // Split the URL into parts using '/' as the separator
+    var urlParts = currentURL.split('/');
+
+    // Check if there are at least two parts (e.g., "https://" and "www.example.com")
+    
+    // Replace a word in the second part (e.g., "www.example.com")
+    urlParts[1] = currentLanguage === 'ru' ?  urlParts[1].replace("ac-comp-ru.html", "ac-comp-enx.html") : urlParts[1].replace("ac-comp-en.html", "ac-comp-ru.html");
+
+    // Join the modified parts back together
+    var modifiedURL = urlParts.join('/');
+
+    // Update the browser's address bar with the modified URL
+    window.history.pushState({}, document.title, modifiedURL);
 
     // Redirect to the new language version
     window.location.href = newPageURL;

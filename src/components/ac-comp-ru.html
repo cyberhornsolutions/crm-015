@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="ru" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +31,7 @@
           <input type="number" class="balance-nums" readonly="true" value="00.00">
         </div>
         <div id="balance-item-lang" class="balance-item" style="border: none;">
-          <img id="lang" src="./ru-fl.png">
+          <img id="lang" src="ru-fl.png">
         </div>
       </div>
     </div>
@@ -48,6 +48,9 @@
         <div id="side-assets">
           <ion-icon id="side-button-assets-icon" name="list"></ion-icon>
           <button id="side-button-assets" class="side-button">
+            Позиции
+          </button>
+          <button id="side-button-assets-mobile" class="side-button hidden">
             Позиции
           </button>
         </div>
@@ -256,6 +259,7 @@
         <div id="history-div">
           <div id="nav-buttons">
             <button id="newDealButton">Открыть сделку</button>
+            <button id="newDealButtonMobile">Открыть сделку</button>
             <button id="ordersHistoryButton">История сделок</button>
           </div>
           <div id="orders">
@@ -314,7 +318,7 @@
           </div>
           <!-- The Upload Modal -->
           <div class="modal fade" id="verification-docs" style="margin-top: 10%; background-color: transparent; border-radius: 10px; height: auto;">
-            <div class="modal-dialog modal-sm" style="display: flex;">
+            <div class="modal-dialog modal-lg" style="display: flex;">
               <div class="modal-content" style="border-radius: 0px; height: 45vh;">
 
                 <!-- Modal Header -->
@@ -368,39 +372,48 @@
           <div id="acc-info-personal">
             <div class="acc-info-personal-item">
               <h6>Имя:</h6>
-              <h6>ТЕСТ</h6>
+              <input type="text" name="" id="" placeholder="ТЕСТ" disabled>
             </div>
             <div class="acc-info-personal-item">
               <h6>Фамилия:</h6>
-              <h6>ЛИД</h6>
+              <input type="text" name="" id="" placeholder="ЛИД" disabled>
             </div>
             <div class="acc-info-personal-item">
               <h6>Почта:</h6>
-              <h6>testlead1@gmail.com</h6>
+              <input type="text" name="" id="userEmail" placeholder="testlead1@gmail.com" disabled>
             </div>
             <div class="acc-info-personal-item">
               <h6>Телефон:</h6>
-              <h6>+7777038475</h6>
+              <input type="number" name="" id="" placeholder="+7777038475" disabled>
             </div>
             <div class="acc-info-personal-item">
               <h6>Страна:</h6>
-              <h6>ТЕСТ</h6>
+              <input type="text" name="" id="" placeholder="ТЕСТ" disabled>
             </div>
             <div class="acc-info-personal-item">
               <h6>Город:</h6>
-              <h6>ТЕСТ</h6>
+              <input type="text" name="" id="" placeholder="ТЕСТ" disabled>
             </div>
             <div class="acc-info-personal-item">
               <h6>Дата регистрации:</h6>
-              <h6>02/07/2023</h6>
+              <input type="text" name="" id="" placeholder="02/07/2023" disabled>
             </div>
             <div class="acc-info-personal-item">
               <h6>Комментарий:</h6>
-              <h6></h6>
+              <input type="text" name="" id="comment" placeholder="..." disabled="true">
             </div>
           </div>
-          <div id="acc-info-buttons" class="hidden">
+          <script>
+            // Retrieve the email from the URL parameter
+            var urlParams = new URLSearchParams(window.location.search);
+            var userEmail = urlParams.get('email');
+
+            // Display the user's email in the <h1> element
+            document.getElementById('userEmail').setAttribute('placeholder', userEmail);
+          </script>
+          <div id="acc-info-buttons">
             <button id="acc-edit-button">Редактировать</button>
+            <button id="acc-save-button" class="hidden">Cохранить</button>
           </div>
         </div>
         <div id="account-transactions">
@@ -444,7 +457,7 @@
             <button id="deposit-button">Депозит</button>
             <!-- The Modal -->
             <div class="modal" id="deposit-modal" style="background-color: transparent;">
-              <div class="modal-dialog modal-sm" style="margin-top: 10%;">
+              <div class="modal-dialog modal-lg" style="margin-top: 10%;">
                 <div class="modal-content">
                   <!-- Modal Header -->
                   <div class="modal-header">
@@ -455,10 +468,21 @@
                   <!-- Modal body -->
                   <div class="modal-body" style="display: contents; height: 500px;">
                     <div id="modal-contents" style="height: 100px; display: inherit; height: 500px;">
-                      <label for="">Номер карты:</label>
-                    <input type="text" name="" id="">
-                    <label for="">Сумма:</label>
-                    <input type="text" name="" id="">
+                      
+                      <div class="dropdown">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                          Выберите способ
+                        </button>
+                        <ul class="dropdown-menu" style="z-index: 100000;">
+                          <li><a class="dropdown-item" href="#">VISA/MasterCard</a></li>
+                          <li><a class="dropdown-item" href="#">Crypto</a></li>
+                          <li><a class="dropdown-item" href="#">Другое</a></li>              
+                        </ul>
+                      </div>
+                      <label for="">Номер счета:</label>
+                      <input type="text" name="" id="">
+                      <label for="">Сумма:</label>
+                      <input type="text" name="" id="">
                     </div>
                   </div>
 
@@ -492,7 +516,7 @@
             <button id="withdraw-request-button">Вывод</button>
             <!-- The Modal -->
             <div class="modal" id="withdraw-modal" style="background-color: transparent;">
-              <div class="modal-dialog modal-sm" style="margin-top: 10%;">
+              <div class="modal-dialog modal-lg" style="margin-top: 10%;">
                 <div class="modal-content">
                   <!-- Modal Header -->
                   <div class="modal-header">
@@ -545,39 +569,37 @@
         </div>
       </div>
       <div id="faq" style="display: none;">
-        <h1>Frequently Asked Questions</h1>
-        <h2>General Questions</h2>
+        <h1>Часто задаваемые вопросы</h1>
+        <h2>Общие вопросы</h2>
         <dl>
-            <dt>Q: What is our trading platform?</dt>
-            <dd>A: Our trading platform is an online system that allows you to buy and sell various financial instruments such as stocks, bonds, and cryptocurrencies.</dd>
+            <dt>В: Что такое наша торговая платформа?</dt>
+            <dd>Ответ: Наша торговая платформа - это онлайн-система, которая позволяет вам покупать и продавать различные финансовые инструменты, такие как акции, облигации и криптовалюты.</dd>
 
-            <dt>Q: How do I create an account?</dt>
-            <dd>A: To create an account, click on the "Sign Up" button on our homepage and follow the registration process.</dd>
+            <dt>В: Как создать аккаунт?</dt>
+            <dd>Ответ: Для создания аккаунта нажмите кнопку "Зарегистрироваться" на нашей домашней странице и следуйте процессу регистрации.</dd>
 
-            <!-- Add more general questions and answers here -->
+            <!-- Добавьте больше общих вопросов и ответов здесь -->
         </dl>
 
-        <h2>Account Management</h2>
+        <h2>Управление аккаунтом</h2>
         <dl>
-            <dt>Q: How can I reset my password?</dt>
-            <dd>A: You can reset your password by clicking on the "Forgot Password" link on the login page and following the instructions sent to your registered email address.</dd>
+            <dt>В: Могу ли я иметь несколько торговых аккаунтов?</dt>
+            <dd>Ответ: Да, вы можете иметь несколько торговых аккаунтов у нас. Свяжитесь с нашей службой поддержки для помощи в настройке дополнительных аккаунтов.</dd>
 
-            <dt>Q: Can I have multiple trading accounts?</dt>
-            <dd>A: Yes, you can have multiple trading accounts with us. Contact our support team for assistance with setting up additional accounts.</dd>
-
-            <!-- Add more account management questions and answers here -->
+            <!-- Добавьте больше вопросов и ответов по управлению аккаунтом здесь -->
         </dl>
 
-        <h2>Trading and Investments</h2>
+        <h2>Торговля и инвестиции</h2>
         <dl>
-            <dt>Q: How can I place a trade?</dt>
-            <dd>A: To place a trade, log in to your account, select the financial instrument you want to trade, specify the quantity and other details, and click "Place Order."</dd>
+            <dt>В: Как сделать сделку?</dt>
+            <dd>Ответ: Для размещения сделки войдите в свой аккаунт, выберите финансовый инструмент, который вы хотите торговать, укажите количество и другие детали, и нажмите "Разместить заказ".</dd>
 
-            <dt>Q: What are the trading hours?</dt>
-            <dd>A: Our trading platform operates 24/7, but specific trading hours for different assets may vary. Check the asset's trading hours in the platform.</dd>
+            <dt>В: Каковы часы торговли?</dt>
+            <dd>Ответ: Наша торговая платформа работает круглосуточно, но конкретные часы торговли для разных активов могут различаться. Проверьте часы торговли актива на платформе.</dd>
 
-            <!-- Add more trading and investment questions and answers here -->
+            <!-- Добавьте больше вопросов и ответов о торговле и инвестициях здесь -->
         </dl>
+
       </div>
     </div>
   </div>
@@ -586,7 +608,7 @@
   <script src="./tabs.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="./acc-buttons.js"></script>
-  <script src="./language-switch.js"></script>
+  <script src="language-switch.js"></script>
   <script src="./chart-tabs.js"></script>
 </body>
 </html>
