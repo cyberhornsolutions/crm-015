@@ -5,233 +5,244 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
-    -moz-appearance: textfield;
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 * {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    color: rgb(248, 248, 248);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  color: rgb(248, 248, 248);
 }
 
 h1 {
-    font-size: 25px;
+  font-size: 25px;
 }
 
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-  }
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
 
 .content {
-    display: grid;
-    grid-template-rows: 120px 1fr;
-    height: 100%;
-    background-color: rgb(32, 32, 43);
+  display: grid;
+  grid-template-rows: 120px 1fr;
+  height: 100%;
+  background-color: rgb(32, 32, 43);
+  overflow: scroll;
 }
 
 .header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-color: red;
-    border: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-color: red;
+  border: 5px;
 }
 
 .header-item {
-    margin-left: 40px;
-    margin-right: 40px;
+  margin-left: 40px;
+  margin-right: 40px;
 }
 
-.balance, .trade, .my-orders, .account {
-    height: 40px;
-    width: 100px;
-    background-color: rgb(28, 97, 209);
-    border: none;
-    border-radius: 2px;
+.balance,
+.trade,
+.my-orders,
+.account {
+  height: 40px;
+  width: 100px;
+  background-color: rgb(28, 97, 209);
+  border: none;
+  border-radius: 2px;
 }
 
 .main {
-    display: grid;
-    background-color: rgb(32, 32, 43);
+  display: grid;
+  background-color: rgb(32, 32, 43);
 }
 
 .main-content {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
 }
 
 .main-chart {
-    margin-top: 14px;
-    margin-left: 30px;
-    margin-right: 15px;
+  margin-top: 14px;
+  margin-left: 30px;
+  margin-right: 15px;
 }
 .main-order {
-    margin-left: 14px;
-    margin-right: 16px;
-    display: grid;
-    grid-template-rows: 2fr 1fr;
+  margin-left: 14px;
+  margin-right: 16px;
+  display: grid;
+  grid-template-rows: 2fr 1fr;
 }
 
 .order-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0px;
 }
 
 .order-item {
-    text-align: start;
-    margin-top: 8px;
-    width: 75%;
-    background-color: rgb(32, 32, 43); 
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  text-align: start;
+  margin-top: 8px;
+  width: 75%;
+  background-color: rgb(32, 32, 43);
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-#stopLoss, #takeProfit, #orderVolume, #usdValue, #orderPrice, #orderAsset{
-    width: 150px;
+#stopLoss,
+#takeProfit,
+#orderVolume,
+#usdValue,
+#orderPrice,
+#orderAsset {
+  width: 150px;
 }
 .order-boundaries {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 .hidden {
-    display: none;
-  }
+  display: none;
+}
 
 .main-balance {
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 .main-balance-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 .main-balance-grid {
-    display: grid; 
-    grid-template-rows: 1fr 1fr 1fr 3fr; 
-    align-items: center; 
-    text-align: center;
-    height: 100%;
-    border: 1px;
-    border-style: solid;
-    border-color: white;
-    border-radius: 15px;
-    background-color: rgb(32, 32, 43);
-    justify-content: center;
-    width: 50%;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 3fr;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  border: 1px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 15px;
+  background-color: rgb(32, 32, 43);
+  justify-content: center;
+  width: 50%;
 }
 
 .main-account {
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 .main-account-grid {
-    display: grid;
-    grid-template-rows: 6fr 1fr;
-    align-items: center; 
-    text-align: center;
-    justify-content: center;
-    height: 100%;
+  display: grid;
+  grid-template-rows: 6fr 1fr;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .my-ac-info {
-    border: 1px;
-    border-style: solid;
-    border-color: white;
-    border-radius: 15px;
-    background-color: rgb(32, 32, 43);
-    height: 100%;
-    align-items: center;
-    width: 700px;
-    display: grid;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  border: 1px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 15px;
+  background-color: rgb(32, 32, 43);
+  height: 100%;
+  align-items: center;
+  width: 700px;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
 .my-ac-info-item {
-    margin-bottom: 15px;
-    align-items: center; 
-    text-align: center;
-    justify-content: center;
+  margin-bottom: 15px;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
 }
 
 .my-ac-additional {
-    margin-top: 25px;
-    border: 1px;
-    border-style: solid;
-    border-color: white;
-    border-radius: 15px;
-    background-color: rgb(32, 32, 43);
-    height: 100%;
-    align-items: center; 
-    text-align: center;
-    justify-content: center;
+  margin-top: 25px;
+  border: 1px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 15px;
+  background-color: rgb(32, 32, 43);
+  height: 100%;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
 }
-  /* Style the table container */
+/* Style the table container */
 .table-container {
-    max-height: 658px; /* Adjust this value to your preference */
-    overflow-y: auto;
-    margin-left: 15px;
-    margin-right: 15px;
+  max-height: 658px; /* Adjust this value to your preference */
+  overflow-y: auto;
+  margin-left: 15px;
+  margin-right: 15px;
 }
 
 /* Optional: Style the table */
 table {
-    border-collapse: collapse;
-    width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-th, td {
-    border: 0.5px solid rgb(85, 84, 84);
-    border-radius: 1px;
-    padding: 8px;
-    text-align: left;
+th,
+td {
+  border: 0.5px solid rgb(85, 84, 84);
+  border-radius: 1px;
+  padding: 8px;
+  text-align: left;
 }
 
 /* Style for binance-api-symbols */
 .dropdown {
-    max-height: 180px; /* Set the maximum height you prefer */
-    max-width: 100px;
-    overflow-y: auto; /* Add scrollbars if content overflows */
-    border-radius: 2px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    background-color: rgb(32, 32, 43);
-    z-index: 1;
+  max-height: 180px; /* Set the maximum height you prefer */
+  max-width: 100px;
+  overflow-y: auto; /* Add scrollbars if content overflows */
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  background-color: rgb(32, 32, 43);
+  z-index: 1;
 }
 
 .dropdown-option {
-    padding: 5px;
-    cursor: pointer;
+  padding: 5px;
+  cursor: pointer;
 }
 
 #buy-button {
-    background-color: rgb(79, 181, 142);
-    border: none;
-    border-radius: 5px;
-    width: 150px;
-    height: 50px;
-    margin-right: 0;
-    margin-left: 30px;
+  background-color: rgb(79, 181, 142);
+  border: none;
+  border-radius: 5px;
+  width: 150px;
+  height: 50px;
+  margin-right: 0;
+  margin-left: 30px;
 }
 
 #sell-button {
-    background-color: rgb(228, 58, 58);
-    border: none;
-    border-radius: 5px;
-    width: 150px;
-    height: 50px;
-    margin: 0;
-    padding: 0;
+  background-color: rgb(228, 58, 58);
+  border: none;
+  border-radius: 5px;
+  width: 150px;
+  height: 50px;
+  margin: 0;
+  padding: 0;
 }
 
 .order-buttons {
-    margin-top: 20px;
+  margin-top: 20px;
 }

@@ -1,11 +1,20 @@
-import React from 'react';
-import './login-style.css';
+import React from "react";
+import "./login-style.css";
 
 const Login: React.FC = () => {
   const handleLoginHeaderClick = () => {
+    console.log("1");
     const wrapper = document.querySelector(".wrapper");
     if (wrapper) {
       wrapper.classList.add("active");
+    }
+  };
+
+  const proceed = () => {
+    const wrapper = document.querySelector(".wrapper");
+    if (wrapper) {
+      wrapper.classList.add("active");
+      console.log("2");
     }
   };
 
@@ -21,7 +30,7 @@ const Login: React.FC = () => {
       <section className="wrapper">
         <div className="form signup">
           <header onClick={handleSignupHeaderClick}>Регистрация</header>
-          <form action="#">
+          <form action="#" onSubmit={Login}>
             <input type="text" placeholder="Полное имя" required />
             <input type="text" placeholder="Email или телефон" required />
             <input type="password" placeholder="Пароль" required />
@@ -35,15 +44,20 @@ const Login: React.FC = () => {
 
         <div className="form login">
           <header onClick={handleLoginHeaderClick}>Войти</header>
-          <form action="http://127.0.0.1:5500/src/components/index.html">
-            <input id="email" type="text" placeholder="Email или телефон" required />
+          <form onSubmit={proceed}>
+            <input
+              id="email"
+              type="text"
+              placeholder="Email или телефон"
+              required
+            />
             <input id="pass" type="password" placeholder="Пароль" required />
             <a href="#">Забыли пароль?</a>
             <input type="submit" value="Войти" />
           </form>
         </div>
       </section>
-      <script src='script.jsx'></script>
+      <script src="script.jsx"></script>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-document.getElementById("addTabButton").addEventListener("click", function() {
+document.getElementById("addTabButton").addEventListener("click", function () {
   // Create a new tab
   var newTabId = "h" + (document.querySelectorAll(".tab-pane").length + 1);
 
@@ -13,7 +13,7 @@ document.getElementById("addTabButton").addEventListener("click", function() {
   newNavLink.setAttribute("href", "#" + newTabId);
   newNavLink.setAttribute("style", "font-size: 14px");
 
-  newNavLink.textContent = "# " + (document.querySelectorAll(".nav-item").length);
+  newNavLink.textContent = "# " + document.querySelectorAll(".nav-item").length;
 
   // Append the new nav link to the new nav item
   newNavItem.appendChild(newNavLink);
@@ -24,7 +24,14 @@ document.getElementById("addTabButton").addEventListener("click", function() {
 
   // Create a new tab pane
   var newTabPane = document.createElement("div");
-  newTabPane.classList.add("tab-pane", "container", "tradingview-widget-container", "fade", "show", "active"); // Add 'show' and 'active' classes to make it visible
+  newTabPane.classList.add(
+    "tab-pane",
+    "container",
+    "tradingview-widget-container",
+    "fade",
+    "show",
+    "active"
+  ); // Add 'show' and 'active' classes to make it visible
   newTabPane.setAttribute("id", newTabId);
   newTabPane.style.margin = "0";
   newTabPane.style.padding = "0";
