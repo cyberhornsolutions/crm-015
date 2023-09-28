@@ -14,19 +14,20 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
-    -moz-appearance: textfield;
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 * {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: var(--main-elc)
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: var(--main-elc);
   /* box-sizing: border-box; */
 }
 
 h2 {
   color: lightgray;
-  font-size: 17px;
+  font-size: 17px !important;
   margin-top: 1.66%;
   margin-left: 0;
   margin-right: 0;
@@ -45,14 +46,15 @@ h4 {
 }
 
 h5 {
-  color: var(--seco-grayc)
+  color: var(--seco-grayc);
 }
 
 h6 {
-  color: var(--seco-grayc)
+  color: var(--seco-grayc);
 }
 
-html, body {
+html,
+body {
   display: flex;
   flex-direction: column;
   height: 500px;
@@ -212,6 +214,8 @@ input {
   text-align: center;
   margin: 2px;
   background-color: var(--main-bgc);
+  width: 120px;
+  min-width: 120px;
 }
 
 #side-main-menu {
@@ -223,6 +227,7 @@ input {
   border-radius: 10px;
   border: 3px solid rgb(24, 24, 36);
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  width: 90%;
 }
 
 #side-out-menu {
@@ -236,9 +241,17 @@ input {
   border: 3px solid rgb(24, 24, 36);
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
   width: 85%;
+  /* display: flex;
+  flex-direction: column;
+  align-items: center; */
 }
 
-#side-trade, #side-assets, #side-account {
+#side-trade,
+#side-assets,
+#side-account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   flex: 1;
   margin: 0;
   margin-top: 40%;
@@ -247,17 +260,22 @@ input {
   width: 100%;
 }
 
-ion-icon, button {
+ion-icon,
+button {
   transition: color 0.3s ease;
 }
 
-#side-out-extra, #side-logout {
+#side-out-extra,
+#side-logout {
   flex: 1;
   margin: 0;
   margin-top: 25%;
   margin-bottom: 5%;
   text-align: center;
   width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .side-button {
@@ -269,7 +287,8 @@ ion-icon, button {
   margin: 0;
 }
 
-.side-button:hover, .side-out-button:hover {
+.side-button:hover,
+.side-out-button:hover {
   cursor: pointer;
   border: none;
   border-radius: 3px;
@@ -291,6 +310,8 @@ ion-icon, button {
   height: 100%;
   margin: 10px;
   padding: 50px;
+  /* color: white; */
+  /* line-height: 1.5em; */
 }
 
 #content {
@@ -311,7 +332,8 @@ ion-icon, button {
   margin: 10px;
 }
 
-#account-profile, #account-info {
+#account-profile,
+#account-info {
   flex: 2;
   background-color: var(--main-elc);
   border-radius: 5px;
@@ -332,7 +354,8 @@ ion-icon, button {
   cursor: pointer;
 }
 
-#acc-profile-main, #acc-info-personal {
+#acc-profile-main,
+#acc-info-personal {
   width: 80%;
   border-top: 1px solid var(--main-bgc);
   margin-top: 3%;
@@ -340,7 +363,8 @@ ion-icon, button {
   margin-bottom: 7%;
 }
 
-.acc-profile-main-item, .acc-info-personal-item  {
+.acc-profile-main-item,
+.acc-info-personal-item {
   display: flex;
   justify-content: space-between;
   margin: 0;
@@ -357,14 +381,14 @@ ion-icon, button {
 .acc-info-personal-item {
   font-size: 13px;
 }
-.acc-info-personal-item h6{
+.acc-info-personal-item h6 {
   font-size: 15px;
 }
 
 .acc-profile-main-item {
   font-size: 13px;
 }
-.acc-profile-main-item h6{
+.acc-profile-main-item h6 {
   font-size: 15px;
 }
 
@@ -388,8 +412,8 @@ acc-info-personal h3 {
   flex: 0.5;
 }
 
-
-#acc-info-buttons, #verif-buttons {
+#acc-info-buttons,
+#verif-buttons {
   align-items: center;
   justify-content: center;
   margin-left: 5%;
@@ -401,7 +425,8 @@ acc-info-personal h3 {
   margin-bottom: 20px;
 }
 
-#acc-edit-button, #acc-save-button {
+#acc-edit-button,
+#acc-save-button {
   flex: 1;
   width: 130px;
   height: 45px;
@@ -424,7 +449,8 @@ acc-info-personal h3 {
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
-#trans-his, #transaction-request {
+#trans-his,
+#transaction-request {
   align-items: center;
   justify-content: center;
   margin-left: 5%;
@@ -445,7 +471,7 @@ acc-info-personal h3 {
 
 #transactions-his-table {
   max-height: 340px;
-  overflow-y: auto; 
+  overflow-y: auto;
   border-collapse: collapse;
   overflow-x: auto;
   width: 100%;
@@ -472,13 +498,21 @@ acc-info-personal h3 {
   margin-right: 5%;
 }
 
-#deposit-button:hover, #documents-button:hover, #withdraw-request-button:hover, #acc-edit-button:hover, #acc-save-button:hover {
+#deposit-button:hover,
+#documents-button:hover,
+#withdraw-request-button:hover,
+#acc-edit-button:hover,
+#acc-save-button:hover {
   cursor: pointer;
   background-color: var(--main-bluec);
   box-shadow: 0px 4px 8px rgba(3, 82, 253, 0.4);
 }
 
-#deposit-button:active, #documents-button:active, #withdraw-request-button:active, #acc-edit-button:active, #acc-save-button:active {
+#deposit-button:active,
+#documents-button:active,
+#withdraw-request-button:active,
+#acc-edit-button:active,
+#acc-save-button:active {
   opacity: 50%;
 }
 
@@ -492,7 +526,8 @@ acc-info-personal h3 {
   margin-left: 5%;
 }
 
-#withdraw-amount, #withdraw-card {
+#withdraw-amount,
+#withdraw-card {
   margin: 0;
   padding: 0;
   flex: 1;
@@ -540,7 +575,7 @@ acc-info-personal h3 {
   margin-left: 5%;
   margin-top: 5%;
   height: 88%;
-  border-top: 2px solid rgb(17, 17, 23); 
+  border-top: 2px solid rgb(17, 17, 23);
   padding-top: 12px;
 }
 
@@ -553,18 +588,19 @@ acc-info-personal h3 {
   width: 140px;
 }
 
-#buyButton {
+.buyButton {
   border: 5px solid var(--main-numbersc);
   border-radius: 10px;
   background-color: var(--main-numbersc);
   color: whitesmoke;
   margin-top: 6%;
 }
-#buyButton:hover, #sellButton:hover {
+.buyButton:hover,
+.sellButton:hover {
   font-weight: bold;
 }
 
-#sellButton {
+.sellButton {
   border: 5px solid rgb(255, 0, 0);
   border-radius: 10px;
   background-color: rgb(255, 0, 0);
@@ -573,15 +609,17 @@ acc-info-personal h3 {
   margin-bottom: 4%;
 }
 
-#buyButton:hover, #sellButton:hover {
+.buyButton:hover,
+.sellButton:hover {
   box-shadow: 0px 4px 8px rgba(100, 100, 100, 0.4);
 }
 
-#buyButton:active, #sellButton:active {
+.buyButton:active,
+.sellButton:active {
   opacity: 60%;
 }
 
-#chart{
+#chart {
   flex: 3;
   border: 2px solid rgb(39, 39, 53); /* Example border style */
   border-radius: 5px;
@@ -605,7 +643,6 @@ acc-info-personal h3 {
   overflow: auto; /* Add a scrolling bar when content overflows */
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
-
 
 #history-div {
   flex: 4;
@@ -645,7 +682,6 @@ acc-info-personal h3 {
   font-weight: bold;
 }
 
-
 #newDealButtonMobile {
   display: none;
 }
@@ -675,7 +711,7 @@ acc-info-personal h3 {
   position: relative;
   margin-top: 5px;
   height: 100%;
-  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);;
+  box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
 }
 
 .container {
@@ -701,7 +737,6 @@ table {
   font-size: 14px;
 }
 
-
 orders-table {
   max-height: 100%; /* Set the maximum height of the container */
 }
@@ -714,8 +749,9 @@ orders-table {
   z-index: 100; /* Ensure header is above table rows */
 }
 
-th, td {
-  border: 1px solid var(--main-elc);  
+th,
+td {
+  border: 1px solid var(--main-elc);
   padding: 8px;
   text-align: left;
   color: rgb(166, 166, 166);
@@ -769,7 +805,7 @@ thead {
   z-index: 1;
 }
 /* MODALs */
- 
+
 /* Styles for the modal overlay */
 #symbol-modal {
   display: none;
@@ -795,7 +831,6 @@ thead {
   padding: 8px;
 }
 
-
 /* CSS for screens smaller than 768px (phones and small tablets) */
 @media (max-width: 767px) {
   * {
@@ -803,7 +838,8 @@ thead {
     padding: 0;
     box-sizing: border-box;
   }
-  html, body {
+  html,
+  body {
     display: block;
     margin: 0;
     padding: 0;
@@ -842,7 +878,7 @@ thead {
     margin: 0;
     margin-top: 2.8vh;
   }
-  
+
   #logo {
     flex: 3;
   }
@@ -867,7 +903,9 @@ thead {
     flex-direction: row;
     height: 88%;
   }
-  #side-trade, #side-assets, #side-account {
+  #side-trade,
+  #side-assets,
+  #side-account {
     margin: 0;
     padding: 1px;
     flex: 1;
@@ -875,7 +913,8 @@ thead {
     font-size: 16px;
     margin-top: 2%;
   }
-  #side-out-menu { /* make it modal */
+  #side-out-menu {
+    /* make it modal */
     display: none;
   }
 
@@ -924,7 +963,6 @@ thead {
     height: 100%;
     margin-bottom: 3%;
     border: 3px solid var(--main-elc);
-
   }
   #nav-buttons {
     margin: 1%;
@@ -958,9 +996,9 @@ thead {
     display: none;
   }
 
-.hidden {
-  display: none;
-}
+  .hidden {
+    display: none;
+  }
 
   #newOrder {
     margin: 0;
@@ -1004,7 +1042,7 @@ thead {
     margin-left: 2%;
     padding-left: 5px;
     margin-right: 1%;
-    border-bottom: 1px solid var(--main-bgc)
+    border-bottom: 1px solid var(--main-bgc);
   }
 
   /* Style for inputs */
@@ -1026,18 +1064,19 @@ thead {
   }
 
   /* Style for Buy button */
-  #buyButton, #sellButton {
+  .buyButton,
+  .sellButton {
     margin: 0;
     padding: 0;
     width: 40vw;
     height: 4.5vh;
   }
-  #buyButton {
+  .buyButton {
     float: left;
     margin-top: 6%;
   }
   /* Style for Sell button */
-  #sellButton {
+  .sellButton {
     float: right;
     margin-top: 6%;
     margin-bottom: 3%;
@@ -1048,7 +1087,7 @@ thead {
     padding: 0;
     display: none;
   }
-  
+
   /* ACCOUNT MOBILE */
   #account {
     display: block;
@@ -1115,7 +1154,8 @@ thead {
     height: 50px;
   }
 
-  #account-info, #account-transactions {
+  #account-info,
+  #account-transactions {
     display: none;
   }
 }
