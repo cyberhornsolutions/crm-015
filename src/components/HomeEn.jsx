@@ -14,7 +14,6 @@ import TradingWidget from "./TradingWidget";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -354,9 +353,7 @@ export default function HomeRu() {
               {/* <ion-icon id="side-button-assets-icon" name="list" /> */}
               <List
                 color={
-                  tab === "assets" || tab === "trade"
-                    ? "rgba(0, 255, 110, 0.952)"
-                    : "#ffffff"
+                  tab === "assets" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"
                 }
               />
               <button
@@ -687,11 +684,7 @@ export default function HomeRu() {
                     className="modal fade show"
                     id="verification-docs"
                     style={{
-                      "margin-top": "10%",
-                      "background-color": "transparent",
-                      "border-radius": "10px",
-                      height: "auto",
-                      display: "block",
+                      display: "flex",
                     }}
                   >
                     <div
@@ -955,8 +948,7 @@ export default function HomeRu() {
                       className="modal show fade"
                       id="deposit-modal"
                       style={{
-                        "background-color": "transparent",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div
@@ -1059,9 +1051,7 @@ export default function HomeRu() {
                       className="modal show fade"
                       id="dep-successModal"
                       style={{
-                        backgroundColor: "transparent",
-                        marginTop: "17%",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div className="modal-dialog">
@@ -1098,8 +1088,7 @@ export default function HomeRu() {
                       className="modal show fade"
                       id="withdraw-modal"
                       style={{
-                        "background-color": "transparent",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div
@@ -1173,9 +1162,7 @@ export default function HomeRu() {
                       className="modal fade show"
                       id="wd-successModal"
                       style={{
-                        backgroundColor: "transparent",
-                        marginTop: "17%",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div className="modal-dialog">

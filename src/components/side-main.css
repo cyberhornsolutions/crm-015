@@ -63,7 +63,7 @@ body {
   width: 100%; /* Make body take up the full width of the viewport */
   height: 100vh; /* Make body take up the full height of the viewport */
   border-radius: 5px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 button {

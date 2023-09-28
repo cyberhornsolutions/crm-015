@@ -22,8 +22,8 @@ import {
 // import "./index.css";
 // import "./components/chart-tabs"; // Import the script
 import "./components/side-main.css";
-import "./components/style.css";
 import "bootstrap/dist/css/bootstrap.css";
+import "./components/style.css";
 
 const App = () => {
   // return (

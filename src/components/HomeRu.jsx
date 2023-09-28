@@ -286,9 +286,7 @@ export default function HomeRu() {
               {/* <ion-icon id="side-button-assets-icon" name="list" /> */}
               <List
                 color={
-                  tab === "assets" || tab === "trade"
-                    ? "rgba(0, 255, 110, 0.952)"
-                    : "#ffffff"
+                  tab === "assets" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"
                 }
               />
               <button
@@ -625,11 +623,7 @@ export default function HomeRu() {
                     className="modal fade show"
                     id="verification-docs"
                     style={{
-                      marginTop: "10%",
-                      backgroundColor: "transparent",
-                      borderRadius: "10px",
-                      height: "auto",
-                      display: "block",
+                      display: "flex",
                     }}
                   >
                     <div
@@ -910,7 +904,7 @@ export default function HomeRu() {
                   </table>
                 </div>
                 <div id="transaction-request">
-                  <h2
+                  {/* <h2
                     style={{
                       padding: "20px",
                       margin: "0",
@@ -920,8 +914,8 @@ export default function HomeRu() {
                     }}
                   >
                     Запрос на вывод
-                  </h2>
-                  <input
+                  </h2> */}
+                  {/* <input
                     type="number"
                     id="withdraw-amount"
                     placeholder="Сумма (USD)"
@@ -930,7 +924,7 @@ export default function HomeRu() {
                     type="number"
                     id="withdraw-card"
                     placeholder="Номер карты"
-                  />
+                  /> */}
                   <button
                     id="deposit-button"
                     onClick={() => setDepositModal(true)}
@@ -943,8 +937,7 @@ export default function HomeRu() {
                       class="modal show fade"
                       id="deposit-modal"
                       style={{
-                        backgroundColor: "transparent",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div
@@ -1043,9 +1036,7 @@ export default function HomeRu() {
                       class="modal show fade"
                       id="dep-successModal"
                       style={{
-                        backgroundColor: "transparent",
-                        marginTop: "17%",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div class="modal-dialog">
@@ -1083,8 +1074,7 @@ export default function HomeRu() {
                       class="modal show fade"
                       id="withdraw-modal"
                       style={{
-                        backgroundColor: "transparent",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div
@@ -1154,9 +1144,7 @@ export default function HomeRu() {
                       class="modal show fade"
                       id="wd-successModal"
                       style={{
-                        backgroundColor: "transparent",
-                        marginTop: "17%",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div class="modal-dialog">
