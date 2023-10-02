@@ -9,7 +9,7 @@ import {
   PersonCircle,
   StatsChartSharp,
 } from "react-ionicons";
-import TradingView from "./TradingView";
+import TradingView from "./TradingView.jsx";
 import TradingWidget from "./TradingWidget";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
