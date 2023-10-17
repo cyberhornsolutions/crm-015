@@ -1,5 +1,3 @@
-// TradingViewWidget.jsx
-
 import React, { useEffect, useRef } from "react";
 
 let tvScriptLoadingPromise;
@@ -64,8 +62,6 @@ export default function TradingView({ locale, hide, index }) {
       }
     }
   }, []);
-
-  console.log({ hide });
 
   return (
     <div

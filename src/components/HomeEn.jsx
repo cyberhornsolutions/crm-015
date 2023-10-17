@@ -8,12 +8,14 @@ import {
   LogOut,
   PersonCircle,
   StatsChartSharp,
+  CloseCircleOutline,
 } from "react-ionicons";
 import TradingView from "./TradingView.jsx";
 import TradingWidget from "./TradingWidget";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
+import { Form } from "react-bootstrap";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -249,6 +251,26 @@ export default function HomeRu() {
   //   // updateWidget("BTCUSDT", "tradingview_" + newTabId);
   // };
 
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "blue" : "white",
+      color: state.isSelected ? "white" : "black",
+      "&:hover": {
+        backgroundColor: "lightgray",
+        color: "black",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "white",
+    }),
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: "white", // Change the background color to white
+    }),
+  };
+
   return (
     <>
       <div id="header">
@@ -437,10 +459,34 @@ export default function HomeRu() {
                         <a
                           class={`nav-link ${activeTab === i + 1 && "active"}`}
                           data-bs-toggle="tab"
-                          style={{ fontSize: "14px", cursor: "pointer" }}
+                          style={{
+                            fontSize: "14px",
+                            cursor: "pointer",
+                            position: "relative",
+                          }}
                           onClick={() => setActiveTab(i + 1)}
                         >
                           # {e}
+                          <div
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              console.log("Close", { tabs, e });
+                              let _tabs = [...tabs].filter((f) => f !== e);
+                              setTabs(_tabs);
+                              setActiveTab(_tabs[0]);
+                            }}
+                          >
+                            <CloseCircleOutline
+                              style={{
+                                marginLeft: 10,
+                                height: "auto",
+                                position: "absolute",
+                                top: "-10px",
+                                left: "30px",
+                                borderRadius: "50%",
+                              }}
+                            />
+                          </div>
                         </a>
                       </li>
                     ))}
@@ -451,9 +497,16 @@ export default function HomeRu() {
                         style={{ background: "transparent", border: "none" }}
                         // onClick={addChart}
                         onClick={() => {
-                          let _tabs = [...tabs, tabs?.length + 1];
+                          let highest = tabs[0];
+                          tabs.forEach((element) => {
+                            if (element > highest) {
+                              highest = element;
+                            }
+                          });
+                          let _tabs = [...tabs, highest + 1];
                           setTabs(_tabs);
                           setActiveTab(_tabs.length);
+                          console.log({ _tabs, length: _tabs.length });
                         }}
                       >
                         +
@@ -493,6 +546,7 @@ export default function HomeRu() {
                         onChange={(e) =>
                           setOrderData({ ...orderData, symbol: e })
                         }
+                        styles={customStyles}
                         value={orderData.symbol}
                       />
                       {/* <input
@@ -975,41 +1029,28 @@ export default function HomeRu() {
                           >
                             <div
                               id="modal-contents"
-                              style={{ height: "500px", display: "inherit" }}
+                              style={{
+                                height: "500px",
+                                display: "inherit",
+                              }}
                             >
-                              <div className="dropdown">
-                                <button
-                                  type="button"
-                                  className="btn btn-secondary dropdown-toggle"
-                                  data-toggle="dropdown"
-                                >
-                                  Choose method
-                                </button>
-                                <ul
-                                  className="dropdown-menu"
-                                  style={{ "z-index": "100000" }}
-                                >
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      VISA/MasterCard
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      Crypto
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      Other
-                                    </a>
-                                  </li>
-                                </ul>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Form.Select style={{ width: 200 }}>
+                                  <option>Choose method</option>
+                                  <option value="1">VISA/MasterCard</option>
+                                  <option value="2">Crypto</option>
+                                  <option value="3">Other</option>
+                                </Form.Select>
                               </div>
-                              <label htmlFor>Account number:</label>
-                              <input type="text" name id />
-                              <label htmlFor>Amount:</label>
-                              <input type="text" name id />
+                              <label>Account number:</label>
+                              <input type="text" className="text-center" />
+                              <label>Amount:</label>
+                              <input type="text" className="text-center" />
                             </div>
                           </div>
                           {/* Modal footer */}

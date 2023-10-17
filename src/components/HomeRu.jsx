@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Form } from "react-bootstrap";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -103,6 +104,26 @@ export default function HomeRu() {
     if (sideButtonAssets.classList.contains("active")) {
       tableOrders.style.maxHeight = "150px";
     }
+  };
+
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "blue" : "white",
+      color: state.isSelected ? "white" : "black",
+      "&:hover": {
+        backgroundColor: "lightgray",
+        color: "black",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "white",
+    }),
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: "white", // Change the background color to white
+    }),
   };
 
   useEffect(() => {
@@ -429,6 +450,7 @@ export default function HomeRu() {
                         onChange={(e) =>
                           setOrderData({ ...orderData, symbol: e })
                         }
+                        styles={customStyles}
                         value={orderData.symbol}
                       />
                       {/* <input
@@ -967,39 +989,23 @@ export default function HomeRu() {
                               id="modal-contents"
                               style={{ height: "500px", display: "inherit" }}
                             >
-                              <div class="dropdown">
-                                <button
-                                  type="button"
-                                  class="btn btn-secondary dropdown-toggle"
-                                  data-toggle="dropdown"
-                                >
-                                  Выберите способ
-                                </button>
-                                <ul
-                                  class="dropdown-menu"
-                                  style={{ zIndex: 100000 }}
-                                >
-                                  <li>
-                                    <a class="dropdown-item" href="#">
-                                      VISA/MasterCard
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a class="dropdown-item" href="#">
-                                      Crypto
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a class="dropdown-item" href="#">
-                                      Другое
-                                    </a>
-                                  </li>
-                                </ul>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Form.Select style={{ width: 200 }}>
+                                  <option>Choose method</option>
+                                  <option value="1">VISA/MasterCard</option>
+                                  <option value="2">Crypto</option>
+                                  <option value="3">Other</option>
+                                </Form.Select>
                               </div>
-                              <label for="">Номер счета:</label>
-                              <input type="text" name="" id="" />
-                              <label for="">Сумма:</label>
-                              <input type="text" name="" id="" />
+                              <label>Номер счета:</label>
+                              <input type="text" className="text-center" />
+                              <label>Сумма:</label>
+                              <input type="text" className="text-center" />
                             </div>
                           </div>
 
