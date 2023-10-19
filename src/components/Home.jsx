@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
-import logoIcon from "../assets/logo.png";
-import ruFlagIcon from "../assets/ru-fl.png";
-import accPlaceholder from "../assets/acc-img-placeholder.png";
+import logoIcon from "../assets/images/logo.png";
+import enFlagIcon from "../assets/images/gb-fl.png";
+import ruFlagIcon from "../assets/images/ru-fl.png";
+import accPlaceholder from "../assets/images/acc-img-placeholder.png";
 import {
   InformationCircle,
   List,
   LogOut,
   PersonCircle,
   StatsChartSharp,
+  CloseCircleOutline,
 } from "react-ionicons";
 import TradingView from "./TradingView.jsx";
 import TradingWidget from "./TradingWidget";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { Form } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -36,6 +38,14 @@ export default function HomeRu() {
   const [withdrawlSuccessModal, setWithdrawlSuccessModal] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
   const [tabs, setTabs] = useState([1]);
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
+
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    setSelectedLanguage(lng);
+    i18n.changeLanguage(lng);
+  };
 
   const openOrderHistory = () => {
     const ordersHistoryButton = document.getElementById("ordersHistoryButton");
@@ -104,26 +114,6 @@ export default function HomeRu() {
     if (sideButtonAssets.classList.contains("active")) {
       tableOrders.style.maxHeight = "150px";
     }
-  };
-
-  const customStyles = {
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "blue" : "white",
-      color: state.isSelected ? "white" : "black",
-      "&:hover": {
-        backgroundColor: "lightgray",
-        color: "black",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "white",
-    }),
-    control: (provided) => ({
-      ...provided,
-      backgroundColor: "white", // Change the background color to white
-    }),
   };
 
   useEffect(() => {
@@ -205,6 +195,26 @@ export default function HomeRu() {
     });
   };
 
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "blue" : "white",
+      color: state.isSelected ? "white" : "black",
+      "&:hover": {
+        backgroundColor: "lightgray",
+        color: "black",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "white",
+    }),
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: "white", // Change the background color to white
+    }),
+  };
+
   return (
     <>
       <div id="header">
@@ -212,41 +222,41 @@ export default function HomeRu() {
           <img
             id="logo-img"
             src={logoIcon}
-            style={{ width: "45%", backgroundColor: "var(--main-bgc)" }}
+            style={{ width: "45%", "background-color": "var(--main-bgc)" }}
           />
         </div>
         <div id="header-info">
           <div id="balance">
-            <div class="balance-item">
-              <h2 class="balance-title">Баланс:</h2>
+            <div className="balance-item">
+              <h2 className="balance-title">{t("balance")}:</h2>
               <input
                 type="number"
-                class="balance-nums"
-                readonly="true"
-                value="100.00"
+                className="balance-nums"
+                readOnly="true"
+                defaultValue={100.0}
               />
             </div>
-            <div class="balance-item">
-              <h2 class="balance-title" id="free-margi">
-                Свободная маржа:
+            <div className="balance-item">
+              <h2 className="balance-title" id="free-margi">
+                {t("freeMargin")}:
               </h2>
-              <h2 class="balance-title hidden" id="free-margi2">
-                Св. маржа:
+              <h2 className="balance-title hidden" id="free-margi2">
+                {t("freeMargin2")}
               </h2>
               <input
                 type="number"
-                class="balance-nums"
-                readonly="true"
-                value="100.00"
+                className="balance-nums"
+                readOnly="true"
+                defaultValue={100.0}
               />
             </div>
-            <div class="balance-item">
-              <h2 class="balance-title">Профит:</h2>
+            <div className="balance-item">
+              <h2 className="balance-title">{t("profit")}:</h2>
               <input
                 type="number"
-                class="balance-nums"
-                readonly="true"
-                value="00.00"
+                className="balance-nums"
+                readOnly="true"
+                defaultValue={0.0}
               />
             </div>
             <div
@@ -254,32 +264,19 @@ export default function HomeRu() {
               className="balance-item"
               style={{ border: "none" }}
             >
-              <img
-                id="lang"
-                src={ruFlagIcon}
-                onClick={() => {
-                  const imageToChange = document.getElementById("lang");
-                  const imageSources = ["ru-fl.png", "gb-fl.png"];
-                  let currentImageIndex = 0;
-                  function changeImage() {
-                    currentImageIndex++;
-                    if (currentImageIndex === imageSources.length) {
-                      currentImageIndex = 0;
-                    }
-                    imageToChange.src = imageSources[currentImageIndex];
-                    toggleLanguage();
-                  }
-                  changeImage();
-
-                  function toggleLanguage() {
-                    var lang = window.location.pathname?.includes("en")
-                      ? "en"
-                      : "ru";
-
-                    navigate(`/${lang === "en" ? "ru" : "en"}/main`);
-                  }
-                }}
-              />
+              {selectedLanguage === "en" ? (
+                <img
+                  id="lang"
+                  src={ruFlagIcon}
+                  onClick={() => changeLanguage("ru")}
+                />
+              ) : (
+                <img
+                  id="lang"
+                  src={enFlagIcon}
+                  onClick={() => changeLanguage("en")}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -295,8 +292,13 @@ export default function HomeRu() {
                     : "#ffffff"
                 }
               />
-              <button id="side-button-trade" className="side-button active">
-                Торговля
+              <button
+                id="side-button-trade"
+                className={`side-button ${
+                  (tab === "trade" || tab === "assets") && " active"
+                }`}
+              >
+                {t("trade")}
               </button>
             </div>
             <div
@@ -315,7 +317,7 @@ export default function HomeRu() {
                 id="side-button-assets"
                 className={`side-button ${tab === "assets" && " active"}`}
               >
-                Позиции
+                {t("assets")}
               </button>
               <button
                 id="side-button-assets-mobile"
@@ -323,7 +325,7 @@ export default function HomeRu() {
                   tab === "assets" && " active"
                 }`}
               >
-                Позиции
+                {t("assets")}
               </button>
             </div>
             <div id="side-account" onClick={() => setTab("account")}>
@@ -337,7 +339,7 @@ export default function HomeRu() {
                 id="side-button-account"
                 className={`side-button ${tab === "account" && " active"}`}
               >
-                Аккаунт
+                {t("account")}
               </button>
             </div>
           </div>
@@ -354,14 +356,14 @@ export default function HomeRu() {
                 id="help-button"
                 className={`side-out-button ${tab === "help" && " active"}`}
               >
-                Помощь
+                {t("help")}
               </button>
             </div>
             <div id="side-logout" onClick={() => navigate("/")}>
               <ion-icon name="log-out" />
               <LogOut color={"#ffffff"} />
               <button id="logout-button" className="side-out-button">
-                Выход
+                {t("exit")}
               </button>
             </div>
           </div>
@@ -372,11 +374,7 @@ export default function HomeRu() {
               <div id="trade">
                 {tab === "assets" && (
                   <div id="assets">
-                    {/* TradingView Widget BEGIN */}
-                    {/* <div className="tradingview-widget-container">
-                      <div className="tradingview-widget-container__widget" />
-                    </div> */}
-                    <TradingWidget locale="ru" />
+                    <TradingWidget locale="en" />
                   </div>
                 )}
                 <div id="chart">
@@ -386,10 +384,34 @@ export default function HomeRu() {
                         <a
                           class={`nav-link ${activeTab === i + 1 && "active"}`}
                           data-bs-toggle="tab"
-                          style={{ fontSize: "14px", cursor: "pointer" }}
+                          style={{
+                            fontSize: "14px",
+                            cursor: "pointer",
+                            position: "relative",
+                          }}
                           onClick={() => setActiveTab(i + 1)}
                         >
                           # {e}
+                          <div
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              console.log("Close", { tabs, e });
+                              let _tabs = [...tabs].filter((f) => f !== e);
+                              setTabs(_tabs);
+                              setActiveTab(_tabs[0]);
+                            }}
+                          >
+                            <CloseCircleOutline
+                              style={{
+                                marginLeft: 10,
+                                height: "auto",
+                                position: "absolute",
+                                top: "-10px",
+                                left: "30px",
+                                borderRadius: "50%",
+                              }}
+                            />
+                          </div>
                         </a>
                       </li>
                     ))}
@@ -400,9 +422,16 @@ export default function HomeRu() {
                         style={{ background: "transparent", border: "none" }}
                         // onClick={addChart}
                         onClick={() => {
-                          let _tabs = [...tabs, tabs?.length + 1];
+                          let highest = tabs[0];
+                          tabs.forEach((element) => {
+                            if (element > highest) {
+                              highest = element;
+                            }
+                          });
+                          let _tabs = [...tabs, highest + 1];
                           setTabs(_tabs);
                           setActiveTab(_tabs.length);
+                          console.log({ _tabs, length: _tabs.length });
                         }}
                       >
                         +
@@ -421,7 +450,7 @@ export default function HomeRu() {
                 </div>
 
                 <div id="newOrder" style={{ display: "none" }}>
-                  <div id="newOrderData" className>
+                  <div id="newOrderData">
                     <h2
                       style={{
                         margin: "0",
@@ -431,10 +460,11 @@ export default function HomeRu() {
                         fontSize: "18px",
                       }}
                     >
-                      Детали сделки
+                      {t("newDeal")}
                     </h2>
                     <form id="newOrderForm">
-                      <label htmlFor="symbol-input">Символ</label>
+                      <label htmlFor="symbol-input">{t("symbol")}</label>
+
                       <Select
                         id="symbol-input"
                         options={symbols}
@@ -458,7 +488,7 @@ export default function HomeRu() {
                       {/* <div id="symbol-modal" className="modal">
                         <div id="symbol-dropdown" className="dropdown" />
                       </div> */}
-                      <label htmlFor="symbol-current-value">Цена</label>
+                      <label htmlFor="symbol-current-value">{t("price")}</label>
                       <input
                         type="number"
                         id="symbol-current-value"
@@ -467,7 +497,7 @@ export default function HomeRu() {
                         value={orderData?.symbolValue}
                         // required
                       />
-                      <label htmlFor="symbol-amount">Объём</label>
+                      <label htmlFor="symbol-amount">{t("volume")}</label>
                       <input
                         type="number"
                         id="symbol-amount"
@@ -509,7 +539,7 @@ export default function HomeRu() {
                         onClick={(e) => placeOrder(e, "Buy")}
                         type="submit"
                       >
-                        Купить
+                        {t("buy")}
                       </button>
                       <button
                         // className="newOrderButton"
@@ -518,7 +548,7 @@ export default function HomeRu() {
                         type="submit"
                         className="newOrderButton sellButton"
                       >
-                        Продать
+                        {t("sell")}
                       </button>
                     </form>
                   </div>
@@ -529,16 +559,14 @@ export default function HomeRu() {
                   <button
                     id="newDealButton"
                     onClick={() => {
+                      openOrderPanel();
                       // let a = document.getElementById("newOrder");
-                      // // document.getElementById("chart").style.display = "none";
                       // let d = window.getComputedStyle(a).display;
-                      // console.log({ d });
                       // document.getElementById("newOrder").style.display =
                       //   d === "flex" ? "none" : "flex";
-                      openOrderPanel();
                     }}
                   >
-                    Открыть сделку
+                    {t("newOrder")}
                   </button>
                   <button
                     id="newDealButtonMobile"
@@ -546,13 +574,12 @@ export default function HomeRu() {
                       // let a = document.getElementById("newOrder");
                       // // document.getElementById("chart").style.display = "none";
                       // let d = window.getComputedStyle(a).display;
-                      // console.log({ d });
                       // document.getElementById("newOrder").style.display =
                       //   d === "flex" ? "none" : "flex";
                       openOrderPanel();
                     }}
                   >
-                    Открыть сделку
+                    {t("newOrder")}
                   </button>
                   <button
                     id="ordersHistoryButton"
@@ -560,7 +587,7 @@ export default function HomeRu() {
                       openOrderHistory();
                     }}
                   >
-                    История сделок
+                    {t("ordersHistory")}
                   </button>
                 </div>
                 <div id="orders">
@@ -571,14 +598,14 @@ export default function HomeRu() {
                     <thead className="sticky-header">
                       <tr>
                         <th>ID</th>
-                        <th>Дата</th>
-                        <th>Символ</th>
-                        <th>Тип</th>
-                        <th>Объём</th>
-                        <th>Цена</th>
+                        <th>{t("date")}</th>
+                        <th>{t("symbol")}</th>
+                        <th>{t("type")}</th>
+                        <th>{t("volume")}</th>
+                        <th>{t("price")}</th>
                         <th>SL/TP</th>
-                        <th>Статус</th>
-                        <th>Прибыль</th>
+                        <th>{t("status")}</th>
+                        <th>{t("profit")}</th>
                       </tr>
                     </thead>
                     <tbody id="dataBody" className="table-body"></tbody>
@@ -591,32 +618,32 @@ export default function HomeRu() {
             <div id="account">
               <div id="account-profile">
                 <img id="acc-img-placeholder" src={accPlaceholder} />
-                <h4 style={{ margin: "0", marginBottom: "15px" }}>
+                <h4 style={{ margin: "0", "margin-bottom": "15px" }}>
                   Test Lead #0001
                 </h4>
                 <div id="acc-profile-main">
-                  <div class="acc-profile-main-item">
-                    <h6>Баланс (USD):</h6>
+                  <div className="acc-profile-main-item">
+                    <h6>{t("balance")} (USD):</h6>
                     <h6>100.00</h6>
                   </div>
-                  <div class="acc-profile-main-item">
-                    <h6>Залог (USD):</h6>
+                  <div className="acc-profile-main-item">
+                    <h6>{t("dept")} (USD):</h6>
                     <h6>00.00</h6>
                   </div>
-                  <div class="acc-profile-main-item">
-                    <h6>Уровень маржи (в %):</h6>
+                  <div className="acc-profile-main-item">
+                    <h6>{t("marginlvl")}:</h6>
                     <h6>100.00</h6>
                   </div>
-                  <div class="acc-profile-main-item">
-                    <h6>Общая прибыль (USD):</h6>
+                  <div className="acc-profile-main-item">
+                    <h6>{t("total")} (USD):</h6>
                     <h6>100.00</h6>
                   </div>
-                  <div class="acc-profile-main-item">
-                    <h6>Общий депозит (USD):</h6>
+                  <div className="acc-profile-main-item">
+                    <h6>{t("deposited")} (USD):</h6>
                     <h6>100.00</h6>
                   </div>
-                  <div class="acc-profile-main-item">
-                    <h6>Всего выведено (USD):</h6>
+                  <div className="acc-profile-main-item">
+                    <h6>{t("withdrawn")} (USD):</h6>
                     <h6>00.00</h6>
                   </div>
                 </div>
@@ -627,7 +654,7 @@ export default function HomeRu() {
                     // data-bs-target="#verification-docs"
                     onClick={() => setUploadModal(true)}
                   >
-                    Верификация
+                    {t("verification")}
                   </button>
                 </div>
                 {/* The Upload Modal */}
@@ -645,13 +672,11 @@ export default function HomeRu() {
                     >
                       <div
                         className="modal-content"
-                        style={{ borderRadius: "0px", height: "50vh" }}
+                        style={{ "border-radius": "0px", height: "50vh" }}
                       >
                         {/* Modal Header */}
                         <div className="modal-header">
-                          <h4 className="modal-title">
-                            Загрузите документы для верификации
-                          </h4>
+                          <h4 className="modal-title">{t("uploadDocs")}</h4>
                           <button
                             type="button"
                             className="btn-close"
@@ -667,7 +692,7 @@ export default function HomeRu() {
                                 htmlFor="verificationFile"
                                 className="form-label"
                               >
-                                Выберите файл:
+                                {t("chooseFile")}
                               </label>
                               <input
                                 type="file"
@@ -684,7 +709,7 @@ export default function HomeRu() {
                               id="uploadButton"
                               style={{ color: "rgb(0, 255, 110)" }}
                             >
-                              Загрузить
+                              {t("upload")}
                             </button>
                           </form>
                         </div>
@@ -696,7 +721,7 @@ export default function HomeRu() {
                             data-bs-dismiss="modal"
                             onClick={() => setUploadModal(false)}
                           >
-                            Закрыть
+                            {t("close")}
                           </button>
                         </div>
                       </div>
@@ -710,7 +735,7 @@ export default function HomeRu() {
                       <div className="modal-content">
                         {/* Modal Header */}
                         <div className="modal-header">
-                          <h4 className="modal-title">Успешно!</h4>
+                          <h4 className="modal-title">{t("success")}</h4>
                           <button
                             type="button"
                             className="btn-close"
@@ -718,9 +743,7 @@ export default function HomeRu() {
                           />
                         </div>
                         {/* Modal body */}
-                        <div className="modal-body">
-                          Спасибо! Ваши документы приняты на проверку!
-                        </div>
+                        <div className="modal-body">{t("thankyou")}</div>
                       </div>
                     </div>
                   </div>
@@ -729,104 +752,72 @@ export default function HomeRu() {
               <div id="account-info">
                 <h3
                   style={{
-                    marginTop: 40,
-                    marginBottom: 20,
+                    "margin-top": "40px",
+                    "margin-bottom": "20px",
                     width: "80%",
-                    fontSize: 25,
+                    "font-size": "25px",
                   }}
                 >
-                  Личная информация
+                  {t("personalInfo")}
                 </h3>
                 <div id="acc-info-personal">
-                  <div class="acc-info-personal-item">
-                    <h6>Имя:</h6>
-                    <input
-                      type="text"
-                      name=""
-                      id=""
-                      placeholder="ТЕСТ"
-                      disabled
-                    />
+                  <div className="acc-info-personal-item">
+                    <h6>{t("name")}</h6>
+                    <input type="text" name id placeholder="TEST" disabled />
                   </div>
-                  <div class="acc-info-personal-item">
-                    <h6>Фамилия:</h6>
-                    <input
-                      type="text"
-                      name=""
-                      id=""
-                      placeholder="ЛИД"
-                      disabled
-                    />
+                  <div className="acc-info-personal-item">
+                    <h6>{t("surname")}</h6>
+                    <input type="text" name id placeholder="LEAD" disabled />
                   </div>
-                  <div class="acc-info-personal-item">
-                    <h6>Почта:</h6>
+                  <div className="acc-info-personal-item">
+                    <h6>{t("email")}</h6>
                     <input
                       type="text"
-                      name=""
+                      name
                       id="userEmail"
                       placeholder="testlead1@gmail.com"
                       disabled
                     />
                   </div>
-                  <div class="acc-info-personal-item">
-                    <h6>Телефон:</h6>
+                  <div className="acc-info-personal-item">
+                    <h6>{t("phone")}</h6>
                     <input
                       type="number"
-                      name=""
-                      id=""
-                      placeholder="+7777038475"
+                      name
+                      id
+                      placeholder={+7777038475}
                       disabled
                     />
                   </div>
-                  <div class="acc-info-personal-item">
-                    <h6>Страна:</h6>
-                    <input
-                      type="text"
-                      name=""
-                      id=""
-                      placeholder="ТЕСТ"
-                      disabled
-                    />
+                  <div className="acc-info-personal-item">
+                    <h6>{t("country")}</h6>
+                    <input type="text" name id placeholder="TEST" disabled />
                   </div>
-                  <div class="acc-info-personal-item">
-                    <h6>Город:</h6>
-                    <input
-                      type="text"
-                      name=""
-                      id=""
-                      placeholder="ТЕСТ"
-                      disabled
-                    />
+                  <div className="acc-info-personal-item">
+                    <h6>{t("city")}</h6>
+                    <input type="text" name id placeholder="TEST" disabled />
                   </div>
-                  <div class="acc-info-personal-item">
-                    <h6>Дата регистрации:</h6>
+                  <div className="acc-info-personal-item">
+                    <h6>{t("dateRegister")}</h6>
                     <input
                       type="text"
-                      name=""
-                      id=""
+                      name
+                      id
                       placeholder="02/07/2023"
                       disabled
                     />
                   </div>
-                  <div class="acc-info-personal-item">
-                    <h6>Комментарий:</h6>
+                  <div className="acc-info-personal-item">
+                    <h6>{t("comment")}:</h6>
                     <input
                       type="text"
-                      name=""
+                      name
                       id="comment"
                       placeholder="..."
-                      disabled
+                      disabled="true"
                     />
                   </div>
                 </div>
-                {/* <script>
-            // Retrieve the email from the URL parameter
-            var urlParams = new URLSearchParams(window.location.search);
-            var userEmail = urlParams.get('email');
-
-            // Display the user's email in the <h1> element
-            document.getElementById('userEmail').setAttribute('placeholder', userEmail);
-          </script> */}
                 <div id="acc-info-buttons">
                   <button
                     id="acc-edit-button"
@@ -842,11 +833,10 @@ export default function HomeRu() {
                       saveButton.style.display = "inline-block";
                     }}
                   >
-                    Редактировать
+                    {t("edit")}
                   </button>
                   <button
                     id="acc-save-button"
-                    class="hidden"
                     onClick={() => {
                       const editButton =
                         document.getElementById("acc-edit-button");
@@ -859,126 +849,111 @@ export default function HomeRu() {
                       // Display the edit button
                       editButton.style.display = "inline-block";
                     }}
+                    className="hidden"
                   >
-                    Cохранить
+                    {t("save")}
                   </button>
                 </div>
               </div>
               <div id="account-transactions">
                 <h3
                   style={{
-                    borderBottom: "1px solid var(--main-bgc)",
-                    fontSize: "25px",
-                    paddingBottom: "25px",
-                    paddingTop: "0",
-                    marginTop: "40px",
-                    marginBottom: "30px",
+                    "border-bottom": "1px solid var(--main-bgc)",
+                    "font-size": "25px",
+                    "padding-bottom": "25px",
+                    "padding-top": "0",
+                    "margin-top": "40px",
+                    "margin-bottom": "30px",
                     width: "80%",
                   }}
                 >
-                  Транзакции
+                  {t("transactions")}
                 </h3>
                 <div id="trans-his">
                   <table id="transactions-his-table">
                     <thead
-                      class="sticky-header"
+                      className="sticky-header"
                       style={{
-                        borderRadius: "5px",
+                        "border-radius": "5px",
                         border: "1px solid rgb(39, 39, 23)",
                       }}
                     >
                       <tr>
                         <th>ID</th>
-                        <th>Тип</th>
-                        <th>Сумма $</th>
-                        <th>Метод</th>
-                        <th>Статус</th>
-                        <th>Дата</th>
+                        <th>{t("type")}</th>
+                        <th>{t("amount")} $</th>
+                        <th>{t("method")}</th>
+                        <th>{t("status")}</th>
+                        <th>{t("date")}</th>
                       </tr>
                     </thead>
-                    <tbody id="transactions-t-body" class="table-body">
+                    <tbody id="transactions-t-body" className="table-body">
                       <tr>
                         <th>ID001</th>
-                        <th>Депозит</th>
+                        <th>Deposit</th>
                         <th>100</th>
                         <th>VISA</th>
-                        <th>Успешно</th>
+                        <th>Success</th>
                         <th>08/08/2022</th>
                       </tr>
                       <tr>
                         <th>ID002</th>
-                        <th>Вывод</th>
+                        <th>Withdraw</th>
                         <th>100</th>
                         <th>VISA</th>
-                        <th>В обработке</th>
+                        <th>Under review</th>
                         <th>11/08/2022</th>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <div id="transaction-request">
-                  {/* <h2
-                    style={{
-                      padding: "20px",
-                      margin: "0",
-                      marginTop: "3%",
-                      width: "80%",
-                      borderTop: "1px solid rgb(17, 17, 23)",
-                    }}
-                  >
-                    Запрос на вывод
-                  </h2> */}
-                  {/* <input
-                    type="number"
-                    id="withdraw-amount"
-                    placeholder="Сумма (USD)"
-                  />
-                  <input
-                    type="number"
-                    id="withdraw-card"
-                    placeholder="Номер карты"
-                  /> */}
+                  {/* <h2 style="padding: 20px; margin: 0; margin-top: 3%; width: 80%; border-top: 1px solid rgb(17, 17, 23);">Запрос на вывод</h2>
+        <input type="number" id="withdraw-amount" placeholder="Сумма (USD)">
+        <input type="number" id="withdraw-card" placeholder="Номер карты"> */}
                   <button
                     id="deposit-button"
                     onClick={() => setDepositModal(true)}
                   >
-                    Депозит
+                    {t("deposit")}
                   </button>
-                  {/* The Modal  */}
+                  {/* The Modal */}
                   {depositModal && (
                     <div
-                      class="modal show fade"
+                      className="modal show fade"
                       id="deposit-modal"
                       style={{
                         display: "flex",
                       }}
                     >
                       <div
-                        class="modal-dialog modal-lg"
-                        style={{ marginTop: "10%" }}
+                        className="modal-dialog modal-lg"
+                        style={{ "margin-top": "10%" }}
                       >
-                        <div class="modal-content">
-                          {/* Modal Header  */}
-                          <div class="modal-header">
-                            <h4 class="modal-title">Депозит</h4>
+                        <div className="modal-content">
+                          {/* Modal Header */}
+                          <div className="modal-header">
+                            <h4 className="modal-title">{t("deposit")}</h4>
                             <button
                               type="button"
-                              class="btn-close"
+                              className="btn-close"
                               data-bs-dismiss="modal"
                               onClick={() => {
                                 setDepositModal(false);
                               }}
-                            ></button>
+                            />
                           </div>
-
-                          {/* Modal body  */}
+                          {/* Modal body */}
                           <div
-                            class="modal-body"
-                            style={{ display: "contents", height: 500 }}
+                            className="modal-body"
+                            style={{ display: "contents", height: "500px" }}
                           >
                             <div
                               id="modal-contents"
-                              style={{ height: "500px", display: "inherit" }}
+                              style={{
+                                height: "500px",
+                                display: "inherit",
+                              }}
                             >
                               <div
                                 style={{
@@ -993,26 +968,31 @@ export default function HomeRu() {
                                   <option value="3">Other</option>
                                 </Form.Select>
                               </div>
-                              <label>Номер счета:</label>
+                              <label>{t("accountNumber")}</label>
                               <input type="text" className="text-center" />
-                              <label>Сумма:</label>
+                              <label>{t("amount")}</label>
                               <input type="text" className="text-center" />
                             </div>
                           </div>
-
-                          {/* Modal footer  */}
+                          {/* Modal footer */}
                           <div
-                            class="modal-footer"
+                            className="modal-footer"
                             style={{
                               display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
+                              "-webkit-align-items": "center",
+                              "-webkit-box-align": "center",
+                              "-ms-flex-align": "center",
+                              "align-items": "center",
+                              "-webkit-box-pack": "center",
+                              "-webkit-justify-content": "center",
+                              "-ms-flex-pack": "center",
+                              "justify-content": "center",
                             }}
                           >
                             <button
                               id="accept-deposit"
                               type="button"
-                              class="btn btn-primary"
+                              className="btn btn-primary"
                               data-bs-dismiss="modal"
                               style={{ color: "aquamarine" }}
                               onClick={() => {
@@ -1020,40 +1000,38 @@ export default function HomeRu() {
                                 setDepositSuccessModal(true);
                               }}
                             >
-                              Подтвердить
+                              {t("confirm")}
                             </button>
                           </div>
                         </div>
                       </div>
                     </div>
                   )}
-                  {/* The Success Modal  */}
+                  {/* The Success Modal */}
                   {depositSuccessModal && (
                     <div
-                      class="modal show fade"
+                      className="modal show fade"
                       id="dep-successModal"
                       style={{
                         display: "flex",
                       }}
                     >
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          {/* Modal Header  */}
-                          <div class="modal-header">
-                            <h4 class="modal-title">Успешно!</h4>
+                      <div className="modal-dialog">
+                        <div className="modal-content">
+                          {/* Modal Header */}
+                          <div className="modal-header">
+                            <h4 className="modal-title">{t("success")}</h4>
                             <button
                               type="button"
-                              class="btn-close"
+                              className="btn-close"
                               data-bs-dismiss="modal"
                               onClick={() => setDepositSuccessModal(false)}
-                            ></button>
+                            />
                           </div>
-
-                          {/* Modal body  */}
-                          <div class="modal-body">
-                            Депозит принят в обработку! <br />
-                            Ожидайте поступление средств на баланс в течении 15
-                            мин.
+                          {/* Modal body */}
+                          <div className="modal-body">
+                            {t("depositSubmit")} <br />
+                            {t("wait")}
                           </div>
                         </div>
                       </div>
@@ -1063,64 +1041,70 @@ export default function HomeRu() {
                     id="withdraw-request-button"
                     onClick={() => setWithdrawlModal(true)}
                   >
-                    Вывод
+                    {t("withdraw")}
                   </button>
-                  {/* The Modal  */}
+                  {/* The Modal */}
                   {withdrawlModal && (
                     <div
-                      class="modal show fade"
+                      className="modal show fade"
                       id="withdraw-modal"
                       style={{
                         display: "flex",
                       }}
                     >
                       <div
-                        class="modal-dialog modal-lg"
-                        style={{ marginTop: "10%" }}
+                        className="modal-dialog modal-lg"
+                        style={{ "margin-top": "10%" }}
                       >
-                        <div class="modal-content">
-                          {/* Modal Header  */}
-                          <div class="modal-header">
-                            <h4 class="modal-title">Вывод средств</h4>
+                        <div className="modal-content">
+                          {/* Modal Header */}
+                          <div className="modal-header">
+                            <h4 className="modal-title">
+                              {t("fundsWithdrawal")}
+                            </h4>
                             <button
                               type="button"
-                              class="btn-close"
+                              className="btn-close"
                               data-bs-dismiss="modal"
                               onClick={() => {
                                 setWithdrawlModal(false);
                               }}
-                            ></button>
+                            />
                           </div>
-
-                          {/* Modal body  */}
+                          {/* Modal body */}
                           <div
-                            class="modal-body"
+                            className="modal-body"
                             style={{ display: "contents", height: "500px" }}
                           >
                             <div
                               id="modal-contents"
                               style={{ height: "500px", display: "inherit" }}
                             >
-                              <label for="">Номер карты:</label>
-                              <input type="text" name="" id="" />
-                              <label for="">Сумма:</label>
-                              <input type="text" name="" id="" />
+                              <label htmlFor>{t("accountNumber")}</label>
+                              <input type="text" name id />
+                              <label htmlFor>{t("amount")}</label>
+                              <input type="text" name id />
                             </div>
                           </div>
-
-                          {/* Modal footer  */}
+                          {/* Modal footer */}
                           <div
-                            class="modal-footer"
+                            className="modal-footer"
                             style={{
                               display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
+                              "-webkit-align-items": "center",
+                              "-webkit-box-align": "center",
+                              "-ms-flex-align": "center",
+                              "align-items": "center",
+                              "-webkit-box-pack": "center",
+                              "-webkit-justify-content": "center",
+                              "-ms-flex-pack": "center",
+                              "justify-content": "center",
                             }}
                           >
                             <button
                               id="accept-withdraw"
                               type="button"
-                              class="btn btn-primary"
+                              className="btn btn-primary"
                               data-bs-dismiss="modal"
                               style={{ color: "aquamarine" }}
                               onClick={() => {
@@ -1128,39 +1112,38 @@ export default function HomeRu() {
                                 setWithdrawlSuccessModal(true);
                               }}
                             >
-                              Подтвердить
+                              {t("confirm")}
                             </button>
                           </div>
                         </div>
                       </div>
                     </div>
                   )}
-                  {/* The Success Modal  */}
+                  {/* The Success Modal */}
                   {withdrawlSuccessModal && (
                     <div
-                      class="modal show fade"
+                      className="modal fade show"
                       id="wd-successModal"
                       style={{
                         display: "flex",
                       }}
                     >
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          {/* Modal Header  */}
-                          <div class="modal-header">
-                            <h4 class="modal-title">Успешно!</h4>
+                      <div className="modal-dialog">
+                        <div className="modal-content">
+                          {/* Modal Header */}
+                          <div className="modal-header">
+                            <h4 className="modal-title">{t("success")}</h4>
                             <button
                               type="button"
-                              class="btn-close"
+                              className="btn-close"
                               data-bs-dismiss="modal"
                               onClick={() => setWithdrawlSuccessModal(false)}
-                            ></button>
+                            />
                           </div>
-
-                          {/* Modal body  */}
-                          <div class="modal-body">
-                            Запрос на вывод принят в обработку! <br />
-                            Ожидайте деталей от менеджера.
+                          {/* Modal body */}
+                          <div className="modal-body">
+                            {t("requestSuccess")} <br />
+                            {t("furtherInstructions")}
                           </div>
                         </div>
                       </div>
@@ -1168,57 +1151,38 @@ export default function HomeRu() {
                   )}
                 </div>
               </div>
-              <div id="account-mobile-buttons" class="hidden">
-                <button>Личная информация</button>
-                <button>Транзакции</button>
+              <div id="account-mobile-buttons" className="hidden">
+                <button>{t("personalInfo")}</button>
+                <button>{t("transactions")}</button>
               </div>
             </div>
           )}
           {tab === "help" && (
             <div id="faq">
-              <h1>Часто задаваемые вопросы</h1>
-              <h2>Общие вопросы</h2>
+              <h1>{t("FAQ")}</h1>
+              <h2>{t("GQ")}</h2>
               <dl>
-                <dt>В: Что такое наша торговая платформа?</dt>
-                <dd>
-                  Ответ: Наша торговая платформа - это онлайн-система, которая
-                  позволяет вам покупать и продавать различные финансовые
-                  инструменты, такие как акции, облигации и криптовалюты.
-                </dd>
-
-                <dt>В: Как создать аккаунт?</dt>
-                <dd>
-                  Ответ: Для создания аккаунта нажмите кнопку
-                  "Зарегистрироваться" на нашей домашней странице и следуйте
-                  процессу регистрации.
-                </dd>
+                <dt>{t("Q1")}</dt>
+                <dd>{t("ANS1")}</dd>
+                <dt>{t("Q2")}</dt>
+                <dd>{t("ANS2")}</dd>
+                {/* Add more general questions and answers here */}
               </dl>
-
-              <h2>Управление аккаунтом</h2>
+              <h2>{t("accountManagement")}</h2>
               <dl>
-                <dt>В: Могу ли я иметь несколько торговых аккаунтов?</dt>
-                <dd>
-                  Ответ: Да, вы можете иметь несколько торговых аккаунтов у нас.
-                  Свяжитесь с нашей службой поддержки для помощи в настройке
-                  дополнительных аккаунтов.
-                </dd>
+                <dt>{t("Q3")}</dt>
+                <dd>{t("ANS3")}</dd>
+                <dt>{t("Q4")}</dt>
+                <dd>{t("ANS4")}</dd>
+                {/* Add more account management questions and answers here */}
               </dl>
-
-              <h2>Торговля и инвестиции</h2>
+              <h2>{t("tradingInvestment")}</h2>
               <dl>
-                <dt>В: Как сделать сделку?</dt>
-                <dd>
-                  Ответ: Для размещения сделки войдите в свой аккаунт, выберите
-                  финансовый инструмент, который вы хотите торговать, укажите
-                  количество и другие детали, и нажмите "Разместить заказ".
-                </dd>
-
-                <dt>В: Каковы часы торговли?</dt>
-                <dd>
-                  Ответ: Наша торговая платформа работает круглосуточно, но
-                  конкретные часы торговли для разных активов могут различаться.
-                  Проверьте часы торговли актива на платформе.
-                </dd>
+                <dt>{t("Q5")}</dt>
+                <dd>{t("ANS5")}</dd>
+                <dt>{t("Q6")}</dt>
+                <dd>{t("ANS6")}</dd>
+                {/* Add more trading and investment questions and answers here */}
               </dl>
             </div>
           )}

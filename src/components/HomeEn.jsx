@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import logoIcon from "./logo.png";
-import enFlagIcon from "./gb-fl.png";
-import accPlaceholder from "./acc-img-placeholder.png";
+import logoIcon from "../assets/logo.png";
+import enFlagIcon from "../assets/gb-fl.png";
+import accPlaceholder from "../assets/acc-img-placeholder.png";
 import {
   InformationCircle,
   List,
@@ -185,72 +185,6 @@ export default function HomeRu() {
     });
   };
 
-  // const addChart = () => {
-  //   var newTabId = "h" + (document.querySelectorAll(".tab-pane").length + 1);
-
-  //   // Create a new nav item
-  //   var newNavItem = document.createElement("li");
-  //   newNavItem.classList.add("nav-item");
-
-  //   // Create a new nav link
-  //   var newNavLink = document.createElement("a");
-  //   newNavLink.classList.add("nav-link");
-  //   newNavLink.setAttribute("data-bs-toggle", "tab");
-  //   newNavLink.setAttribute("href", "#" + newTabId);
-  //   newNavLink.setAttribute("style", "font-size: 14px");
-
-  //   newNavLink.textContent =
-  //     "# " + document.querySelectorAll(".nav-item").length;
-
-  //   // Append the new nav link to the new nav item
-  //   newNavItem.appendChild(newNavLink);
-
-  //   // Insert the new nav item before the "+" button
-  //   var addButton = document.getElementById("addTabButton").parentNode;
-  //   addButton.parentNode.insertBefore(newNavItem, addButton);
-
-  //   // Create a new tab pane
-  //   var newTabPane = document.createElement("div");
-  //   newTabPane.classList.add(
-  //     "tab-pane",
-  //     "container",
-  //     "tradingview-widget-container",
-  //     "fade",
-  //     "show",
-  //     "active"
-  //   ); // Add 'show' and 'active' classes to make it visible
-  //   newTabPane.setAttribute("id", newTabId);
-  //   newTabPane.style.margin = "0";
-  //   newTabPane.style.padding = "0";
-
-  //   // Create a new tradingview container for the tab
-  //   var newTradingViewContainer = document.createElement("div");
-  //   newTradingViewContainer.setAttribute("id", "tradingview_" + newTabId);
-
-  //   // Append the new tradingview container to the tab pane
-  //   newTabPane?.appendChild(newTradingViewContainer);
-
-  //   // Append the new tab pane to the tab content div
-  //   document.querySelector(".tab-content")?.appendChild(newTabPane);
-
-  //   // Load the TradingView scripts for the new tab
-  //   var tvScript = document.createElement("script");
-  //   tvScript.type = "text/javascript";
-  //   tvScript.src = "https://s3.tradingview.com/tv.js";
-  //   newTradingViewContainer?.appendChild(tvScript);
-
-  //   var customScript = document.createElement("script");
-  //   customScript.type = "text/javascript";
-  //   customScript.src = "tradingview.js";
-  //   newTradingViewContainer?.appendChild(customScript);
-
-  //   // Activate the new tab by triggering a click event
-  //   newNavLink.click();
-
-  //   // Update the TradingView widget for the new tab
-  //   // updateWidget("BTCUSDT", "tradingview_" + newTabId);
-  // };
-
   const customStyles = {
     option: (provided, state) => ({
       ...provided,
@@ -353,7 +287,7 @@ export default function HomeRu() {
       <div id="body">
         <div id="sidebar">
           <div id="side-main-menu">
-            <div id="side-trade">
+            <div id="side-trade" onClick={() => setTab("trade")}>
               <StatsChartSharp
                 color={
                   tab === "trade" || tab === "assets"
@@ -366,12 +300,16 @@ export default function HomeRu() {
                 className={`side-button ${
                   (tab === "trade" || tab === "assets") && " active"
                 }`}
-                onClick={() => setTab("trade")}
               >
                 Trade
               </button>
             </div>
-            <div id="side-assets">
+            <div
+              id="side-assets"
+              onClick={() => {
+                setTab(tab === "assets" ? "trade" : "assets");
+              }}
+            >
               {/* <ion-icon id="side-button-assets-icon" name="list" /> */}
               <List
                 color={
@@ -381,9 +319,6 @@ export default function HomeRu() {
               <button
                 id="side-button-assets"
                 className={`side-button ${tab === "assets" && " active"}`}
-                onClick={() => {
-                  setTab(tab === "assets" ? "trade" : "assets");
-                }}
               >
                 Assets
               </button>
@@ -392,12 +327,11 @@ export default function HomeRu() {
                 className={`side-button hidden ${
                   tab === "assets" && " active"
                 }`}
-                onClick={() => setTab(tab === "assets" ? "trade" : "assets")}
               >
                 Assets
               </button>
             </div>
-            <div id="side-account">
+            <div id="side-account" onClick={() => setTab("account")}>
               {/* <ion-icon id="side-button-account-icon" name="person-circle" /> */}
               <PersonCircle
                 color={
@@ -407,14 +341,13 @@ export default function HomeRu() {
               <button
                 id="side-button-account"
                 className={`side-button ${tab === "account" && " active"}`}
-                onClick={() => setTab("account")}
               >
                 Account
               </button>
             </div>
           </div>
           <div id="side-out-menu">
-            <div id="side-out-extra">
+            <div id="side-out-extra" onClick={() => setTab("help")}>
               {/* <ion-icon
                 id="information-circle-icon"
                 name="information-circle"
@@ -425,19 +358,14 @@ export default function HomeRu() {
               <button
                 id="help-button"
                 className={`side-out-button ${tab === "help" && " active"}`}
-                onClick={() => setTab("help")}
               >
                 Help
               </button>
             </div>
-            <div id="side-logout">
+            <div id="side-logout" onClick={() => navigate("/")}>
               <ion-icon name="log-out" />
               <LogOut color={"#ffffff"} />
-              <button
-                onClick={() => navigate("/")}
-                id="logout-button"
-                className="side-out-button"
-              >
+              <button id="logout-button" className="side-out-button">
                 Exit
               </button>
             </div>

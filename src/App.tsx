@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
-import Login from "./components/login";
 import Auth from "./components/auth";
 import HomeEn from "./components/HomeEn";
 import HomeRu from "./components/HomeRu";
+import Home from "./components/Home";
 import {
   Link,
   Route,
@@ -14,7 +14,7 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 // import "./components/login-reg.css";
-// import "./components/login-style.css";
+// import "./components/login-stylHomee.css";
 // import "./components/main-style.css";
 // import "./components/test2.css";
 // import "./components/test3.css";
@@ -28,7 +28,7 @@ import "./components/style.css";
 const App = () => {
   // return (
   //   <Router>
-  //     <Routes>
+  //     <Routes>login
   //       <Route path="/login" Component={Login} index />
   //       <Route path="/main" /*Component={}*/ />
   //     </Routes>
@@ -38,9 +38,11 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+        login
         <Route path="/" Component={Auth} index />
-        <Route path="/en/main" Component={HomeEn} />
-        <Route path="/ru/main" Component={HomeRu} />
+        {/* <Route path="/en/main" Component={HomeEn} />
+        <Route path="/ru/main" Component={HomeRu} /> */}
+        <Route path="/main" Component={Home} />
       </>
     )
   );
