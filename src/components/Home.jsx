@@ -18,6 +18,9 @@ import axios from "axios";
 import Select from "react-select";
 import { Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { getAuth, signOut } from "firebase/auth";
+import { auth, db } from "../firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -39,12 +42,91 @@ export default function HomeRu() {
   const [activeTab, setActiveTab] = useState(1);
   const [tabs, setTabs] = useState([1]);
   const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const [isEditable, setIsEditable] = useState(false);
+  const [userProfile, setUserProfile] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    phone: "",
+    country: "",
+    city: "",
+    dateRegister: "",
+    comment: "...",
+  });
+
+  console.log("User profile", userProfile);
 
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lng) => {
     setSelectedLanguage(lng);
     i18n.changeLanguage(lng);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setUserProfile({
+      ...userProfile,
+      [name]: value,
+    });
+  };
+
+  const handleEditClick = () => {
+    setIsEditable(true);
+  };
+
+  const handleSaveClick = async () => {
+    setIsEditable(false);
+
+    // Save the updated userProfile data to Firestore
+    try {
+      const user = auth.currentUser;
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, userProfile);
+      console.log("Data saved to Firestore");
+    } catch (error) {
+      console.error("Error saving data to Firestore:", error);
+    }
+  };
+
+  const getUserDataByUID = async () => {
+    const user = auth.currentUser;
+    console.log("UID:", user.uid);
+    const userRef = doc(db, "users", user.uid);
+
+    try {
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        // User document exists, you can access the data
+        const userData = userDoc.data();
+        console.log("User data:", userData);
+        setUserProfile(userData);
+        return userData;
+      } else {
+        console.log("User document does not exist.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    getUserDataByUID();
+  }, []);
+
+  const hanldeLogout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        console.log("User signed out.");
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log("Error", error);
+      });
   };
 
   const openOrderHistory = () => {
@@ -359,7 +441,7 @@ export default function HomeRu() {
                 {t("help")}
               </button>
             </div>
-            <div id="side-logout" onClick={() => navigate("/")}>
+            <div id="side-logout" onClick={hanldeLogout}>
               <ion-icon name="log-out" />
               <LogOut color={"#ffffff"} />
               <button id="logout-button" className="side-out-button">
@@ -763,96 +845,107 @@ export default function HomeRu() {
                 <div id="acc-info-personal">
                   <div className="acc-info-personal-item">
                     <h6>{t("name")}</h6>
-                    <input type="text" name id placeholder="TEST" disabled />
+                    <input
+                      type="text"
+                      name="name"
+                      value={userProfile?.name}
+                      onChange={handleChange}
+                      readOnly={!isEditable}
+                    />
                   </div>
                   <div className="acc-info-personal-item">
                     <h6>{t("surname")}</h6>
-                    <input type="text" name id placeholder="LEAD" disabled />
+                    <input
+                      type="text"
+                      name="surname"
+                      value={userProfile?.surname}
+                      placeholder=""
+                      onChange={handleChange}
+                      readOnly={!isEditable}
+                    />
                   </div>
                   <div className="acc-info-personal-item">
                     <h6>{t("email")}</h6>
                     <input
                       type="text"
-                      name
+                      name="email"
                       id="userEmail"
+                      value={userProfile?.email}
                       placeholder="testlead1@gmail.com"
-                      disabled
+                      readOnly
                     />
                   </div>
                   <div className="acc-info-personal-item">
                     <h6>{t("phone")}</h6>
                     <input
                       type="number"
-                      name
+                      name="phone"
                       id
+                      value={userProfile?.phone}
                       placeholder={+7777038475}
-                      disabled
+                      onChange={handleChange}
+                      readOnly={!isEditable}
                     />
                   </div>
                   <div className="acc-info-personal-item">
                     <h6>{t("country")}</h6>
-                    <input type="text" name id placeholder="TEST" disabled />
+                    <input
+                      type="text"
+                      value={userProfile?.country}
+                      name="country"
+                      id
+                      placeholder=""
+                      onChange={handleChange}
+                      readOnly={!isEditable}
+                    />
                   </div>
                   <div className="acc-info-personal-item">
                     <h6>{t("city")}</h6>
-                    <input type="text" name id placeholder="TEST" disabled />
+                    <input
+                      type="text"
+                      value={userProfile?.city}
+                      name="city"
+                      id
+                      placeholder=""
+                      onChange={handleChange}
+                      readOnly={!isEditable}
+                    />
                   </div>
                   <div className="acc-info-personal-item">
                     <h6>{t("dateRegister")}</h6>
                     <input
                       type="text"
-                      name
+                      value={userProfile?.dateRegister}
+                      name="dateRegister"
                       id
                       placeholder="02/07/2023"
-                      disabled
+                      onChange={handleChange}
+                      readOnly={!isEditable}
                     />
                   </div>
                   <div className="acc-info-personal-item">
                     <h6>{t("comment")}:</h6>
                     <input
                       type="text"
-                      name
+                      value={userProfile?.comment}
+                      name="comment"
                       id="comment"
                       placeholder="..."
-                      disabled="true"
+                      onChange={handleChange}
+                      readOnly={!isEditable}
                     />
                   </div>
                 </div>
                 <div id="acc-info-buttons">
-                  <button
-                    id="acc-edit-button"
-                    onClick={() => {
-                      const editButton =
-                        document.getElementById("acc-edit-button");
-                      const saveButton =
-                        document.getElementById("acc-save-button");
-                      const commentField = document.getElementById("comment");
-
-                      editButton.style.display = "none";
-                      commentField.removeAttribute("disabled");
-                      saveButton.style.display = "inline-block";
-                    }}
-                  >
-                    {t("edit")}
-                  </button>
-                  <button
-                    id="acc-save-button"
-                    onClick={() => {
-                      const editButton =
-                        document.getElementById("acc-edit-button");
-                      const saveButton =
-                        document.getElementById("acc-save-button");
-                      const commentField = document.getElementById("comment");
-
-                      saveButton.style.display = "none";
-                      commentField.setAttribute("disabled", "true");
-                      // Display the edit button
-                      editButton.style.display = "inline-block";
-                    }}
-                    className="hidden"
-                  >
-                    {t("save")}
-                  </button>
+                  {isEditable ? (
+                    <button id="acc-save-button" onClick={handleSaveClick}>
+                      Save
+                    </button>
+                  ) : (
+                    <button id="acc-edit-button" onClick={handleEditClick}>
+                      Edit
+                    </button>
+                  )}
                 </div>
               </div>
               <div id="account-transactions">

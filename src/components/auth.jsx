@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -10,6 +11,7 @@ import {
 export default function Auth() {
   const [tab, setTab] = useState(1);
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,7 +20,7 @@ export default function Auth() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // User successfully logged in
-        console.log(`User logged in: ${userCredential}`);
+        console.log(`User logged in: ${userCredential.user}`);
         navigate("/main");
       })
       .catch((error) => {
@@ -31,8 +33,23 @@ export default function Auth() {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log(`User Created: ${userCredential}`);
-        navigate("/main");
+        const user = userCredential.user;
+
+        console.log("User ==>", user);
+
+        // Add user data to Firestore
+        const userRef = doc(db, "users", user.uid);
+        setDoc(userRef, {
+          name: userName, // Replace with the actual user's name
+          email: user.email,
+        })
+          .then(() => {
+            console.log("User data added to Firestore");
+            navigate("/main");
+          })
+          .catch((error) => {
+            console.error("Error adding user data to Firestore:", error);
+          });
       })
       .catch((error) => {
         // Handle login error
@@ -105,6 +122,7 @@ export default function Auth() {
               type="text"
               placeholder="Имя"
               name="name"
+              onChange={(e) => setUserName(e.target.value)}
               required
             />
 
