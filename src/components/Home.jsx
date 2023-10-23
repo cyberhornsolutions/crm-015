@@ -3,6 +3,7 @@ import logoIcon from "../assets/images/logo.png";
 import enFlagIcon from "../assets/images/gb-fl.png";
 import ruFlagIcon from "../assets/images/ru-fl.png";
 import accPlaceholder from "../assets/images/acc-img-placeholder.png";
+import moment from "moment";
 import {
   InformationCircle,
   List,
@@ -18,9 +19,11 @@ import axios from "axios";
 import Select from "react-select";
 import { Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, addDoc } from "firebase/firestore";
+import { toastify } from "../helper/toastHelper";
+import firebase from "firebase/app";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -50,11 +53,8 @@ export default function HomeRu() {
     phone: "",
     country: "",
     city: "",
-    dateRegister: "",
     comment: "...",
   });
-
-  console.log("User profile", userProfile);
 
   const { t, i18n } = useTranslation();
 
@@ -89,13 +89,18 @@ export default function HomeRu() {
       console.error("Error saving data to Firestore:", error);
     }
   };
-
   const getUserDataByUID = async () => {
     const user = auth.currentUser;
+
+    if (!user) {
+      console.log("User is not authenticated.");
+      return null;
+    }
+
     console.log("UID:", user.uid);
-    const userRef = doc(db, "users", user.uid);
 
     try {
+      const userRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userRef);
       if (userDoc.exists()) {
         // User document exists, you can access the data
@@ -114,7 +119,18 @@ export default function HomeRu() {
   };
 
   useEffect(() => {
-    getUserDataByUID();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is authenticated, fetch user data here
+        getUserDataByUID();
+      } else {
+        console.log("User is not authenticated.");
+      }
+    });
+
+    return () => {
+      unsubscribe(); // Unsubscribe from the listener when the component unmounts
+    };
   }, []);
 
   const hanldeLogout = () => {
@@ -229,42 +245,64 @@ export default function HomeRu() {
     e.preventDefault();
     const form = document.getElementById("newOrderForm");
 
-    console.log({ orderData });
+    console.log({ form, orderData });
 
-    const newRow = document.createElement("tr");
+    if (!orderData?.symbol) {
+      toastify("Symbol is missing.");
+    } else if (!orderData?.volume) {
+      toastify("Volume is missing.");
+    } else {
+      const user = auth.currentUser;
+      const userId = user.uid;
 
-    const currentDate = new Date();
+      const ordersCollection = collection(db, "orders");
 
-    const day = currentDate.getDate().toString().padStart(2, "0"); // Get the day and pad with leading zero if necessary
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Get the month (Note: Months are zero-based, so we add 1) and pad with leading zero if necessary
-    const year = currentDate.getFullYear().toString().slice(-4); // Get the last two digits of the year
+      console.log({ userId });
 
-    const formattedDate = `${day}/${month}/${year}`;
+      addDoc(ordersCollection, {
+        userId: userId,
+        ...orderData,
+      })
+        .then((docRef) => {
+          console.log("Order written with ID: ", docRef.id);
+        })
+        .catch((error) => {
+          console.error("Error adding order: ", error);
+        });
 
-    newRow.innerHTML = `<td>${"ID" + Math.floor(Math.random() * 1000)}</td>
-     <td>${formattedDate}</td>
-     <td>${orderData?.symbol?.value}</td>
-     <td>${type}</td>
-     <td>${orderData.volume}</td>
-     <td>${orderData.symbolValue}</td>
-     <td>${orderData.sl}/${orderData.tp}</td>
-     <td>Success</td>
-     <td>-${orderData.volume * orderData.symbolValue}</td>`;
+      //   const newRow = document.createElement("tr");
 
-    let dataBody = document.getElementById("dataBody");
+      //   const currentDate = new Date();
 
-    //   // Append the new row to the dataBody
-    dataBody.appendChild(newRow);
+      //   const day = currentDate.getDate().toString().padStart(2, "0"); // Get the day and pad with leading zero if necessary
+      //   const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Get the month (Note: Months are zero-based, so we add 1) and pad with leading zero if necessary
+      //   const year = currentDate.getFullYear().toString().slice(-4); // Get the last two digits of the year
 
-    //   // Clear form inputs
-    form.reset();
-    setOrderData({
-      symbol: null,
-      symbolValue: null,
-      volume: null,
-      sl: null,
-      tp: null,
-    });
+      //   const formattedDate = `${day}/${month}/${year}`;
+
+      //   newRow.innerHTML = `<td>${"ID" + Math.floor(Math.random() * 1000)}</td>
+      //  <td>${formattedDate}</td>
+      //  <td>${orderData?.symbol?.value}</td>
+      //  <td>${type}</td>
+      //  <td>${orderData.volume}</td>
+      //  <td>${orderData.symbolValue}</td>
+      //  <td>${orderData.sl}/${orderData.tp}</td>
+      //  <td>Success</td>
+      //  <td>-${orderData.volume * orderData.symbolValue}</td>`;
+
+      //   let dataBody = document.getElementById("dataBody");
+
+      //   dataBody.appendChild(newRow);
+
+      //   form.reset();
+      //   setOrderData({
+      //     symbol: null,
+      //     symbolValue: null,
+      //     volume: null,
+      //     sl: null,
+      //     tp: null,
+      //   });
+    }
   };
 
   const getSymbols = async () => {
@@ -314,7 +352,7 @@ export default function HomeRu() {
               <input
                 type="number"
                 className="balance-nums"
-                readOnly="true"
+                readOnly={true}
                 defaultValue={100.0}
               />
             </div>
@@ -328,7 +366,7 @@ export default function HomeRu() {
               <input
                 type="number"
                 className="balance-nums"
-                readOnly="true"
+                readOnly={true}
                 defaultValue={100.0}
               />
             </div>
@@ -337,7 +375,7 @@ export default function HomeRu() {
               <input
                 type="number"
                 className="balance-nums"
-                readOnly="true"
+                readOnly={true}
                 defaultValue={0.0}
               />
             </div>
@@ -575,7 +613,7 @@ export default function HomeRu() {
                         type="number"
                         id="symbol-current-value"
                         name="symbolCurrentValue"
-                        readOnly="true"
+                        readOnly={true}
                         value={orderData?.symbolValue}
                         // required
                       />
@@ -871,7 +909,7 @@ export default function HomeRu() {
                       name="email"
                       id="userEmail"
                       value={userProfile?.email}
-                      placeholder="testlead1@gmail.com"
+                      placeholder=""
                       readOnly
                     />
                   </div>
@@ -915,12 +953,12 @@ export default function HomeRu() {
                     <h6>{t("dateRegister")}</h6>
                     <input
                       type="text"
-                      value={userProfile?.dateRegister}
+                      value={userProfile?.createdAt}
                       name="dateRegister"
                       id
-                      placeholder="02/07/2023"
-                      onChange={handleChange}
-                      readOnly={!isEditable}
+                      placeholder=""
+                      // onChange={handleChange}
+                      readOnly={true}
                     />
                   </div>
                   <div className="acc-info-personal-item">

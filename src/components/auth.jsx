@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
@@ -6,7 +6,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { toastify } from "../helper/toastHelper";
 // import "./style.css";
+// import { toastify } from "react-toastify";
 
 export default function Auth() {
   const [tab, setTab] = useState(1);
@@ -14,54 +16,70 @@ export default function Auth() {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // User successfully logged in
         console.log(`User logged in: ${userCredential.user}`);
         navigate("/main");
       })
       .catch((error) => {
-        // Handle login error
-        console.error(error.message);
+        const { message } = error;
+        console.error(message);
+        if (message?.includes("invalid-login-credentials")) {
+          toastify("Invalid Email or Password");
+        } else if (message.includes("invalid-email")) {
+          toastify("Invalid Email");
+        } else {
+          toastify(message);
+        }
       });
   };
 
   const handleSignUp = (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+    if (password !== confirmPassword) {
+      toastify("Passwords do not match.");
+    } else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
 
-        console.log("User ==>", user);
+          console.log("User ==>", user);
 
-        // Add user data to Firestore
-        const userRef = doc(db, "users", user.uid);
-        setDoc(userRef, {
-          name: userName, // Replace with the actual user's name
-          email: user.email,
-        })
-          .then(() => {
-            console.log("User data added to Firestore");
-            navigate("/main");
+          // Create a formatted date string
+          const formattedDate = new Date().toLocaleDateString("en-US");
+
+          // Add user data to Firestore
+          const userRef = doc(db, "users", user.uid);
+          setDoc(userRef, {
+            name: userName, // Replace with the actual user's name
+            email: user.email,
+            createdAt: formattedDate,
           })
-          .catch((error) => {
-            console.error("Error adding user data to Firestore:", error);
-          });
-      })
-      .catch((error) => {
-        // Handle login error
-        console.error(error.message);
-      });
+            .then(() => {
+              console.log("User data added to Firestore");
+              navigate("/main");
+            })
+            .catch((error) => {
+              console.error("Error adding user data to Firestore:", error);
+            });
+        })
+        .catch((error) => {
+          let { message } = error;
+          console.error(message);
+          if (message.includes("email-already-in-use")) {
+            toastify("Email already exists.");
+          } else if (message.includes("weak-password")) {
+            toastify("Password must be atleast 6 characters.");
+          } else {
+            toastify(message);
+          }
+        });
+    }
   };
-
-  // function addEmailToURL() {
-  //   let lang = document.documentElement.lang;
-  //   navigate(`/${lang === "en" ? "en" : "ru"}/main`);
-
-  // }
 
   return (
     <>
@@ -100,7 +118,10 @@ export default function Auth() {
 
           <div className="signup_wrapper">
             <p className="sign_up">Нет аккаунта?</p>
-            <a className="sign_up_link" onClick={() => setTab(2)}>
+            <a
+              className="sign_up_link cursor-pointer"
+              onClick={() => setTab(2)}
+            >
               Зарегистрироваться
             </a>
           </div>
@@ -149,6 +170,7 @@ export default function Auth() {
               type="password"
               placeholder="Повторите пароль"
               name="psw"
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
           </div>
@@ -159,7 +181,7 @@ export default function Auth() {
 
           <div class="login_wrapper">
             <p class="login">Есть аккаунт?</p>
-            <a class="login_link" onClick={() => setTab(1)}>
+            <a class="login_link cursor-pointer" onClick={() => setTab(1)}>
               Войти
             </a>
           </div>
