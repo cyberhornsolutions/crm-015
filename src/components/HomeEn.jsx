@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import logoIcon from "./logo.png";
-import enFlagIcon from "./gb-fl.png";
-import accPlaceholder from "./acc-img-placeholder.png";
+import logoIcon from "../assets/logo.png";
+import enFlagIcon from "../assets/gb-fl.png";
+import accPlaceholder from "../assets/acc-img-placeholder.png";
 import {
   InformationCircle,
   List,
   LogOut,
   PersonCircle,
   StatsChartSharp,
+  CloseCircleOutline,
 } from "react-ionicons";
-import TradingView from "./TradingView";
+import TradingView from "./TradingView.jsx";
 import TradingWidget from "./TradingWidget";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Form } from "react-bootstrap";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -184,71 +185,25 @@ export default function HomeRu() {
     });
   };
 
-  // const addChart = () => {
-  //   var newTabId = "h" + (document.querySelectorAll(".tab-pane").length + 1);
-
-  //   // Create a new nav item
-  //   var newNavItem = document.createElement("li");
-  //   newNavItem.classList.add("nav-item");
-
-  //   // Create a new nav link
-  //   var newNavLink = document.createElement("a");
-  //   newNavLink.classList.add("nav-link");
-  //   newNavLink.setAttribute("data-bs-toggle", "tab");
-  //   newNavLink.setAttribute("href", "#" + newTabId);
-  //   newNavLink.setAttribute("style", "font-size: 14px");
-
-  //   newNavLink.textContent =
-  //     "# " + document.querySelectorAll(".nav-item").length;
-
-  //   // Append the new nav link to the new nav item
-  //   newNavItem.appendChild(newNavLink);
-
-  //   // Insert the new nav item before the "+" button
-  //   var addButton = document.getElementById("addTabButton").parentNode;
-  //   addButton.parentNode.insertBefore(newNavItem, addButton);
-
-  //   // Create a new tab pane
-  //   var newTabPane = document.createElement("div");
-  //   newTabPane.classList.add(
-  //     "tab-pane",
-  //     "container",
-  //     "tradingview-widget-container",
-  //     "fade",
-  //     "show",
-  //     "active"
-  //   ); // Add 'show' and 'active' classes to make it visible
-  //   newTabPane.setAttribute("id", newTabId);
-  //   newTabPane.style.margin = "0";
-  //   newTabPane.style.padding = "0";
-
-  //   // Create a new tradingview container for the tab
-  //   var newTradingViewContainer = document.createElement("div");
-  //   newTradingViewContainer.setAttribute("id", "tradingview_" + newTabId);
-
-  //   // Append the new tradingview container to the tab pane
-  //   newTabPane?.appendChild(newTradingViewContainer);
-
-  //   // Append the new tab pane to the tab content div
-  //   document.querySelector(".tab-content")?.appendChild(newTabPane);
-
-  //   // Load the TradingView scripts for the new tab
-  //   var tvScript = document.createElement("script");
-  //   tvScript.type = "text/javascript";
-  //   tvScript.src = "https://s3.tradingview.com/tv.js";
-  //   newTradingViewContainer?.appendChild(tvScript);
-
-  //   var customScript = document.createElement("script");
-  //   customScript.type = "text/javascript";
-  //   customScript.src = "tradingview.js";
-  //   newTradingViewContainer?.appendChild(customScript);
-
-  //   // Activate the new tab by triggering a click event
-  //   newNavLink.click();
-
-  //   // Update the TradingView widget for the new tab
-  //   // updateWidget("BTCUSDT", "tradingview_" + newTabId);
-  // };
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "blue" : "white",
+      color: state.isSelected ? "white" : "black",
+      "&:hover": {
+        backgroundColor: "lightgray",
+        color: "black",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "white",
+    }),
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: "white", // Change the background color to white
+    }),
+  };
 
   return (
     <>
@@ -332,7 +287,7 @@ export default function HomeRu() {
       <div id="body">
         <div id="sidebar">
           <div id="side-main-menu">
-            <div id="side-trade">
+            <div id="side-trade" onClick={() => setTab("trade")}>
               <StatsChartSharp
                 color={
                   tab === "trade" || tab === "assets"
@@ -345,26 +300,25 @@ export default function HomeRu() {
                 className={`side-button ${
                   (tab === "trade" || tab === "assets") && " active"
                 }`}
-                onClick={() => setTab("trade")}
               >
                 Trade
               </button>
             </div>
-            <div id="side-assets">
+            <div
+              id="side-assets"
+              onClick={() => {
+                setTab(tab === "assets" ? "trade" : "assets");
+              }}
+            >
               {/* <ion-icon id="side-button-assets-icon" name="list" /> */}
               <List
                 color={
-                  tab === "assets" || tab === "trade"
-                    ? "rgba(0, 255, 110, 0.952)"
-                    : "#ffffff"
+                  tab === "assets" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"
                 }
               />
               <button
                 id="side-button-assets"
                 className={`side-button ${tab === "assets" && " active"}`}
-                onClick={() => {
-                  setTab(tab === "assets" ? "trade" : "assets");
-                }}
               >
                 Assets
               </button>
@@ -373,12 +327,11 @@ export default function HomeRu() {
                 className={`side-button hidden ${
                   tab === "assets" && " active"
                 }`}
-                onClick={() => setTab(tab === "assets" ? "trade" : "assets")}
               >
                 Assets
               </button>
             </div>
-            <div id="side-account">
+            <div id="side-account" onClick={() => setTab("account")}>
               {/* <ion-icon id="side-button-account-icon" name="person-circle" /> */}
               <PersonCircle
                 color={
@@ -388,14 +341,13 @@ export default function HomeRu() {
               <button
                 id="side-button-account"
                 className={`side-button ${tab === "account" && " active"}`}
-                onClick={() => setTab("account")}
               >
                 Account
               </button>
             </div>
           </div>
           <div id="side-out-menu">
-            <div id="side-out-extra">
+            <div id="side-out-extra" onClick={() => setTab("help")}>
               {/* <ion-icon
                 id="information-circle-icon"
                 name="information-circle"
@@ -406,19 +358,14 @@ export default function HomeRu() {
               <button
                 id="help-button"
                 className={`side-out-button ${tab === "help" && " active"}`}
-                onClick={() => setTab("help")}
               >
                 Help
               </button>
             </div>
-            <div id="side-logout">
+            <div id="side-logout" onClick={() => navigate("/")}>
               <ion-icon name="log-out" />
               <LogOut color={"#ffffff"} />
-              <button
-                onClick={() => navigate("/")}
-                id="logout-button"
-                className="side-out-button"
-              >
+              <button id="logout-button" className="side-out-button">
                 Exit
               </button>
             </div>
@@ -440,10 +387,34 @@ export default function HomeRu() {
                         <a
                           class={`nav-link ${activeTab === i + 1 && "active"}`}
                           data-bs-toggle="tab"
-                          style={{ fontSize: "14px", cursor: "pointer" }}
+                          style={{
+                            fontSize: "14px",
+                            cursor: "pointer",
+                            position: "relative",
+                          }}
                           onClick={() => setActiveTab(i + 1)}
                         >
                           # {e}
+                          <div
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              console.log("Close", { tabs, e });
+                              let _tabs = [...tabs].filter((f) => f !== e);
+                              setTabs(_tabs);
+                              setActiveTab(_tabs[0]);
+                            }}
+                          >
+                            <CloseCircleOutline
+                              style={{
+                                marginLeft: 10,
+                                height: "auto",
+                                position: "absolute",
+                                top: "-10px",
+                                left: "30px",
+                                borderRadius: "50%",
+                              }}
+                            />
+                          </div>
                         </a>
                       </li>
                     ))}
@@ -454,9 +425,16 @@ export default function HomeRu() {
                         style={{ background: "transparent", border: "none" }}
                         // onClick={addChart}
                         onClick={() => {
-                          let _tabs = [...tabs, tabs?.length + 1];
+                          let highest = tabs[0];
+                          tabs.forEach((element) => {
+                            if (element > highest) {
+                              highest = element;
+                            }
+                          });
+                          let _tabs = [...tabs, highest + 1];
                           setTabs(_tabs);
                           setActiveTab(_tabs.length);
+                          console.log({ _tabs, length: _tabs.length });
                         }}
                       >
                         +
@@ -496,6 +474,7 @@ export default function HomeRu() {
                         onChange={(e) =>
                           setOrderData({ ...orderData, symbol: e })
                         }
+                        styles={customStyles}
                         value={orderData.symbol}
                       />
                       {/* <input
@@ -687,11 +666,7 @@ export default function HomeRu() {
                     className="modal fade show"
                     id="verification-docs"
                     style={{
-                      "margin-top": "10%",
-                      "background-color": "transparent",
-                      "border-radius": "10px",
-                      height: "auto",
-                      display: "block",
+                      display: "flex",
                     }}
                   >
                     <div
@@ -955,8 +930,7 @@ export default function HomeRu() {
                       className="modal show fade"
                       id="deposit-modal"
                       style={{
-                        "background-color": "transparent",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div
@@ -983,41 +957,28 @@ export default function HomeRu() {
                           >
                             <div
                               id="modal-contents"
-                              style={{ height: "500px", display: "inherit" }}
+                              style={{
+                                height: "500px",
+                                display: "inherit",
+                              }}
                             >
-                              <div className="dropdown">
-                                <button
-                                  type="button"
-                                  className="btn btn-secondary dropdown-toggle"
-                                  data-toggle="dropdown"
-                                >
-                                  Choose method
-                                </button>
-                                <ul
-                                  className="dropdown-menu"
-                                  style={{ "z-index": "100000" }}
-                                >
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      VISA/MasterCard
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      Crypto
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      Other
-                                    </a>
-                                  </li>
-                                </ul>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Form.Select style={{ width: 200 }}>
+                                  <option>Choose method</option>
+                                  <option value="1">VISA/MasterCard</option>
+                                  <option value="2">Crypto</option>
+                                  <option value="3">Other</option>
+                                </Form.Select>
                               </div>
-                              <label htmlFor>Account number:</label>
-                              <input type="text" name id />
-                              <label htmlFor>Amount:</label>
-                              <input type="text" name id />
+                              <label>Account number:</label>
+                              <input type="text" className="text-center" />
+                              <label>Amount:</label>
+                              <input type="text" className="text-center" />
                             </div>
                           </div>
                           {/* Modal footer */}
@@ -1059,9 +1020,7 @@ export default function HomeRu() {
                       className="modal show fade"
                       id="dep-successModal"
                       style={{
-                        backgroundColor: "transparent",
-                        marginTop: "17%",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div className="modal-dialog">
@@ -1098,8 +1057,7 @@ export default function HomeRu() {
                       className="modal show fade"
                       id="withdraw-modal"
                       style={{
-                        "background-color": "transparent",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div
@@ -1173,9 +1131,7 @@ export default function HomeRu() {
                       className="modal fade show"
                       id="wd-successModal"
                       style={{
-                        backgroundColor: "transparent",
-                        marginTop: "17%",
-                        display: "block",
+                        display: "flex",
                       }}
                     >
                       <div className="modal-dialog">

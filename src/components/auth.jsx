@@ -1,33 +1,78 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 // import "./style.css";
 
 export default function Auth() {
   const [tab, setTab] = useState(1);
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  function addEmailToURL() {
-    let lang = document.documentElement.lang;
-    navigate(`/${lang === "en" ? "en" : "ru"}/main`);
-    // Get the user's email from the input field
-    // var userEmail = document.querySelector(".email_input").value;
+  const handleLogin = (e) => {
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // User successfully logged in
+        console.log(`User logged in: ${userCredential.user}`);
+        navigate("/main");
+      })
+      .catch((error) => {
+        // Handle login error
+        console.error(error.message);
+      });
+  };
 
-    // Modify the form action to include the email as a URL parameter
-    // document.getElementById("loginForm").action =
-    // "./ac-comp-ru.html?email=" + encodeURIComponent(userEmail);
-  }
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+
+        console.log("User ==>", user);
+
+        // Add user data to Firestore
+        const userRef = doc(db, "users", user.uid);
+        setDoc(userRef, {
+          name: userName, // Replace with the actual user's name
+          email: user.email,
+        })
+          .then(() => {
+            console.log("User data added to Firestore");
+            navigate("/main");
+          })
+          .catch((error) => {
+            console.error("Error adding user data to Firestore:", error);
+          });
+      })
+      .catch((error) => {
+        // Handle login error
+        console.error(error.message);
+      });
+  };
+
+  // function addEmailToURL() {
+  //   let lang = document.documentElement.lang;
+  //   navigate(`/${lang === "en" ? "en" : "ru"}/main`);
+
+  // }
 
   return (
     <>
-      {tab == 1 ? (
-        <form
-          className="login_form"
-          // action="./en/main"
-          id="loginForm"
-          onSubmit={addEmailToURL}
-        >
+      {tab === 1 ? (
+        <form className="login_form" id="loginForm" onSubmit={handleLogin}>
           <div id="logo_wrapper" className="logo_wrapper">
-            <img className="logo" src={require("./logo.png")} alt="logo" />
+            <img
+              className="logo"
+              src={require("../assets/images/logo.png")}
+              alt="logo"
+            />
           </div>
 
           <div className="fields">
@@ -36,6 +81,7 @@ export default function Auth() {
               type="email"
               placeholder="Электронная почта"
               name="email"
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
             <input
@@ -43,6 +89,7 @@ export default function Auth() {
               type="password"
               placeholder="Пароль"
               name="psw"
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -59,9 +106,13 @@ export default function Auth() {
           </div>
         </form>
       ) : (
-        <form class="signup_form" action="#">
+        <form class="signup_form" onSubmit={handleSignUp}>
           <div id="signup_logo_wrapper" class="logo_wrapper">
-            <img class="signup_logo" src={require("./logo.png")} alt="logo" />
+            <img
+              class="signup_logo"
+              src={require("../assets/images/logo.png")}
+              alt="logo"
+            />
             <h3 class="signup_title">Регистрация</h3>
           </div>
 
@@ -71,6 +122,7 @@ export default function Auth() {
               type="text"
               placeholder="Имя"
               name="name"
+              onChange={(e) => setUserName(e.target.value)}
               required
             />
 
@@ -79,6 +131,7 @@ export default function Auth() {
               type="email"
               placeholder="Электронная почта"
               name="email"
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
 
@@ -87,6 +140,7 @@ export default function Auth() {
               type="password"
               placeholder="Пароль"
               name="psw"
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
 
