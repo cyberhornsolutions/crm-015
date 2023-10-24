@@ -21,9 +21,18 @@ import { Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { doc, getDoc, setDoc, collection, addDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  collection,
+  addDoc,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
 import { toastify } from "../helper/toastHelper";
-import firebase from "firebase/app";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -36,6 +45,7 @@ export default function HomeRu() {
     sl: null,
     tp: null,
   });
+  const [ordersHistory, setOrdersHistory] = useState([]);
   const [uploadModal, setUploadModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [depositModal, setDepositModal] = useState(false);
@@ -55,6 +65,8 @@ export default function HomeRu() {
     city: "",
     comment: "...",
   });
+
+  console.log("Orders History", ordersHistory);
 
   const { t, i18n } = useTranslation();
 
@@ -118,11 +130,40 @@ export default function HomeRu() {
     }
   };
 
+  const fetchOrders = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userId = user.uid;
+        const q = query(
+          collection(db, "orders"),
+          where("userId", "==", userId)
+        );
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const orders = [];
+          querySnapshot.forEach((doc) => {
+            orders.push({ id: doc.id, ...doc.data() });
+          });
+          setOrdersHistory(orders);
+        });
+
+        // Return a cleanup function to unsubscribe when the component unmounts
+        return () => {
+          unsubscribe();
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is authenticated, fetch user data here
         getUserDataByUID();
+        fetchOrders();
       } else {
         console.log("User is not authenticated.");
       }
@@ -241,11 +282,13 @@ export default function HomeRu() {
     });
   };
 
-  const placeOrder = (e, type) => {
+  const placeOrder = async (e, type) => {
     e.preventDefault();
     const form = document.getElementById("newOrderForm");
 
     console.log({ form, orderData });
+    // Create a formatted date string
+    const formattedDate = new Date().toLocaleDateString("en-US");
 
     if (!orderData?.symbol) {
       toastify("Symbol is missing.");
@@ -255,20 +298,40 @@ export default function HomeRu() {
       const user = auth.currentUser;
       const userId = user.uid;
 
-      const ordersCollection = collection(db, "orders");
+      const ordersCollectionRef = collection(db, "orders");
 
-      console.log({ userId });
+      try {
+        orderData.userId = userId;
+        orderData.type = type;
+        orderData.createdAt = formattedDate;
 
-      addDoc(ordersCollection, {
-        userId: userId,
-        ...orderData,
-      })
-        .then((docRef) => {
-          console.log("Order written with ID: ", docRef.id);
-        })
-        .catch((error) => {
-          console.error("Error adding order: ", error);
+        // Write the order data to Firestore as a new document
+        await addDoc(ordersCollectionRef, {
+          ...orderData,
+          symbol: orderData?.symbol.value,
         });
+        toastify("Order added to Database");
+        console.log("Order added to Database");
+        setOrderData({
+          volume: null,
+          sl: null,
+          tp: null,
+        });
+      } catch (error) {
+        console.error("Error adding order: ", error);
+      }
+
+      // const ordersRef = doc(db, "orders", userId);
+
+      // console.log({ ordersRef });
+
+      // let res = await setDoc(ordersRef, orderData)
+      //   .then(() => {
+      //     console.log("Order added to Database");
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error adding order: ", error);
+      //   });
 
       //   const newRow = document.createElement("tr");
 
@@ -511,14 +574,15 @@ export default function HomeRu() {
                           }}
                           onClick={() => setActiveTab(i + 1)}
                         >
-                          # {e}
+                          # {i + 1}
                           <div
                             onClick={(event) => {
                               event.stopPropagation();
-                              console.log("Close", { tabs, e });
-                              let _tabs = [...tabs].filter((f) => f !== e);
+                              let _tabs = [...tabs].filter(
+                                (f, index) => index !== i
+                              );
                               setTabs(_tabs);
-                              setActiveTab(_tabs[0]);
+                              setActiveTab(_tabs.length);
                             }}
                           >
                             <CloseCircleOutline
@@ -656,7 +720,10 @@ export default function HomeRu() {
                         // className="newOrderButton"
                         // id="buyButton"
                         className="newOrderButton buyButton"
-                        onClick={(e) => placeOrder(e, "Buy")}
+                        onClick={(e) => {
+                          placeOrder(e, "Buy");
+                          console.log("Here");
+                        }}
                         type="submit"
                       >
                         {t("buy")}
@@ -728,7 +795,21 @@ export default function HomeRu() {
                         <th>{t("profit")}</th>
                       </tr>
                     </thead>
-                    <tbody id="dataBody" className="table-body"></tbody>
+                    <tbody id="dataBody" className="table-body">
+                      {ordersHistory?.map((order, i) => (
+                        <tr>
+                          <td>{i + 1}</td>
+                          <td>{order?.createdAt}</td>
+                          <td>{order?.symbol}</td>
+                          <td>{order?.type}</td>
+                          <td>{order?.volume}</td>
+                          <td>{order?.symbolValue}</td>
+                          <td>
+                            {order?.sl} / {order?.tp}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
                   </table>
                 </div>
               </div>
