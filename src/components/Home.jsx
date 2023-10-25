@@ -31,6 +31,7 @@ import {
   query,
   where,
   onSnapshot,
+  updateDoc,
 } from "firebase/firestore";
 import { toastify } from "../helper/toastHelper";
 
@@ -294,6 +295,8 @@ export default function HomeRu() {
       toastify("Symbol is missing.");
     } else if (!orderData?.volume) {
       toastify("Volume is missing.");
+    } else if (orderData?.symbolValue > userProfile?.totalBalance) {
+      toastify("You have insufficient balance to buy this coin!");
     } else {
       const user = auth.currentUser;
       const userId = user.uid;
@@ -304,6 +307,24 @@ export default function HomeRu() {
         orderData.userId = userId;
         orderData.type = type;
         orderData.createdAt = formattedDate;
+        if (!orderData?.sl && !orderData?.tp) {
+          orderData.status = "Success";
+        } else {
+          orderData.status = "Pending";
+        }
+        if (type === "Buy") {
+          orderData.profit = -(orderData?.symbolValue * orderData?.volume);
+        } else if (type === "Sell") {
+          orderData.profit = orderData?.symbolValue * orderData?.volume;
+        }
+
+        const userRef = doc(db, "users", userId);
+        const newTotalBalance = userProfile?.totalBalance + orderData?.profit;
+
+        await updateDoc(userRef, {
+          totalBalance: newTotalBalance,
+        });
+        userProfile.totalBalance = newTotalBalance;
 
         // Write the order data to Firestore as a new document
         await addDoc(ordersCollectionRef, {
@@ -416,7 +437,7 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                defaultValue={100.0}
+                defaultValue={userProfile?.totalBalance}
               />
             </div>
             <div className="balance-item">
@@ -807,6 +828,8 @@ export default function HomeRu() {
                           <td>
                             {order?.sl} / {order?.tp}
                           </td>
+                          <td>{order?.status}</td>
+                          <td>{order?.profit}</td>
                         </tr>
                       ))}
                     </tbody>

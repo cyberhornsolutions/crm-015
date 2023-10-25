@@ -57,6 +57,7 @@ export default function Auth() {
           setDoc(userRef, {
             name: userName, // Replace with the actual user's name
             email: user.email,
+            totalBalance: 100,
             createdAt: formattedDate,
           })
             .then(() => {
