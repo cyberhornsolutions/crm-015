@@ -34,6 +34,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { toastify } from "../helper/toastHelper";
+import DataTable from "react-data-table-component";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -187,6 +188,65 @@ export default function HomeRu() {
       });
   };
 
+  const columns = [
+    {
+      name: "ID",
+      selector: (row) => row.id,
+    },
+    {
+      name: t("date"), // Translate the header using your t function
+      selector: (row) => row.createdAt,
+      sortable: true,
+    },
+    {
+      name: t("symbol"),
+      selector: (row) => row.symbol,
+      sortable: true,
+    },
+    {
+      name: t("type"),
+      selector: (row) => row.type,
+      sortable: true,
+    },
+    {
+      name: t("volume"),
+      selector: (row) => row.volume,
+      sortable: true,
+    },
+    {
+      name: t("price"),
+      selector: (row) => row.symbolValue,
+      sortable: true,
+    },
+    {
+      name: "SL / TP",
+      selector: (row) => row.sltp,
+      sortable: true,
+    },
+    {
+      name: t("status"),
+      selector: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: t("profit"),
+      selector: (row) => row.profit,
+      sortable: true,
+    },
+  ];
+
+  const data = ordersHistory.map((order, i) => ({
+    id: i + 1,
+    createdAt: order?.createdAt,
+    symbol: order?.symbol,
+    type: order?.type,
+    volume: order?.volume,
+    symbolValue: order?.symbolValue,
+    sltp: `${order?.sl || ""}/${order?.tp || ""}`,
+    status: order?.status,
+    profit: order?.profit,
+  }));
+
   const openOrderHistory = () => {
     const ordersHistoryButton = document.getElementById("ordersHistoryButton");
     const tableOrders = document.getElementById("orders");
@@ -204,7 +264,7 @@ export default function HomeRu() {
       ordersHistoryButton.style.color = "rgb(0, 255, 110)";
       ordersHistoryButton.style.fontWeight = "bold";
 
-      tableOrders.style.maxHeight = "630px";
+      tableOrders.style.maxHeight = "350px";
       tradeToToggle.style.display = "none";
       navButtons.setAttribute("style", "margin-top: 5px;");
     } else {
@@ -799,7 +859,18 @@ export default function HomeRu() {
                   </button>
                 </div>
                 <div id="orders">
-                  <table
+                  <DataTable
+                    columns={columns}
+                    data={data}
+                    pagination
+                    paginationPerPage={5}
+                    paginationRowsPerPageOptions={[5, 10]}
+                    highlightOnHover
+                    pointerOnHover
+                    responsive
+                    theme="dark"
+                  />
+                  {/* <table
                     id="orders-table"
                     className="table-dark table-striped table-responsive"
                   >
@@ -833,7 +904,7 @@ export default function HomeRu() {
                         </tr>
                       ))}
                     </tbody>
-                  </table>
+                  </table> */}
                 </div>
               </div>
             </div>

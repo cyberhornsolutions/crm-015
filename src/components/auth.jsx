@@ -58,6 +58,7 @@ export default function Auth() {
             name: userName, // Replace with the actual user's name
             email: user.email,
             totalBalance: 100,
+            status: "New",
             createdAt: formattedDate,
           })
             .then(() => {
