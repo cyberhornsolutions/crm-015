@@ -3,6 +3,7 @@ import logoIcon from "../assets/images/logo.png";
 import enFlagIcon from "../assets/images/gb-fl.png";
 import ruFlagIcon from "../assets/images/ru-fl.png";
 import accPlaceholder from "../assets/images/acc-img-placeholder.png";
+import moment from "moment";
 import {
   InformationCircle,
   List,
@@ -18,9 +19,22 @@ import axios from "axios";
 import Select from "react-select";
 import { Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  collection,
+  addDoc,
+  query,
+  where,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
+import { toastify } from "../helper/toastHelper";
+import DataTable from "react-data-table-component";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -33,6 +47,7 @@ export default function HomeRu() {
     sl: null,
     tp: null,
   });
+  const [ordersHistory, setOrdersHistory] = useState([]);
   const [uploadModal, setUploadModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [depositModal, setDepositModal] = useState(false);
@@ -50,11 +65,10 @@ export default function HomeRu() {
     phone: "",
     country: "",
     city: "",
-    dateRegister: "",
     comment: "...",
   });
 
-  console.log("User profile", userProfile);
+  console.log("Orders History", ordersHistory);
 
   const { t, i18n } = useTranslation();
 
@@ -89,13 +103,18 @@ export default function HomeRu() {
       console.error("Error saving data to Firestore:", error);
     }
   };
-
   const getUserDataByUID = async () => {
     const user = auth.currentUser;
+
+    if (!user) {
+      console.log("User is not authenticated.");
+      return null;
+    }
+
     console.log("UID:", user.uid);
-    const userRef = doc(db, "users", user.uid);
 
     try {
+      const userRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userRef);
       if (userDoc.exists()) {
         // User document exists, you can access the data
@@ -113,8 +132,48 @@ export default function HomeRu() {
     }
   };
 
+  const fetchOrders = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userId = user.uid;
+        const q = query(
+          collection(db, "orders"),
+          where("userId", "==", userId)
+        );
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const orders = [];
+          querySnapshot.forEach((doc) => {
+            orders.push({ id: doc.id, ...doc.data() });
+          });
+          setOrdersHistory(orders);
+        });
+
+        // Return a cleanup function to unsubscribe when the component unmounts
+        return () => {
+          unsubscribe();
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
   useEffect(() => {
-    getUserDataByUID();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is authenticated, fetch user data here
+        getUserDataByUID();
+        fetchOrders();
+      } else {
+        console.log("User is not authenticated.");
+      }
+    });
+
+    return () => {
+      unsubscribe(); // Unsubscribe from the listener when the component unmounts
+    };
   }, []);
 
   const hanldeLogout = () => {
@@ -128,6 +187,65 @@ export default function HomeRu() {
         console.log("Error", error);
       });
   };
+
+  const columns = [
+    {
+      name: "ID",
+      selector: (row) => row.id,
+    },
+    {
+      name: t("date"), // Translate the header using your t function
+      selector: (row) => row.createdAt,
+      sortable: true,
+    },
+    {
+      name: t("symbol"),
+      selector: (row) => row.symbol,
+      sortable: true,
+    },
+    {
+      name: t("type"),
+      selector: (row) => row.type,
+      sortable: true,
+    },
+    {
+      name: t("volume"),
+      selector: (row) => row.volume,
+      sortable: true,
+    },
+    {
+      name: t("price"),
+      selector: (row) => row.symbolValue,
+      sortable: true,
+    },
+    {
+      name: "SL / TP",
+      selector: (row) => row.sltp,
+      sortable: true,
+    },
+    {
+      name: t("status"),
+      selector: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: t("profit"),
+      selector: (row) => row.profit,
+      sortable: true,
+    },
+  ];
+
+  const data = ordersHistory.map((order, i) => ({
+    id: i + 1,
+    createdAt: order?.createdAt,
+    symbol: order?.symbol,
+    type: order?.type,
+    volume: order?.volume,
+    symbolValue: order?.symbolValue,
+    sltp: `${order?.sl || ""}/${order?.tp || ""}`,
+    status: order?.status,
+    profit: order?.profit,
+  }));
 
   const openOrderHistory = () => {
     const ordersHistoryButton = document.getElementById("ordersHistoryButton");
@@ -146,7 +264,7 @@ export default function HomeRu() {
       ordersHistoryButton.style.color = "rgb(0, 255, 110)";
       ordersHistoryButton.style.fontWeight = "bold";
 
-      tableOrders.style.maxHeight = "630px";
+      tableOrders.style.maxHeight = "350px";
       tradeToToggle.style.display = "none";
       navButtons.setAttribute("style", "margin-top: 5px;");
     } else {
@@ -225,46 +343,110 @@ export default function HomeRu() {
     });
   };
 
-  const placeOrder = (e, type) => {
+  const placeOrder = async (e, type) => {
     e.preventDefault();
     const form = document.getElementById("newOrderForm");
 
-    console.log({ orderData });
+    console.log({ form, orderData });
+    // Create a formatted date string
+    const formattedDate = new Date().toLocaleDateString("en-US");
 
-    const newRow = document.createElement("tr");
+    if (!orderData?.symbol) {
+      toastify("Symbol is missing.");
+    } else if (!orderData?.volume) {
+      toastify("Volume is missing.");
+    } else if (orderData?.symbolValue > userProfile?.totalBalance) {
+      toastify("You have insufficient balance to buy this coin!");
+    } else {
+      const user = auth.currentUser;
+      const userId = user.uid;
 
-    const currentDate = new Date();
+      const ordersCollectionRef = collection(db, "orders");
 
-    const day = currentDate.getDate().toString().padStart(2, "0"); // Get the day and pad with leading zero if necessary
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Get the month (Note: Months are zero-based, so we add 1) and pad with leading zero if necessary
-    const year = currentDate.getFullYear().toString().slice(-4); // Get the last two digits of the year
+      try {
+        orderData.userId = userId;
+        orderData.type = type;
+        orderData.createdAt = formattedDate;
+        if (!orderData?.sl && !orderData?.tp) {
+          orderData.status = "Success";
+        } else {
+          orderData.status = "Pending";
+        }
+        if (type === "Buy") {
+          orderData.profit = -(orderData?.symbolValue * orderData?.volume);
+        } else if (type === "Sell") {
+          orderData.profit = orderData?.symbolValue * orderData?.volume;
+        }
 
-    const formattedDate = `${day}/${month}/${year}`;
+        const userRef = doc(db, "users", userId);
+        const newTotalBalance = userProfile?.totalBalance + orderData?.profit;
 
-    newRow.innerHTML = `<td>${"ID" + Math.floor(Math.random() * 1000)}</td>
-     <td>${formattedDate}</td>
-     <td>${orderData?.symbol?.value}</td>
-     <td>${type}</td>
-     <td>${orderData.volume}</td>
-     <td>${orderData.symbolValue}</td>
-     <td>${orderData.sl}/${orderData.tp}</td>
-     <td>Success</td>
-     <td>-${orderData.volume * orderData.symbolValue}</td>`;
+        await updateDoc(userRef, {
+          totalBalance: newTotalBalance,
+        });
+        userProfile.totalBalance = newTotalBalance;
 
-    let dataBody = document.getElementById("dataBody");
+        // Write the order data to Firestore as a new document
+        await addDoc(ordersCollectionRef, {
+          ...orderData,
+          symbol: orderData?.symbol.value,
+        });
+        toastify("Order added to Database");
+        console.log("Order added to Database");
+        setOrderData({
+          volume: null,
+          sl: null,
+          tp: null,
+        });
+      } catch (error) {
+        console.error("Error adding order: ", error);
+      }
 
-    //   // Append the new row to the dataBody
-    dataBody.appendChild(newRow);
+      // const ordersRef = doc(db, "orders", userId);
 
-    //   // Clear form inputs
-    form.reset();
-    setOrderData({
-      symbol: null,
-      symbolValue: null,
-      volume: null,
-      sl: null,
-      tp: null,
-    });
+      // console.log({ ordersRef });
+
+      // let res = await setDoc(ordersRef, orderData)
+      //   .then(() => {
+      //     console.log("Order added to Database");
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error adding order: ", error);
+      //   });
+
+      //   const newRow = document.createElement("tr");
+
+      //   const currentDate = new Date();
+
+      //   const day = currentDate.getDate().toString().padStart(2, "0"); // Get the day and pad with leading zero if necessary
+      //   const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Get the month (Note: Months are zero-based, so we add 1) and pad with leading zero if necessary
+      //   const year = currentDate.getFullYear().toString().slice(-4); // Get the last two digits of the year
+
+      //   const formattedDate = `${day}/${month}/${year}`;
+
+      //   newRow.innerHTML = `<td>${"ID" + Math.floor(Math.random() * 1000)}</td>
+      //  <td>${formattedDate}</td>
+      //  <td>${orderData?.symbol?.value}</td>
+      //  <td>${type}</td>
+      //  <td>${orderData.volume}</td>
+      //  <td>${orderData.symbolValue}</td>
+      //  <td>${orderData.sl}/${orderData.tp}</td>
+      //  <td>Success</td>
+      //  <td>-${orderData.volume * orderData.symbolValue}</td>`;
+
+      //   let dataBody = document.getElementById("dataBody");
+
+      //   dataBody.appendChild(newRow);
+
+      //   form.reset();
+      //   setOrderData({
+      //     symbol: null,
+      //     symbolValue: null,
+      //     volume: null,
+      //     sl: null,
+      //     tp: null,
+      //   });
+    }
   };
 
   const getSymbols = async () => {
@@ -314,8 +496,8 @@ export default function HomeRu() {
               <input
                 type="number"
                 className="balance-nums"
-                readOnly="true"
-                defaultValue={100.0}
+                readOnly={true}
+                defaultValue={userProfile?.totalBalance}
               />
             </div>
             <div className="balance-item">
@@ -328,7 +510,7 @@ export default function HomeRu() {
               <input
                 type="number"
                 className="balance-nums"
-                readOnly="true"
+                readOnly={true}
                 defaultValue={100.0}
               />
             </div>
@@ -337,7 +519,7 @@ export default function HomeRu() {
               <input
                 type="number"
                 className="balance-nums"
-                readOnly="true"
+                readOnly={true}
                 defaultValue={0.0}
               />
             </div>
@@ -473,14 +655,15 @@ export default function HomeRu() {
                           }}
                           onClick={() => setActiveTab(i + 1)}
                         >
-                          # {e}
+                          # {i + 1}
                           <div
                             onClick={(event) => {
                               event.stopPropagation();
-                              console.log("Close", { tabs, e });
-                              let _tabs = [...tabs].filter((f) => f !== e);
+                              let _tabs = [...tabs].filter(
+                                (f, index) => index !== i
+                              );
                               setTabs(_tabs);
-                              setActiveTab(_tabs[0]);
+                              setActiveTab(_tabs.length);
                             }}
                           >
                             <CloseCircleOutline
@@ -575,7 +758,7 @@ export default function HomeRu() {
                         type="number"
                         id="symbol-current-value"
                         name="symbolCurrentValue"
-                        readOnly="true"
+                        readOnly={true}
                         value={orderData?.symbolValue}
                         // required
                       />
@@ -618,7 +801,10 @@ export default function HomeRu() {
                         // className="newOrderButton"
                         // id="buyButton"
                         className="newOrderButton buyButton"
-                        onClick={(e) => placeOrder(e, "Buy")}
+                        onClick={(e) => {
+                          placeOrder(e, "Buy");
+                          console.log("Here");
+                        }}
                         type="submit"
                       >
                         {t("buy")}
@@ -673,7 +859,18 @@ export default function HomeRu() {
                   </button>
                 </div>
                 <div id="orders">
-                  <table
+                  <DataTable
+                    columns={columns}
+                    data={data}
+                    pagination
+                    paginationPerPage={5}
+                    paginationRowsPerPageOptions={[5, 10]}
+                    highlightOnHover
+                    pointerOnHover
+                    responsive
+                    theme="dark"
+                  />
+                  {/* <table
                     id="orders-table"
                     className="table-dark table-striped table-responsive"
                   >
@@ -690,8 +887,24 @@ export default function HomeRu() {
                         <th>{t("profit")}</th>
                       </tr>
                     </thead>
-                    <tbody id="dataBody" className="table-body"></tbody>
-                  </table>
+                    <tbody id="dataBody" className="table-body">
+                      {ordersHistory?.map((order, i) => (
+                        <tr>
+                          <td>{i + 1}</td>
+                          <td>{order?.createdAt}</td>
+                          <td>{order?.symbol}</td>
+                          <td>{order?.type}</td>
+                          <td>{order?.volume}</td>
+                          <td>{order?.symbolValue}</td>
+                          <td>
+                            {order?.sl} / {order?.tp}
+                          </td>
+                          <td>{order?.status}</td>
+                          <td>{order?.profit}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table> */}
                 </div>
               </div>
             </div>
@@ -871,7 +1084,7 @@ export default function HomeRu() {
                       name="email"
                       id="userEmail"
                       value={userProfile?.email}
-                      placeholder="testlead1@gmail.com"
+                      placeholder=""
                       readOnly
                     />
                   </div>
@@ -915,12 +1128,12 @@ export default function HomeRu() {
                     <h6>{t("dateRegister")}</h6>
                     <input
                       type="text"
-                      value={userProfile?.dateRegister}
+                      value={userProfile?.createdAt}
                       name="dateRegister"
                       id
-                      placeholder="02/07/2023"
-                      onChange={handleChange}
-                      readOnly={!isEditable}
+                      placeholder=""
+                      // onChange={handleChange}
+                      readOnly={true}
                     />
                   </div>
                   <div className="acc-info-personal-item">
