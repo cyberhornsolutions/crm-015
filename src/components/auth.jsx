@@ -10,6 +10,7 @@ import { toastify } from "../helper/toastHelper";
 // import "./style.css";
 // import { toastify } from "react-toastify";
 
+
 export default function Auth() {
   const [tab, setTab] = useState(1);
   const navigate = useNavigate();
