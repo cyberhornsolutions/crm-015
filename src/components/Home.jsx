@@ -77,6 +77,25 @@ export default function HomeRu() {
     i18n.changeLanguage(lng);
   };
 
+  const getCurrentUser = () => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User Already Login");
+        navigate("/main");
+      } else {
+        signOut(auth)
+          .then(() => {
+            console.log("Signout The User");
+            navigate("/");
+          })
+          .catch((error) => {
+            console.log("Signout The User Exception");
+          });
+      }
+    });
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -159,6 +178,9 @@ export default function HomeRu() {
       console.error("Error fetching orders:", error);
     }
   };
+  useEffect(() => {
+    getCurrentUser();
+  },[]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -531,13 +553,13 @@ export default function HomeRu() {
               {selectedLanguage === "en" ? (
                 <img
                   id="lang"
-                  src={ruFlagIcon}
+                  src={enFlagIcon}
                   onClick={() => changeLanguage("ru")}
                 />
               ) : (
                 <img
                   id="lang"
-                  src={enFlagIcon}
+                  src={ruFlagIcon}
                   onClick={() => changeLanguage("en")}
                 />
               )}
