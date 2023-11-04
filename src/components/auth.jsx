@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -19,6 +20,24 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const getCurrentUser = () => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        console.log("User Already Login");
+        navigate("/main");
+      } else {
+        signOut(auth)
+          .then(() => {
+            console.log("Signout The User");
+            navigate("/");
+          })
+          .catch((error) => {
+            console.log("Signout The User Exception");
+          });
+      }
+    });
+  };
   const handleLogin = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
@@ -64,7 +83,14 @@ export default function Auth() {
           })
             .then(() => {
               console.log("User data added to Firestore");
-              navigate("/main");
+              signOut(auth)
+                .then(() => {
+                  console.log("Signout The User");
+                  navigate("/");
+                })
+                .catch((error) => {
+                  console.log("Signout The User Exception");
+                });
             })
             .catch((error) => {
               console.error("Error adding user data to Firestore:", error);
@@ -83,7 +109,9 @@ export default function Auth() {
         });
     }
   };
-
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
   return (
     <>
       {tab === 1 ? (
