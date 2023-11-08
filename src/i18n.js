@@ -76,6 +76,7 @@ const resources = {
       ANS5: 'A: To place a trade, log in to your account, select the financial instrument you want to trade, specify the quantity and other details, and click "Place Order".',
       Q6: "Q: What are the trading hours?",
       ANS6: " A: Our trading platform operates 24/7, but specific trading hours for different assets may vary. Check the asset's trading hours in the platform.",
+      referralCode: "Referral Code",
     },
   },
   ru: {
@@ -151,6 +152,7 @@ const resources = {
       ANS5: 'Ответ: Для размещения сделки войдите в свой аккаунт, выберите финансовый инструмент, который вы хотите торговать, укажите количество и другие детали, и нажмите "Разместить заказ".',
       Q6: "В: Каковы часы торговли?",
       ANS6: "Ответ: Наша торговая платформа работает круглосуточно, но конкретные часы торговли для разных активов могут различаться. Проверьте часы торговли актива на платформе.",
+      referralCode: "реферальный код",
     },
   },
 };
