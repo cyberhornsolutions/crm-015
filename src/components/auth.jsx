@@ -18,6 +18,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
 
   const getCurrentUser = () => {
     const auth = getAuth();
@@ -56,7 +57,16 @@ export default function Auth() {
         }
       });
   };
-
+  function generateRandomCode(length) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let code = "";
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      code += characters.charAt(randomIndex);
+    }
+    return code;
+  }
   const handleSignUp = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -79,6 +89,8 @@ export default function Auth() {
             totalBalance: 100,
             status: "New",
             createdAt: formattedDate,
+            refCode: generateRandomCode(8),
+            useRefCode: referralCode,
           })
             .then(() => {
               console.log("User data added to Firestore");
@@ -202,6 +214,14 @@ export default function Auth() {
               name="psw"
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+            />
+
+            <input
+              class="psw_input"
+              type="text"
+              placeholder="реферальный код"
+              name="psw"
+              onChange={(e) => setReferralCode(e.target.value)}
             />
           </div>
 
