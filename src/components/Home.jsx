@@ -180,7 +180,7 @@ export default function HomeRu() {
   };
   useEffect(() => {
     getCurrentUser();
-  },[]);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -252,7 +252,11 @@ export default function HomeRu() {
     },
     {
       name: t("profit"),
-      selector: (row) => row.profit,
+      selector: (row) => (
+        <div style={{ color: `${row?.profit < 0 ? "red" : "green"}` }}>
+          {row.profit}
+        </div>
+      ),
       sortable: true,
     },
   ];
@@ -938,6 +942,11 @@ export default function HomeRu() {
                 <h4 style={{ margin: "0", "margin-bottom": "15px" }}>
                   Test Lead #0001
                 </h4>
+                <p
+                  style={{ margin: "0", "margin-bottom": "15px", color: "red" }}
+                >
+                  {t("referralCode")} : {userProfile?.refCode}
+                </p>
                 <div id="acc-profile-main">
                   <div className="acc-profile-main-item">
                     <h6>{t("balance")} (USD):</h6>
