@@ -135,59 +135,6 @@ body {
   font-size: 12px;
 }
 
-/* .email_input {
-    color: var(--seco-grayc);
-    box-sizing: border-box;
-    padding: 0 10px 0;
-    width: 100%;
-    height: 35px;
-    border: 2px solid transparent;
-    outline: none;
-    background-color: var(--main-bgc);
-    border-radius: 2px;
-} */
-
-/* .email_input::placeholder {
-    font-family: 'Roboto Mono', sans-serif;
-    color: var(--main-textc);
-    font-weight: 100;
-    font-size: 12px;
-} */
-
-/* .email_input:focus {
-    border-bottom: 2px solid var(--main-bluec);
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-    transition-duration: 0.4s;
-} */
-
-/* .psw_input {
-    color: var(--seco-grayc);
-    box-sizing: border-box;
-    margin-top: 20px;
-    padding: 0 10px;
-    width: 100%;
-    height: 35px;
-    border: 2px solid transparent;
-    outline: none;
-    background-color: var(--main-bgc);
-    border-radius: 2px;
-} */
-
-/* .psw_input:focus {
-    border-bottom: 2px solid var(--main-bluec);
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-    transition-duration: 0.4s;
-} */
-
-/* .psw_input::placeholder {
-    font-family: 'Roboto Mono', sans-serif;
-    color: var(--main-textc);
-    font-weight: 100;
-    font-size: 12px;
-} */
-
 .button {
   margin-top: 25px;
   font-family: "Ubuntu";

@@ -568,11 +568,11 @@ acc-info-personal h3 {
 #newOrder {
   display: flex;
   flex-direction: column;
-  flex: 1.2;
+  flex: 1;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
-  height: 335px;
-  overflow-y: scroll;
+  /* height: 335px; */
+  /* overflow-y: scroll; */
 }
 
 #newOrderData {
@@ -592,10 +592,10 @@ acc-info-personal h3 {
   align-items: center;
   margin: 0;
   margin-left: 5%;
-  margin-top: 5%;
+  /* margin-top: 5%; */
   /* height: 88%; */
   border-top: 2px solid rgb(17, 17, 23);
-  padding-top: 12px;
+  /* padding-top: 12px; */
 }
 
 .newOrderButton {
@@ -728,12 +728,15 @@ acc-info-personal h3 {
   border: 1px solid rgb(39, 39, 53); /* Example border style */
   border-radius: 1px;
   background-color: var(--main-bgc);
-  max-height: 150px; /* Set the maximum height of the container */
+  /* max-height: 150px; Set the maximum height of the container */
   overflow: auto; /* Add a scrolling bar when content overflows */
   position: relative;
   margin-top: 5px;
   height: 100%;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 #orders nav {
   background-color: transparent !important;

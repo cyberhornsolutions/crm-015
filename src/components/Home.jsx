@@ -236,7 +236,7 @@ export default function HomeRu() {
       sortable: true,
     },
     {
-      name: t("price"),
+      name: t("openPrice"),
       selector: (row) => row.symbolValue,
       sortable: true,
     },
@@ -248,6 +248,11 @@ export default function HomeRu() {
     {
       name: t("status"),
       selector: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: t("currentPrice"),
+      selector: (row) => "N/A",
       sortable: true,
     },
     {
@@ -297,7 +302,7 @@ export default function HomeRu() {
       ordersHistoryButton?.classList.remove("active");
       ordersHistoryButton.removeAttribute("style");
 
-      tableOrders.style.maxHeight = "150px";
+      // tableOrders.style.maxHeight = "150px";
       tradeToToggle.style.display = "flex";
       sideButtonTrade?.classList.add("active");
       iconTrade?.classList.add("active");
@@ -329,16 +334,16 @@ export default function HomeRu() {
       newDealButton.style.border = "1px solid rgb(0, 255, 110)";
       newDealButton.style.color = "rgb(0, 255, 110)";
       newDealButton.style.fontWeight = "bold";
-      tableOrders.style.maxHeight = "115px";
+      // tableOrders.style.maxHeight = "115px";
     } else if (!ordersHistoryButton.classList.contains("active")) {
       a.style.display = "none";
       newDealButton.classList.remove("active");
       newDealButton.removeAttribute("style");
 
-      tableOrders.style.maxHeight = "150px";
+      // tableOrders.style.maxHeight = "150px";
     }
     if (sideButtonAssets.classList.contains("active")) {
-      tableOrders.style.maxHeight = "150px";
+      // tableOrders.style.maxHeight = "150px";
     }
   };
 
@@ -364,6 +369,7 @@ export default function HomeRu() {
       orderData?.symbol?.value;
 
     await axios.get(apiUrl).then((e) => {
+      console.log("-------->", e);
       let obj = { ...orderData, symbolValue: e.data.price };
       setOrderData(obj);
     });
@@ -427,56 +433,12 @@ export default function HomeRu() {
       } catch (error) {
         console.error("Error adding order: ", error);
       }
-
-      // const ordersRef = doc(db, "orders", userId);
-
-      // console.log({ ordersRef });
-
-      // let res = await setDoc(ordersRef, orderData)
-      //   .then(() => {
-      //     console.log("Order added to Database");
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error adding order: ", error);
-      //   });
-
-      //   const newRow = document.createElement("tr");
-
-      //   const currentDate = new Date();
-
-      //   const day = currentDate.getDate().toString().padStart(2, "0"); // Get the day and pad with leading zero if necessary
-      //   const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Get the month (Note: Months are zero-based, so we add 1) and pad with leading zero if necessary
-      //   const year = currentDate.getFullYear().toString().slice(-4); // Get the last two digits of the year
-
-      //   const formattedDate = `${day}/${month}/${year}`;
-
-      //   newRow.innerHTML = `<td>${"ID" + Math.floor(Math.random() * 1000)}</td>
-      //  <td>${formattedDate}</td>
-      //  <td>${orderData?.symbol?.value}</td>
-      //  <td>${type}</td>
-      //  <td>${orderData.volume}</td>
-      //  <td>${orderData.symbolValue}</td>
-      //  <td>${orderData.sl}/${orderData.tp}</td>
-      //  <td>Success</td>
-      //  <td>-${orderData.volume * orderData.symbolValue}</td>`;
-
-      //   let dataBody = document.getElementById("dataBody");
-
-      //   dataBody.appendChild(newRow);
-
-      //   form.reset();
-      //   setOrderData({
-      //     symbol: null,
-      //     symbolValue: null,
-      //     volume: null,
-      //     sl: null,
-      //     tp: null,
-      //   });
     }
   };
 
   const getSymbols = async () => {
     await axios.get(`https://api.binance.com/api/v3/exchangeInfo`).then((e) => {
+      console.log("=====> response", e);
       setSymbols(
         e.data.symbols?.map((f) => {
           return { value: f.symbol, label: f.symbol };
@@ -765,20 +727,6 @@ export default function HomeRu() {
                         styles={customStyles}
                         value={orderData.symbol}
                       />
-                      {/* <input
-                        type="text"
-                        id="symbol-input"
-                        name="symbolInput"
-                        placeholder="Search..."
-                        style={{
-                          "-webkit-text-transform": "uppercase",
-                          textTransform: "uppercase",
-                        }}
-                        required
-                      /> */}
-                      {/* <div id="symbol-modal" className="modal">
-                        <div id="symbol-dropdown" className="dropdown" />
-                      </div> */}
                       <label htmlFor="symbol-current-value">{t("price")}</label>
                       <input
                         type="number"
@@ -786,7 +734,6 @@ export default function HomeRu() {
                         name="symbolCurrentValue"
                         readOnly={true}
                         value={orderData?.symbolValue}
-                        // required
                       />
                       <label htmlFor="symbol-amount">{t("volume")}</label>
                       <input
@@ -795,7 +742,6 @@ export default function HomeRu() {
                         name="symbolAmount"
                         defaultValue={0.0}
                         max={100}
-                        // required
                         onChange={(e) =>
                           setOrderData({ ...orderData, volume: e.target.value })
                         }
@@ -865,11 +811,6 @@ export default function HomeRu() {
                   <button
                     id="newDealButtonMobile"
                     onClick={() => {
-                      // let a = document.getElementById("newOrder");
-                      // // document.getElementById("chart").style.display = "none";
-                      // let d = window.getComputedStyle(a).display;
-                      // document.getElementById("newOrder").style.display =
-                      //   d === "flex" ? "none" : "flex";
                       openOrderPanel();
                     }}
                   >
@@ -890,47 +831,13 @@ export default function HomeRu() {
                     data={data}
                     pagination
                     paginationPerPage={5}
-                    paginationRowsPerPageOptions={[5, 10]}
+                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
                     highlightOnHover
                     pointerOnHover
                     responsive
                     theme="dark"
+                    className="custom-data-table"
                   />
-                  {/* <table
-                    id="orders-table"
-                    className="table-dark table-striped table-responsive"
-                  >
-                    <thead className="sticky-header">
-                      <tr>
-                        <th>ID</th>
-                        <th>{t("date")}</th>
-                        <th>{t("symbol")}</th>
-                        <th>{t("type")}</th>
-                        <th>{t("volume")}</th>
-                        <th>{t("price")}</th>
-                        <th>SL/TP</th>
-                        <th>{t("status")}</th>
-                        <th>{t("profit")}</th>
-                      </tr>
-                    </thead>
-                    <tbody id="dataBody" className="table-body">
-                      {ordersHistory?.map((order, i) => (
-                        <tr>
-                          <td>{i + 1}</td>
-                          <td>{order?.createdAt}</td>
-                          <td>{order?.symbol}</td>
-                          <td>{order?.type}</td>
-                          <td>{order?.volume}</td>
-                          <td>{order?.symbolValue}</td>
-                          <td>
-                            {order?.sl} / {order?.tp}
-                          </td>
-                          <td>{order?.status}</td>
-                          <td>{order?.profit}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table> */}
                 </div>
               </div>
             </div>
@@ -1245,9 +1152,6 @@ export default function HomeRu() {
                   </table>
                 </div>
                 <div id="transaction-request">
-                  {/* <h2 style="padding: 20px; margin: 0; margin-top: 3%; width: 80%; border-top: 1px solid rgb(17, 17, 23);">Запрос на вывод</h2>
-        <input type="number" id="withdraw-amount" placeholder="Сумма (USD)">
-        <input type="number" id="withdraw-card" placeholder="Номер карты"> */}
                   <button
                     id="deposit-button"
                     onClick={() => setDepositModal(true)}
