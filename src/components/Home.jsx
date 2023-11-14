@@ -35,6 +35,15 @@ import {
 } from "firebase/firestore";
 import { toastify } from "../helper/toastHelper";
 import DataTable from "react-data-table-component";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEdit,
+  faClose,
+  faCaretDown,
+  faCaretUp,
+} from "@fortawesome/free-solid-svg-icons";
+import EditOrderModal from "./EditOrderModal";
+import DelOrderModal from "./DelOrderModal ";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -58,6 +67,8 @@ export default function HomeRu() {
   const [tabs, setTabs] = useState([1]);
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [isEditable, setIsEditable] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDelModalOpen, setIsDelModalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "",
     surname: "",
@@ -71,6 +82,19 @@ export default function HomeRu() {
   console.log("Orders History", ordersHistory);
 
   const { t, i18n } = useTranslation();
+
+  const handleEditModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setIsDelModalOpen(false);
+  };
+
+  const handleDelModal = () => {
+    setIsDelModalOpen(true);
+  };
 
   const changeLanguage = (lng) => {
     setSelectedLanguage(lng);
@@ -213,53 +237,116 @@ export default function HomeRu() {
   const columns = [
     {
       name: "ID",
-      selector: (row) => row.id,
+      selector: (row) => (
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          {row.id}
+        </div>
+      ),
     },
     {
       name: t("date"), // Translate the header using your t function
-      selector: (row) => row.createdAt,
+      selector: (row) => (
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          {row.createdAt}
+        </div>
+      ),
       sortable: true,
     },
     {
       name: t("symbol"),
-      selector: (row) => row.symbol,
+      selector: (row) => (
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          {row.symbol}
+        </div>
+      ),
       sortable: true,
     },
     {
       name: t("type"),
-      selector: (row) => row.type,
+      selector: (row) =>
+        row.type == "Buy" ? (
+          <div className="order-column" onDoubleClick={handleEditModal}>
+            <div className="custom-caret-up-icon">
+              <FontAwesomeIcon icon={faCaretUp} />
+              <div style={{ marginLeft: "3px" }}>{row.type}</div>
+            </div>
+          </div>
+        ) : (
+          <div className="order-column" onDoubleClick={handleEditModal}>
+            <div className="custom-caret-down-icon">
+              <FontAwesomeIcon icon={faCaretDown} />
+              <div style={{ marginLeft: "3px" }}>{row.type}</div>
+            </div>
+          </div>
+        ),
       sortable: true,
     },
     {
       name: t("volume"),
-      selector: (row) => row.volume,
+      selector: (row) => (
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          {row.volume}
+        </div>
+      ),
       sortable: true,
     },
     {
       name: t("openPrice"),
-      selector: (row) => row.symbolValue,
+      selector: (row) => (
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          {row.symbolValue}
+        </div>
+      ),
       sortable: true,
     },
     {
       name: "SL / TP",
-      selector: (row) => row.sltp,
+      selector: (row) => (
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          {row.sltp}
+        </div>
+      ),
       sortable: true,
     },
     {
       name: t("status"),
-      selector: (row) => row.status,
+      selector: (row) => (
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          {row.status}
+        </div>
+      ),
       sortable: true,
     },
     {
       name: t("currentPrice"),
-      selector: (row) => "N/A",
+      selector: (row) => (
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          {"N/A"}
+        </div>
+      ),
       sortable: true,
     },
     {
       name: t("profit"),
       selector: (row) => (
-        <div style={{ color: `${row?.profit < 0 ? "red" : "green"}` }}>
-          {row.profit}
+        <div className="order-column" onDoubleClick={handleEditModal}>
+          <div style={{ color: `${row?.profit < 0 ? "red" : "green"}` }}>
+            {row.profit}
+          </div>
+        </div>
+      ),
+      sortable: true,
+    },
+    {
+      name: t(""),
+      selector: (row) => (
+        <div className="order-actions">
+          <div className="custom-edit-icon" onClick={handleEditModal}>
+            <FontAwesomeIcon icon={faEdit} />
+          </div>
+          <div className="custom-delete-icon" onClick={handleDelModal}>
+            <FontAwesomeIcon icon={faClose} />
+          </div>
         </div>
       ),
       sortable: true,
@@ -438,7 +525,6 @@ export default function HomeRu() {
 
   const getSymbols = async () => {
     await axios.get(`https://api.binance.com/api/v3/exchangeInfo`).then((e) => {
-      console.log("=====> response", e);
       setSymbols(
         e.data.symbols?.map((f) => {
           return { value: f.symbol, label: f.symbol };
@@ -1429,6 +1515,12 @@ export default function HomeRu() {
           )}
         </div>
       </div>
+      {isModalOpen && (
+        <EditOrderModal show={isModalOpen} onClose={handleCloseModal} />
+      )}
+      {isDelModalOpen && (
+        <DelOrderModal show={isDelModalOpen} onClose={handleCloseModal} />
+      )}
     </>
   );
 }

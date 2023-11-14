@@ -597,6 +597,99 @@ acc-info-personal h3 {
   border-top: 2px solid rgb(17, 17, 23);
   /* padding-top: 12px; */
 }
+.custom-caret-up-icon,
+.custom-caret-down-icon {
+  display: flex;
+}
+.custom-caret-up-icon .fa-caret-up path {
+  color: lime !important;
+}
+.custom-caret-down-icon .fa-caret-down path {
+  color: red !important;
+}
+.order-actions {
+  display: flex;
+  padding: 3px 10px;
+}
+.order-actions .custom-delete-icon {
+  margin-left: 5px;
+}
+.order-actions .custom-delete-icon .fa-xmark {
+  font-size: 15px;
+}
+/* Updated Modal Styling with Dark Grey Background Opacity */
+.modal-style-edit .modal-dialog-centered {
+  background-color: transparent;
+}
+.modal-style-edit .modal-content {
+  border: 2px solid black;
+  background-color: #141620;
+  border-radius: 0;
+  padding: 0.2rem !important;
+}
+.modal-style-edit .btn-close {
+  margin-left: auto;
+  margin-right: 0.2rem !important;
+}
+.modal-style-edit .modal-body {
+  margin: 0.5rem;
+  border: 1px solid black;
+}
+.modal-style-edit .input-number {
+  height: 40px;
+  width: 80px;
+}
+.modal-style-edit .modal-close-btn {
+  padding: 0.3rem 3rem;
+}
+.modal-style-del .modal-close-btn {
+  padding: 0.6rem 2rem;
+}
+.modal-style-del .input-number {
+  height: 40px;
+  width: 130px;
+}
+
+.order-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.order-modal {
+  background-color: #605e5e;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 300px; /* Adjust the maximum width */
+  width: 100%;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.9s, transform 0.3s;
+}
+
+/* Hide the modal when it's closed */
+.order-modal-hidden {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+}
+.fWGDho div:first-child {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.order-column {
+  width: 100% !important;
+  height: 100% !important;
+}
 
 .newOrderButton {
   justify-content: center;
