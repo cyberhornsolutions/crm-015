@@ -44,6 +44,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import EditOrderModal from "./EditOrderModal";
 import DelOrderModal from "./DelOrderModal ";
+import ReportModal from "./ReportModal";
+import MessageModal from "./MessageModal";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -78,6 +80,12 @@ export default function HomeRu() {
     city: "",
     comment: "...",
   });
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [messageModal, setMessageModal] = useState({
+    show: false,
+    title: "",
+    message: "",
+  });
 
   console.log("Orders History", ordersHistory);
 
@@ -90,6 +98,12 @@ export default function HomeRu() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsDelModalOpen(false);
+    setIsReportModalOpen(false);
+    setMessageModal({
+      show: false,
+      title: "",
+      message: "",
+    });
   };
 
   const handleDelModal = () => {
@@ -475,7 +489,12 @@ export default function HomeRu() {
     } else if (!orderData?.volume) {
       toastify("Volume is missing.");
     } else if (orderData?.symbolValue > userProfile?.totalBalance) {
-      toastify("You have insufficient balance to buy this coin!");
+      // toastify("You have insufficient balance to buy this coin!");
+      setMessageModal({
+        show: true,
+        title: "Error",
+        message: "Insufficient Balance",
+      });
     } else {
       const user = auth.currentUser;
       const userId = user.uid;
@@ -499,9 +518,9 @@ export default function HomeRu() {
 
         const userRef = doc(db, "users", userId);
         const newTotalBalance = userProfile?.totalBalance + orderData?.profit;
-
+        console.log(123, newTotalBalance);
         await updateDoc(userRef, {
-          totalBalance: newTotalBalance,
+          totalBalance: newTotalBalance > 0 ? newTotalBalance : 0.0,
         });
         userProfile.totalBalance = newTotalBalance;
 
@@ -533,6 +552,25 @@ export default function HomeRu() {
     });
   };
 
+  // const customStyles = {
+  //   option: (provided, state) => ({
+  //     ...provided,
+  //     backgroundColor: state.isSelected ? "blue" : "white",
+  //     color: state.isSelected ? "white" : "black",
+  //     "&:hover": {
+  //       backgroundColor: "lightgray",
+  //       color: "black",
+  //     },
+  //   }),
+  //   singleValue: (provided) => ({
+  //     ...provided,
+  //     color: "white",
+  //   }),
+  //   control: (provided) => ({
+  //     ...provided,
+  //     backgroundColor: "white", // Change the background color to white
+  //   }),
+  // };
   const customStyles = {
     option: (provided, state) => ({
       ...provided,
@@ -547,10 +585,15 @@ export default function HomeRu() {
       ...provided,
       color: "white",
     }),
-    control: (provided) => ({
+    control: (provided, state) => ({
       ...provided,
-      backgroundColor: "white", // Change the background color to white
+      backgroundColor: state.isFocused ? "white" : "white",
+      borderColor: state.isFocused ? "blue" : "gray", 
     }),
+  };
+
+  const convertIntoFourDecimal = (number) => {
+    return number?.toFixed(4);
   };
 
   return (
@@ -571,7 +614,7 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                defaultValue={userProfile?.totalBalance}
+                defaultValue={convertIntoFourDecimal(userProfile?.totalBalance)}
               />
             </div>
             <div className="balance-item">
@@ -909,6 +952,14 @@ export default function HomeRu() {
                     }}
                   >
                     {t("ordersHistory")}
+                  </button>
+                  <button
+                    // id="ordersHistoryButton"
+                    onClick={() => {
+                      setIsReportModalOpen(true);
+                    }}
+                  >
+                    {t("orderReport")}
                   </button>
                 </div>
                 <div id="orders">
@@ -1520,6 +1571,17 @@ export default function HomeRu() {
       )}
       {isDelModalOpen && (
         <DelOrderModal show={isDelModalOpen} onClose={handleCloseModal} />
+      )}
+      {isReportModalOpen && (
+        <ReportModal show={isReportModalOpen} onClose={handleCloseModal} />
+      )}
+      {messageModal?.show && (
+        <MessageModal
+          show={messageModal?.show}
+          onClose={handleCloseModal}
+          title={messageModal?.title}
+          message={messageModal?.message}
+        />
       )}
     </>
   );
