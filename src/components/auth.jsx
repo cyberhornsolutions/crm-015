@@ -8,9 +8,9 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { toastify } from "../helper/toastHelper";
+import { updateOnlineStatus } from "../helper/firebaseHelpers";
 // import "./style.css";
 // import { toastify } from "react-toastify";
-
 
 export default function Auth() {
   const [tab, setTab] = useState(1);
@@ -42,7 +42,9 @@ export default function Auth() {
   const handleLogin = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
+        await updateOnlineStatus(userCredential?.user?.uid, true);
+        console.log(userCredential?.user?.uid, 4444);
         console.log(`User logged in: ${userCredential.user}`);
         navigate("/main");
       })
@@ -92,6 +94,7 @@ export default function Auth() {
             createdAt: formattedDate,
             refCode: generateRandomCode(8),
             useRefCode: referralCode,
+            onlineStatus: false,
           })
             .then(() => {
               console.log("User data added to Firestore");

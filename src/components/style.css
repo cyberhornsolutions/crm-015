@@ -281,7 +281,7 @@ body {
   --bs-dark-border-subtle: #343a40;
   --bs-heading-color: inherit;
   --bs-link-color: #6ea8fe;
-  --bs-link-hover-color: #8bb9fe;
+  --bs-link-ho1ver-color: #8bb9fe;
   --bs-link-color-rgb: 110, 168, 254;
   --bs-link-hover-color-rgb: 139, 185, 254;
   --bs-code-color: #e685b5;
@@ -294,4 +294,25 @@ body {
 }
 input {
   text-align: left !important;
+}
+
+.greenBtn {
+  background-color: rgba(96, 185, 47, 255);
+  border-color: rgba(96, 185, 47, 255);
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: auto;
+  padding: 3px 35px !important;
+}
+
+.greyBtn {
+  background-color: rgba(110, 110, 110, 255);
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: auto;
+  padding: 3px 35px !important;
 }

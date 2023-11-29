@@ -739,6 +739,7 @@ acc-info-personal h3 {
   border-radius: 5px;
   text-align: center;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  height: 50vh !important;
 }
 
 .nav-item {

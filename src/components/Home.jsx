@@ -46,6 +46,7 @@ import EditOrderModal from "./EditOrderModal";
 import DelOrderModal from "./DelOrderModal ";
 import ReportModal from "./ReportModal";
 import MessageModal from "./MessageModal";
+import { updateOnlineStatus } from "../helper/firebaseHelpers.js";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -71,6 +72,7 @@ export default function HomeRu() {
   const [isEditable, setIsEditable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState("");
   const [userProfile, setUserProfile] = useState({
     name: "",
     surname: "",
@@ -167,7 +169,7 @@ export default function HomeRu() {
       console.log("User is not authenticated.");
       return null;
     }
-
+    setCurrentUserId(user.id);
     console.log("UID:", user.uid);
 
     try {
@@ -226,6 +228,7 @@ export default function HomeRu() {
         // User is authenticated, fetch user data here
         getUserDataByUID();
         fetchOrders();
+        setCurrentUserId(auth.currentUser.uid);
       } else {
         console.log("User is not authenticated.");
       }
@@ -235,11 +238,11 @@ export default function HomeRu() {
       unsubscribe(); // Unsubscribe from the listener when the component unmounts
     };
   }, []);
-
   const hanldeLogout = () => {
     const auth = getAuth();
     signOut(auth)
-      .then(() => {
+      .then(async () => {
+        await updateOnlineStatus(currentUserId, false);
         console.log("User signed out.");
         navigate("/");
       })
@@ -588,7 +591,7 @@ export default function HomeRu() {
     control: (provided, state) => ({
       ...provided,
       backgroundColor: state.isFocused ? "white" : "white",
-      borderColor: state.isFocused ? "blue" : "gray", 
+      borderColor: state.isFocused ? "blue" : "gray",
     }),
   };
 
