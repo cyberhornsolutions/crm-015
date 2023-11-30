@@ -32,6 +32,7 @@ import {
   where,
   onSnapshot,
   updateDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { toastify } from "../helper/toastHelper";
 import DataTable from "react-data-table-component";
@@ -531,6 +532,7 @@ export default function HomeRu() {
         await addDoc(ordersCollectionRef, {
           ...orderData,
           symbol: orderData?.symbol.value,
+          createdTime: serverTimestamp(),
         });
         toastify("Order added to Database");
         console.log("Order added to Database");
