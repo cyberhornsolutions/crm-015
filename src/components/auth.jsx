@@ -95,6 +95,8 @@ export default function Auth() {
             refCode: generateRandomCode(8),
             useRefCode: referralCode,
             onlineStatus: false,
+            role: "user",
+            isUserEdited: false,
           })
             .then(() => {
               console.log("User data added to Firestore");

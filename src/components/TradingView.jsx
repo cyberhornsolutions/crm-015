@@ -43,7 +43,7 @@ export default function TradingView({ locale, hide, index }) {
           // hide_top_toolbar: true,
           // allow_symbol_change: true,
           // container_id: `tradingview_${}`,
-          symbol: "BTCUSDT",
+          symbol: "LTCBTC",
           width: "100%",
           height: "100%",
           interval: "H",

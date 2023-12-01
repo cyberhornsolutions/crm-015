@@ -47,7 +47,8 @@ import EditOrderModal from "./EditOrderModal";
 import DelOrderModal from "./DelOrderModal ";
 import ReportModal from "./ReportModal";
 import MessageModal from "./MessageModal";
-import { updateOnlineStatus } from "../helper/firebaseHelpers.js";
+import { getUserData, updateOnlineStatus } from "../helper/firebaseHelpers.js";
+import { toast } from "react-toastify";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -82,6 +83,7 @@ export default function HomeRu() {
     country: "",
     city: "",
     comment: "...",
+    isUserEdited: false,
   });
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [messageModal, setMessageModal] = useState({
@@ -147,20 +149,28 @@ export default function HomeRu() {
   };
 
   const handleEditClick = () => {
-    setIsEditable(true);
+    if (userProfile.isUserEdited == true) {
+      toast.error("You can edit profile only one time");
+    } else {
+      setIsEditable(true);
+    }
   };
 
   const handleSaveClick = async () => {
     setIsEditable(false);
-
-    // Save the updated userProfile data to Firestore
-    try {
-      const user = auth.currentUser;
-      const userRef = doc(db, "users", user.uid);
-      await setDoc(userRef, userProfile);
-      console.log("Data saved to Firestore");
-    } catch (error) {
-      console.error("Error saving data to Firestore:", error);
+    if (userProfile.isUserEdited == true) {
+      toast.error("You can edit your profile only one time");
+    } else {
+      // Save the updated userProfile data to Firestore
+      try {
+        setUserProfile((prev) => ({ ...prev, isUserEdited: true }));
+        const user = auth.currentUser;
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, userProfile);
+        console.log("Data saved to Firestore");
+      } catch (error) {
+        console.error("Error saving data to Firestore:", error);
+      }
     }
   };
   const getUserDataByUID = async () => {
@@ -221,7 +231,7 @@ export default function HomeRu() {
   };
   useEffect(() => {
     getCurrentUser();
-  }, []);
+  }, [isEditable]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
