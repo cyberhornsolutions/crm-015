@@ -75,6 +75,8 @@ export default function HomeRu() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState({});
+
   const [userProfile, setUserProfile] = useState({
     name: "",
     surname: "",
@@ -372,7 +374,13 @@ export default function HomeRu() {
           <div className="custom-edit-icon" onClick={handleEditModal}>
             <FontAwesomeIcon icon={faEdit} />
           </div>
-          <div className="custom-delete-icon" onClick={handleDelModal}>
+          <div
+            className="custom-delete-icon"
+            onClick={() => {
+              setSelectedOrder(row);
+              handleDelModal();
+            }}
+          >
             <FontAwesomeIcon icon={faClose} />
           </div>
         </div>
@@ -509,6 +517,22 @@ export default function HomeRu() {
         title: "Error",
         message: "Insufficient Balance",
       });
+    } else if (
+      orderData.sl >= orderData.symbolValue &&
+      (orderData.tp <= orderData.symbolValue || orderData.tp == null) &&
+      type == "Buy"
+    ) {
+      toast.error(
+        "Make sure that the sp is less than current value and tp is greater than current value"
+      );
+    } else if (
+      orderData.sl <= orderData.symbolValue &&
+      (orderData.tp >= orderData.symbolValue || orderData.tp == null) &&
+      type == "Sell"
+    ) {
+      toast.error(
+        "Make sure that the sp is greater than current value and tp is less than current value"
+      );
     } else {
       const user = auth.currentUser;
       const userId = user.uid;
@@ -546,11 +570,13 @@ export default function HomeRu() {
         });
         toastify("Order added to Database");
         console.log("Order added to Database");
-        setOrderData({
+        setOrderData((pre) => ({
+          symbol: null,
+          symbolValue: null,
           volume: null,
           sl: null,
           tp: null,
-        });
+        }));
       } catch (error) {
         console.error("Error adding order: ", error);
       }
@@ -1585,7 +1611,11 @@ export default function HomeRu() {
         <EditOrderModal show={isModalOpen} onClose={handleCloseModal} />
       )}
       {isDelModalOpen && (
-        <DelOrderModal show={isDelModalOpen} onClose={handleCloseModal} />
+        <DelOrderModal
+          show={isDelModalOpen}
+          onClose={handleCloseModal}
+          selectedOrder={selectedOrder}
+        />
       )}
       {isReportModalOpen && (
         <ReportModal show={isReportModalOpen} onClose={handleCloseModal} />

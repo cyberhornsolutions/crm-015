@@ -1,8 +1,23 @@
 // Example: EditModal.js
-import React from "react";
+import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 
-const DelOrderModal = ({ onClose, show }) => {
+const DelOrderModal = ({ onClose, show, selectedOrder }) => {
+  const [isFull, setIsFull] = useState(false);
+  const [isPartial, setIsPartial] = useState(false);
+  const newVolume = parseInt(selectedOrder.volume);
+  const [volume, setVolume] = useState(newVolume);
+
+  const handleChange = (isChecked, type) => {
+    if (type == "isFull") {
+      setIsFull(true);
+      setIsPartial(false);
+    } else if (type == "isPartial") {
+      setIsFull(false);
+      setIsPartial(true);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -35,7 +50,10 @@ const DelOrderModal = ({ onClose, show }) => {
                   type="radio"
                   name="inlineRadioOptions"
                   id="inlineRadio1"
-                  value="option1"
+                  value={isFull}
+                  onChange={(e) => {
+                    handleChange(e.target.checked, "isFull");
+                  }}
                 />
                 <label class="form-check-label" for="inlineRadio1">
                   Full
@@ -47,7 +65,10 @@ const DelOrderModal = ({ onClose, show }) => {
                   type="radio"
                   name="inlineRadioOptions"
                   id="inlineRadio2"
-                  value="option2"
+                  value={isPartial}
+                  onChange={(e) => {
+                    handleChange(e.target.checked, "isPartial");
+                  }}
                 />
                 <label class="form-check-label" for="inlineRadio2">
                   Partial
@@ -55,20 +76,29 @@ const DelOrderModal = ({ onClose, show }) => {
               </div>
             </div>
           </div>
-          <div className="row my-2">
-            <label for="staticEmail" class="col-sm-4 col-form-label">
-              Volume
-            </label>
-            <div class="col-sm-8">
-              <input
-                type="number"
-                className="form-control border-1 border-black rounded-0 input-number"
-                id="staticEmail"
-              />
+          {isPartial && (
+            <div className="row my-2">
+              <label for="staticEmail" class="col-sm-4 col-form-label">
+                Volume
+              </label>
+              <div class="col-sm-8">
+                <input
+                  type="number"
+                  className="form-control border-1 border-black rounded-0 input-number"
+                  id="staticEmail"
+                  value={volume}
+                  onChange={(e) => {
+                    setVolume(e.target.value);
+                  }}
+                />
+              </div>
             </div>
-          </div>
+          )}
           <div className="ps-3 fs-5">
-            Current Price: <span className="ms-2 text-success">0.0564</span>
+            Current Price:{" "}
+            <span className="ms-2 text-success">
+              {selectedOrder?.symbolValue}
+            </span>
           </div>
           <div className="w-100 text-center my-2">
             <button
