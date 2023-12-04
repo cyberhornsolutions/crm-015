@@ -638,6 +638,7 @@ export default function HomeRu() {
       ...provided,
       color: "white !important",
       background: "#1e222d",
+      opacity: -1,
     }),
     control: (provided, state) => ({
       ...provided,
