@@ -624,6 +624,7 @@ export default function HomeRu() {
   //   }),
   // };
   const customStyles = {
+    opacity: -1,
     option: (provided, state) => ({
       ...provided,
       backgroundColor: state.isSelected ? "blue" : "white",
