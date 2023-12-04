@@ -632,13 +632,11 @@ export default function HomeRu() {
         backgroundColor: "lightgray",
         color: "black",
       },
+      opacity: state.isSelected ? "0.1" : "1",
     }),
-    backgroundColor: "black",
     singleValue: (provided) => ({
       ...provided,
-      color: "white !important",
-      background: "#1e222d",
-      opacity: -1,
+      color: "white",
     }),
     control: (provided, state) => ({
       ...provided,
