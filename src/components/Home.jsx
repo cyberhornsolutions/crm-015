@@ -33,6 +33,7 @@ import {
   onSnapshot,
   updateDoc,
   serverTimestamp,
+  orderBy,
 } from "firebase/firestore";
 import { toastify } from "../helper/toastHelper";
 import DataTable from "react-data-table-component";
@@ -211,6 +212,7 @@ export default function HomeRu() {
         const userId = user.uid;
         const q = query(
           collection(db, "orders"),
+          orderBy("createdTime", "desc"),
           where("userId", "==", userId)
         );
 
@@ -250,7 +252,7 @@ export default function HomeRu() {
     return () => {
       unsubscribe(); // Unsubscribe from the listener when the component unmounts
     };
-  }, []);
+  }, [orderData.sl]);
   const hanldeLogout = () => {
     const auth = getAuth();
     signOut(auth)
@@ -518,20 +520,28 @@ export default function HomeRu() {
         message: "Insufficient Balance",
       });
     } else if (
-      orderData.sl >= orderData.symbolValue &&
-      (orderData.tp <= orderData.symbolValue || orderData.tp == null) &&
+      ((orderData.sl >= orderData.symbolValue &&
+        orderData.tp <= orderData.symbolValue) ||
+        (orderData.sl >= orderData.symbolValue &&
+          orderData.tp >= orderData.symbolValue) ||
+        (orderData.sl == "" && orderData.tp <= orderData.symbolValue) ||
+        (orderData.tp == "" && orderData.sl >= orderData.symbolValue)) &&
       type == "Buy"
     ) {
       toast.error(
-        "Make sure that the sp is less than current value and tp is greater than current value"
+        "Make sure that the sl is less than current value and tp is greater than current value buy"
       );
     } else if (
-      orderData.sl <= orderData.symbolValue &&
-      (orderData.tp >= orderData.symbolValue || orderData.tp == null) &&
+      ((orderData.sl <= orderData.symbolValue &&
+        orderData.tp >= orderData.symbolValue) ||
+        (orderData.sl >= orderData.symbolValue &&
+          orderData.tp >= orderData.symbolValue) ||
+        (orderData.sl <= orderData.symbolValue && orderData.tp == "") ||
+        (orderData.sl == "" && orderData.tp >= orderData.symbolValue)) &&
       type == "Sell"
     ) {
       toast.error(
-        "Make sure that the sp is greater than current value and tp is less than current value"
+        "Make sure that the sl is greater than current value and tp is less than current value sell"
       );
     } else {
       const user = auth.currentUser;
@@ -577,6 +587,7 @@ export default function HomeRu() {
           sl: null,
           tp: null,
         }));
+        form.reset();
       } catch (error) {
         console.error("Error adding order: ", error);
       }
@@ -901,7 +912,7 @@ export default function HomeRu() {
                       <input
                         type="number"
                         id="symbol-current-value"
-                        name="symbolCurrentValue"
+                        name="symbolValue"
                         readOnly={true}
                         value={orderData?.symbolValue}
                       />
@@ -909,7 +920,7 @@ export default function HomeRu() {
                       <input
                         type="number"
                         id="symbol-amount"
-                        name="symbolAmount"
+                        name="volume"
                         defaultValue={0.0}
                         max={100}
                         onChange={(e) =>
@@ -921,7 +932,7 @@ export default function HomeRu() {
                       <input
                         type="number"
                         id="stop-loss"
-                        name="stopLoss"
+                        name="sl"
                         // required
                         onChange={(e) =>
                           setOrderData({ ...orderData, sl: e.target.value })
@@ -932,7 +943,7 @@ export default function HomeRu() {
                       <input
                         type="number"
                         id="take-profit"
-                        name="takeProfit"
+                        name="tp"
                         // required
                         onChange={(e) =>
                           setOrderData({ ...orderData, tp: e.target.value })
