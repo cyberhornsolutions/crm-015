@@ -3,7 +3,6 @@ import logoIcon from "../assets/images/logo.png";
 import enFlagIcon from "../assets/images/gb-fl.png";
 import ruFlagIcon from "../assets/images/ru-fl.png";
 import accPlaceholder from "../assets/images/acc-img-placeholder.png";
-import moment from "moment";
 import {
   InformationCircle,
   List,
@@ -24,7 +23,6 @@ import { auth, db } from "../firebase";
 import {
   doc,
   getDoc,
-  getDocs,
   setDoc,
   collection,
   addDoc,
@@ -48,8 +46,14 @@ import EditOrderModal from "./EditOrderModal";
 import DelOrderModal from "./DelOrderModal ";
 import ReportModal from "./ReportModal";
 import MessageModal from "./MessageModal";
-import { getUserData, updateOnlineStatus } from "../helper/firebaseHelpers.js";
+import {
+  getUserData,
+  updateOnlineStatus,
+  getData,
+  getSymbolValue,
+} from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
+import CurrentValue from "./CurrentValue.jsx";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -77,7 +81,9 @@ export default function HomeRu() {
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState("");
   const [selectedOrder, setSelectedOrder] = useState({});
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [dbSymbols, setDbSymbols] = useState([]);
+  const [userProfit, setUserProfit] = useState("");
   const [userProfile, setUserProfile] = useState({
     name: "",
     surname: "",
@@ -221,9 +227,16 @@ export default function HomeRu() {
           querySnapshot.forEach((doc) => {
             orders.push({ id: doc.id, ...doc.data() });
           });
+          let profit = 0;
+          orders.map((el) => {
+            if (el?.status?.toLocaleLowerCase() == "success") {
+              profit = profit + el.profit;
+            }
+          });
           setOrdersHistory(orders);
-        });
 
+          setUserProfit(profit.toFixed(6));
+        });
         // Return a cleanup function to unsubscribe when the component unmounts
         return () => {
           unsubscribe();
@@ -339,6 +352,7 @@ export default function HomeRu() {
         </div>
       ),
       sortable: true,
+      width: "200px",
     },
     {
       name: t("status"),
@@ -353,7 +367,7 @@ export default function HomeRu() {
       name: t("currentPrice"),
       selector: (row) => (
         <div className="order-column" onDoubleClick={handleEditModal}>
-          {"N/A"}
+          <CurrentValue symbol={row.symbol} getSymbolValue={getSymbolValue} />
         </div>
       ),
       sortable: true,
@@ -393,6 +407,7 @@ export default function HomeRu() {
 
   const data = ordersHistory.map((order, i) => ({
     id: i + 1,
+    orderId: order?.id,
     createdAt: order?.createdAt,
     symbol: order?.symbol,
     type: order?.type,
@@ -489,15 +504,16 @@ export default function HomeRu() {
     //   `https://finnhub.io/api/v1/quote?symbol=${orderData.symbol.value}&token=` +
     // apiKeyFinnhub;
 
-    const apiUrl =
-      "https://api.binance.com/api/v3/ticker/price?symbol=" +
-      orderData?.symbol?.value;
+    // const apiUrl =
+    //   "https://api.binance.com/api/v3/ticker/price?symbol=" +
+    //   orderData?.symbol?.value;
+    // await axios.get(apiUrl).then((e) => {
+    //   console.log("-------->", e);
 
-    await axios.get(apiUrl).then((e) => {
-      console.log("-------->", e);
-      let obj = { ...orderData, symbolValue: e.data.price };
-      setOrderData(obj);
-    });
+    // });
+    const price = await getSymbolValue(orderData.symbol);
+    let obj = { ...orderData, symbolValue: price };
+    setOrderData(obj);
   };
 
   const placeOrder = async (e, type) => {
@@ -558,14 +574,12 @@ export default function HomeRu() {
         } else {
           orderData.status = "Pending";
         }
-        if (type === "Buy") {
-          orderData.profit = -(orderData?.symbolValue * orderData?.volume);
-        } else if (type === "Sell") {
-          orderData.profit = orderData?.symbolValue * orderData?.volume;
-        }
 
+        orderData.profit = 0;
+        const orderPrice =
+          parseFloat(orderData.symbolValue) * parseFloat(orderData.volume);
         const userRef = doc(db, "users", userId);
-        const newTotalBalance = userProfile?.totalBalance + orderData?.profit;
+        const newTotalBalance = userProfile?.totalBalance - orderPrice;
         console.log(123, newTotalBalance);
         await updateDoc(userRef, {
           totalBalance: newTotalBalance > 0 ? newTotalBalance : 0.0,
@@ -595,13 +609,23 @@ export default function HomeRu() {
   };
 
   const getSymbols = async () => {
-    await axios.get(`https://api.binance.com/api/v3/exchangeInfo`).then((e) => {
-      setSymbols(
-        e.data.symbols?.map((f) => {
-          return { value: f.symbol, label: f.symbol };
-        }) || []
-      );
-    });
+    // await axios.get(`https://api.binance.com/api/v3/exchangeInfo`).then((e) => {
+    //   setSymbols(
+    //     e.data.symbols?.map((f) => {
+    //       return { value: f.symbol, label: f.symbol };
+    //     }) || []
+    //   );
+    // });
+    setIsLoading(true);
+    const data = await getData("symbols");
+    setDbSymbols(data);
+    setSymbols(
+      data?.map((f) => {
+        return { value: f.symbol, label: f.symbol };
+      }) || []
+    );
+
+    setIsLoading(false);
   };
 
   // const customStyles = {
@@ -690,7 +714,7 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                defaultValue={0.0}
+                defaultValue={userProfit}
               />
             </div>
             <div
@@ -897,82 +921,90 @@ export default function HomeRu() {
                     >
                       {t("newDeal")}
                     </h2>
-                    <form id="newOrderForm">
-                      <label htmlFor="symbol-input">{t("symbol")}</label>
-
-                      <Select
-                        id="symbol-input"
-                        options={symbols}
-                        onChange={(e) =>
-                          setOrderData({ ...orderData, symbol: e })
-                        }
-                        styles={customStyles}
-                        value={orderData.symbol}
-                      />
-                      <label htmlFor="symbol-current-value">{t("price")}</label>
-                      <input
-                        type="number"
-                        id="symbol-current-value"
-                        name="symbolValue"
-                        readOnly={true}
-                        value={orderData?.symbolValue}
-                      />
-                      <label htmlFor="symbol-amount">{t("volume")}</label>
-                      <input
-                        type="number"
-                        id="symbol-amount"
-                        name="volume"
-                        defaultValue={0.0}
-                        max={100}
-                        onChange={(e) =>
-                          setOrderData({ ...orderData, volume: e.target.value })
-                        }
-                        value={orderData?.volume}
-                      />
-                      <label htmlFor="stop-loss">SL</label>
-                      <input
-                        type="number"
-                        id="stop-loss"
-                        name="sl"
-                        // required
-                        onChange={(e) =>
-                          setOrderData({ ...orderData, sl: e.target.value })
-                        }
-                        value={orderData?.sl}
-                      />
-                      <label htmlFor="take-profit">TP</label>
-                      <input
-                        type="number"
-                        id="take-profit"
-                        name="tp"
-                        // required
-                        onChange={(e) =>
-                          setOrderData({ ...orderData, tp: e.target.value })
-                        }
-                        value={orderData?.tp}
-                      />
-                      <button
-                        // className="newOrderButton"
-                        // id="buyButton"
-                        className="newOrderButton buyButton"
-                        onClick={(e) => {
-                          placeOrder(e, "Buy");
-                          console.log("Here");
-                        }}
-                        type="submit"
-                      >
-                        {t("buy")}
-                      </button>
-                      <button
-                        // className="newOrderButton"
-                        //  id="sellButton"
-                        onClick={(e) => placeOrder(e, "Sell")}
-                        type="submit"
-                        className="newOrderButton sellButton"
-                      >
-                        {t("sell")}
-                      </button>
-                    </form>
+                    {isLoading ? (
+                      <p>Loading....</p>
+                    ) : (
+                      <form id="newOrderForm">
+                        <label htmlFor="symbol-input">{t("symbol")}</label>
+                        <Select
+                          id="symbol-input"
+                          options={symbols}
+                          onChange={(e) =>
+                            setOrderData({ ...orderData, symbol: e })
+                          }
+                          styles={customStyles}
+                          value={orderData.symbol}
+                        />
+                        <label htmlFor="symbol-current-value">
+                          {t("price")}
+                        </label>
+                        <input
+                          type="number"
+                          id="symbol-current-value"
+                          name="symbolValue"
+                          readOnly={true}
+                          value={orderData?.symbolValue}
+                        />
+                        <label htmlFor="symbol-amount">{t("volume")}</label>
+                        <input
+                          type="number"
+                          id="symbol-amount"
+                          name="volume"
+                          defaultValue={0.0}
+                          max={100}
+                          onChange={(e) =>
+                            setOrderData({
+                              ...orderData,
+                              volume: e.target.value,
+                            })
+                          }
+                          value={orderData?.volume}
+                        />
+                        <label htmlFor="stop-loss">SL</label>
+                        <input
+                          type="number"
+                          id="stop-loss"
+                          name="sl"
+                          // required
+                          onChange={(e) =>
+                            setOrderData({ ...orderData, sl: e.target.value })
+                          }
+                          value={orderData?.sl}
+                        />
+                        <label htmlFor="take-profit">TP</label>
+                        <input
+                          type="number"
+                          id="take-profit"
+                          name="tp"
+                          // required
+                          onChange={(e) =>
+                            setOrderData({ ...orderData, tp: e.target.value })
+                          }
+                          value={orderData?.tp}
+                        />
+                        <button
+                          // className="newOrderButton"
+                          // id="buyButton"
+                          className="newOrderButton buyButton"
+                          onClick={(e) => {
+                            placeOrder(e, "Buy");
+                            console.log("Here");
+                          }}
+                          type="submit"
+                        >
+                          {t("buy")}
+                        </button>
+                        <button
+                          // className="newOrderButton"
+                          //  id="sellButton"
+                          onClick={(e) => placeOrder(e, "Sell")}
+                          type="submit"
+                          className="newOrderButton sellButton"
+                        >
+                          {t("sell")}
+                        </button>
+                      </form>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1627,6 +1659,7 @@ export default function HomeRu() {
           show={isDelModalOpen}
           onClose={handleCloseModal}
           selectedOrder={selectedOrder}
+          getSymbolValue={getSymbolValue}
         />
       )}
       {isReportModalOpen && (
