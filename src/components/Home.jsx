@@ -662,8 +662,7 @@ export default function HomeRu() {
     singleValue: (provided) => ({
       ...provided,
       color: "white",
-      background: "black",
-      opacity: "0 !important",
+      opacity: "0.9 !important",
       visibility: "visible",
     }),
     control: (provided, state) => ({
