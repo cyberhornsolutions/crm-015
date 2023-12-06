@@ -100,7 +100,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
           closeButton
         >
           <p className="bg-transparent mb-0 w-100">
-            Close order -- {selectedOrder?.orderId} + {selectedOrder?.symbol}
+            Close order -- {selectedOrder?.id} + {selectedOrder?.symbol}
           </p>
         </Modal.Header>
         <Modal.Body className="bg-secondry d-flex flex-column gap-3 p-3 pt-0">
