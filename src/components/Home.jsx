@@ -54,6 +54,9 @@ import {
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import CurrentValue from "./CurrentValue.jsx";
+// import rd3 from "react-d3-library";
+// const BarChart = rd3.BarChart;
+// const RD3Component = rd3.BarChart;
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
@@ -101,8 +104,6 @@ export default function HomeRu() {
     title: "",
     message: "",
   });
-
-  console.log("Orders History", ordersHistory);
 
   const { t, i18n } = useTranslation();
 
@@ -159,28 +160,18 @@ export default function HomeRu() {
   };
 
   const handleEditClick = () => {
-    if (userProfile.isUserEdited == true) {
-      toast.error("You can edit profile only one time");
-    } else {
-      setIsEditable(true);
-    }
+    setIsEditable(true);
   };
 
   const handleSaveClick = async () => {
+    let newProfile = { ...userProfile, isUserEdited: true };
     setIsEditable(false);
-    if (userProfile.isUserEdited == true) {
-      toast.error("You can edit your profile only one time");
-    } else {
-      // Save the updated userProfile data to Firestore
-      try {
-        setUserProfile((prev) => ({ ...prev, isUserEdited: true }));
-        const user = auth.currentUser;
-        const userRef = doc(db, "users", user.uid);
-        await setDoc(userRef, userProfile);
-        console.log("Data saved to Firestore");
-      } catch (error) {
-        console.error("Error saving data to Firestore:", error);
-      }
+    try {
+      const user = auth.currentUser;
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, newProfile);
+    } catch (error) {
+      console.error("Error saving data to Firestore:", error);
     }
   };
   const getUserDataByUID = async () => {
@@ -195,23 +186,25 @@ export default function HomeRu() {
 
     try {
       const userRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userRef);
-      if (userDoc.exists()) {
-        // User document exists, you can access the data
-        const userData = userDoc.data();
-        console.log("User data:", userData);
-        setUserProfile(userData);
-        return userData;
-      } else {
-        console.log("User document does not exist.");
-        return null;
-      }
+      const unsubscribe = onSnapshot(userRef, (userDoc) => {
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          console.log("User data:", userData);
+          setUserProfile(userData);
+          // You can perform additional actions here with the updated user data
+        } else {
+          console.log("User document does not exist.");
+          setUserProfile(null);
+        }
+      });
+
+      // Returning the unsubscribe function to stop listening when needed
+      return unsubscribe;
     } catch (error) {
       console.error("Error fetching user data:", error);
       return null;
     }
   };
-
   const fetchOrders = async () => {
     try {
       const user = auth.currentUser;
@@ -581,7 +574,6 @@ export default function HomeRu() {
           parseFloat(orderData.symbolValue) * parseFloat(orderData.volume);
         const userRef = doc(db, "users", userId);
         const newTotalBalance = userProfile?.totalBalance - orderPrice;
-        console.log(123, newTotalBalance);
         await updateDoc(userRef, {
           totalBalance: newTotalBalance > 0 ? newTotalBalance : 0.0,
         });
@@ -681,10 +673,17 @@ export default function HomeRu() {
     { name: "Bid", selector: (row) => row.price },
     { name: "Ask" },
   ];
-  const symbolData = [{ symbol: "AUD", price: 35 }];
+
+  // const dataSet=dbSymbols.map(el=>{label:el.symbol, value:el.price})
+  // const symbolData = [{ symbol: "AUD", price: 35 }];
 
   return (
     <>
+      {/* <div>
+        <h2>Bar Chart</h2>
+        <RD3Component data={dataSets} />
+      </div> */}
+
       <div id="header">
         <div id="logo">
           <img
@@ -843,7 +842,14 @@ export default function HomeRu() {
                 {tab === "assets" && (
                   <div id="assets">
                     {/* <TradingWidget locale="en" /> */}
-                    <DataTable columns={symbolColumn} data={symbolData} />
+                    <DataTable
+                      columns={symbolColumn}
+                      data={dbSymbols}
+                      paginationRowsPerPageOptions={[5, 10, 25, 50, 100]}
+                      pagination
+                      responsive
+                      paginationPerPage={5}
+                    />
                   </div>
                 )}
                 <div id="chart">
@@ -1320,17 +1326,21 @@ export default function HomeRu() {
                     />
                   </div>
                 </div>
-                <div id="acc-info-buttons">
-                  {isEditable ? (
-                    <button id="acc-save-button" onClick={handleSaveClick}>
-                      Save
-                    </button>
-                  ) : (
-                    <button id="acc-edit-button" onClick={handleEditClick}>
-                      Edit
-                    </button>
-                  )}
-                </div>
+                {
+                  <div id="acc-info-buttons">
+                    {isEditable ? (
+                      <button id="acc-save-button" onClick={handleSaveClick}>
+                        Save
+                      </button>
+                    ) : (
+                      !userProfile.isUserEdited && (
+                        <button id="acc-edit-button" onClick={handleEditClick}>
+                          Edit
+                        </button>
+                      )
+                    )}
+                  </div>
+                }
               </div>
               <div id="account-transactions">
                 <h3

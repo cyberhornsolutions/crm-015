@@ -12,7 +12,9 @@ function ReportTabs() {
   const [key, setKey] = useState("generalReport");
 
   const general = [{ no: 1 }];
-
+  const customStyle = {
+    table: { style: { height: "80vh", backgroundColor: "#2f323d" } },
+  };
   return (
     <Tabs
       id="controlled-tab-example"
@@ -20,8 +22,16 @@ function ReportTabs() {
       onSelect={(k) => setKey(k)}
       className="mb-3"
     >
-      <Tab eventKey="generalReport" title="General report">
-        <DataTable columns={generalColumns} data={general} />
+      <Tab
+        eventKey="generalReport"
+        title="General report"
+        className="reportTab"
+      >
+        <DataTable
+          columns={generalColumns}
+          data={general}
+          customStyles={customStyle}
+        />
         <div
           style={{ backgroundColor: "rgba(40,40,40,255)" }}
           className="d-flex justify-content-between align-items-center w-100 mt-2"
@@ -45,7 +55,11 @@ function ReportTabs() {
         </div>
       </Tab>
       <Tab eventKey="tradeOperations" title="Trade operations">
-        <DataTable columns={tradOptColumns} data={general} />
+        <DataTable
+          columns={tradOptColumns}
+          data={general}
+          customStyles={customStyle}
+        />
         <div className="d-flex justify-content-between align-items-center w-100 mt-2">
           <div className="d-flex  justify-content-center align-items-center gap-2">
             <div>Period</div>
@@ -66,7 +80,11 @@ function ReportTabs() {
         </div>
       </Tab>
       <Tab eventKey="deposit" title="Deposit">
-        <DataTable columns={depositColumns} data={general} />
+        <DataTable
+          columns={depositColumns}
+          data={general}
+          customStyles={customStyle}
+        />
         <div className="d-flex justify-content-between align-items-center w-100 mt-2">
           <div className="d-flex  justify-content-center align-items-center gap-2">
             <div>Period</div>
@@ -87,7 +105,11 @@ function ReportTabs() {
         </div>
       </Tab>
       <Tab eventKey="executedOrders" title="Executed orders">
-        <DataTable columns={executedOrderColumns} data={general} />
+        <DataTable
+          columns={executedOrderColumns}
+          data={general}
+          customStyles={customStyle}
+        />
         <div className="d-flex justify-content-between align-items-center w-100 mt-2">
           <div className="d-flex  justify-content-center align-items-center gap-2">
             <div>Period</div>

@@ -7,7 +7,8 @@ const ReportModal = ({ onClose, show }) => {
   return (
     <>
       <Modal
-        size="xl"
+        size="xxl"
+        fullscreen={true}
         show={show}
         onHide={onClose}
         className="modal-style-edit modal-style-del"
