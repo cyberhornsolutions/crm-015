@@ -142,9 +142,9 @@ function TradingWidget({ locale }) {
 
   return (
     <div id="tradingview-widget-container">
-      <div id="tradingview_c902b">
+      {/* <div id="tradingview_c902b">
         <div className="tradingview-widget-container__widget"></div>
-      </div>
+      </div> */}
     </div>
   );
 }

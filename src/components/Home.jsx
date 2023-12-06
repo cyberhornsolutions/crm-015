@@ -94,6 +94,7 @@ export default function HomeRu() {
     comment: "...",
     isUserEdited: false,
   });
+  const [allSymbols, setAllSymbols] = useState([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [messageModal, setMessageModal] = useState({
     show: false,
@@ -661,6 +662,9 @@ export default function HomeRu() {
     singleValue: (provided) => ({
       ...provided,
       color: "white",
+      background: "black",
+      opacity: "0 !important",
+      visibility: "visible",
     }),
     control: (provided, state) => ({
       ...provided,
@@ -672,6 +676,13 @@ export default function HomeRu() {
   const convertIntoFourDecimal = (number) => {
     return number?.toFixed(4);
   };
+
+  const symbolColumn = [
+    { name: "Symbol", selector: (row) => row.symbol },
+    { name: "Bid", selector: (row) => row.price },
+    { name: "Ask" },
+  ];
+  const symbolData = [{ symbol: "AUD", price: 35 }];
 
   return (
     <>
@@ -832,7 +843,8 @@ export default function HomeRu() {
               <div id="trade">
                 {tab === "assets" && (
                   <div id="assets">
-                    <TradingWidget locale="en" />
+                    {/* <TradingWidget locale="en" /> */}
+                    <DataTable columns={symbolColumn} data={symbolData} />
                   </div>
                 )}
                 <div id="chart">
