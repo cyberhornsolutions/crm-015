@@ -735,11 +735,13 @@ export default function HomeRu() {
   const bal = parseFloat(userProfile.totalBalance) + parseFloat(userProfit);
 
   const refreshPrice = () => {
-    const latestPrice = dbSymbols.find(
-      (el) => el.symbol == orderData?.symbol.value
-    );
-    let order = { ...orderData, symbolValue: latestPrice?.price };
-    setOrderData(order);
+    if (orderData?.symbol?.value != null && orderData.symbol != null) {
+      const latestPrice = dbSymbols.find(
+        (el) => el.symbol == orderData?.symbol.value
+      );
+      let order = { ...orderData, symbolValue: latestPrice?.price };
+      setOrderData(order);
+    }
   };
 
   return (
@@ -916,7 +918,7 @@ export default function HomeRu() {
                       paginationPerPage={5}
                       theme="dark"
                     /> */}
-                    <div style={{ backgroundColor: "blue" }}>
+                    <div>
                       <h5>Quotes</h5>
                       <div
                         style={{ backgroundColor: "red" }}
@@ -933,7 +935,9 @@ export default function HomeRu() {
                             Ask
                           </div>
                         </div>
-                        <div className="d-flex justify-content-end">okara</div>
+                        <div className="d-flex justify-content-end">
+                          + Add Symbol
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1041,7 +1045,7 @@ export default function HomeRu() {
                         <label htmlFor="symbol-current-value">
                           {t("price")}
                         </label>
-                        <div>
+                        <div className="gap-2">
                           <input
                             type="number"
                             id="symbol-current-value"
