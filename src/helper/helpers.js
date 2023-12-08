@@ -6,7 +6,7 @@ export const calculateProfit = (type, currentPrice, symbolPrice, volume) => {
   } else if (type === "Buy") {
     pnl = parseFloat(currentPrice) - parseFloat(symbolPrice);
   }
-  console.log(pnl, 9090);
+  // console.log(pnl, 9090);
   return pnl * parseFloat(volume);
 };
 

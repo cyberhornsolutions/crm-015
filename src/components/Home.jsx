@@ -20,6 +20,7 @@ import { Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
+
 import {
   doc,
   setDoc,
@@ -53,9 +54,11 @@ import {
 import { toast } from "react-toastify";
 import CurrentValue from "./CurrentValue.jsx";
 import MyBarChart from "./BarChart.js";
-import CurrentProfit from "./CurrentProfit.js";
+import CurrentProfit from "./CurrentProfit.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
+import AddTradingSymbolModal from "./AddTradingSymbolModal.jsx";
+
 // import rd3 from "react-d3-library";
 // const BarChart = rd3.BarChart;
 // const RD3Component = rd3.BarChart;
@@ -89,6 +92,8 @@ export default function HomeRu() {
   const [currentUserId, setCurrentUserId] = useState("");
   const [selectedOrder, setSelectedOrder] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isTradingModal, setIsTradingModal] = useState(false);
+  const [bQuotes, setBQuotes] = useState([]);
   // const [dbSymbols, setDbSymbols] = useState([]);
   const [userProfit, setUserProfit] = useState("");
   const [userProfile, setUserProfile] = useState({
@@ -101,6 +106,7 @@ export default function HomeRu() {
     comment: "...",
     isUserEdited: false,
   });
+  const [userQuotes, setUserQuotes] = useState([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [messageModal, setMessageModal] = useState({
     show: false,
@@ -153,6 +159,7 @@ export default function HomeRu() {
     setIsModalOpen(false);
     setIsDelModalOpen(false);
     setIsReportModalOpen(false);
+    setIsTradingModal(false);
     setMessageModal({
       show: false,
       title: "",
@@ -227,7 +234,8 @@ export default function HomeRu() {
       const unsubscribe = onSnapshot(userRef, (userDoc) => {
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          // console.log("User data:", userData);
+          console.log("User data:", userData, 9090);
+          setUserQuotes(userData?.quotes);
           setUserProfile(userData);
           // You can perform additional actions here with the updated user data
         } else {
@@ -744,6 +752,27 @@ export default function HomeRu() {
     }
   };
 
+  const handleTradingModal = () => {
+    setIsTradingModal(true);
+  };
+
+  const bQuotesValues = async () => {
+    try {
+      const encodedSymbols = JSON.stringify(userQuotes);
+
+      const response = await axios.get(
+        "https://api.binance.us/api/v3/ticker/bookTicker?symbols=" +
+          [encodedSymbols]
+      );
+
+      console.log(response.data, 8080);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(9090, 8080, bQuotesValues());
   return (
     <>
       {/* <div>
@@ -918,12 +947,9 @@ export default function HomeRu() {
                       paginationPerPage={5}
                       theme="dark"
                     /> */}
-                    <div>
+                    <div className="tradingWidget">
                       <h5>Quotes</h5>
-                      <div
-                        style={{ backgroundColor: "red" }}
-                        className="d-flex justify-content-between flex-column h-auto"
-                      >
+                      <div className="d-flex justify-content-between flex-column innerTradingDiv ">
                         <div className="row ">
                           <div className="col-md-4 d-flex justify-content-center align-items-center">
                             Symbol
@@ -935,8 +961,15 @@ export default function HomeRu() {
                             Ask
                           </div>
                         </div>
-                        <div className="d-flex justify-content-end">
-                          + Add Symbol
+                        <div className="d-flex justify-content-center align-items-center">
+                          <button
+                            className="btn btn-success"
+                            onClick={() => {
+                              handleTradingModal();
+                            }}
+                          >
+                            + Add Symbol
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -1797,6 +1830,16 @@ export default function HomeRu() {
           onClose={handleCloseModal}
           title={messageModal?.title}
           message={messageModal?.message}
+        />
+      )}
+
+      {isTradingModal && (
+        <AddTradingSymbolModal
+          show={isTradingModal}
+          symbols={dbSymbols}
+          handleCloseModal={handleCloseModal}
+          userQuotes={userQuotes}
+          userId={currentUserId}
         />
       )}
     </>

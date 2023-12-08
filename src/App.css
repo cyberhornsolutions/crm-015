@@ -12,3 +12,13 @@
 .redText {
   color: red;
 }
+
+.tradingWidget {
+  min-height: 50vh;
+  max-height: 50vh !important;
+}
+
+.innerTradingDiv {
+  min-height: 45vh;
+  max-height: 45vh !important;
+}

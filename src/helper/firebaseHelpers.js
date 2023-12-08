@@ -4,7 +4,6 @@ import {
   getDoc,
   updateDoc,
   where,
-  getDocs,
   query,
   onSnapshot,
 } from "firebase/firestore";
@@ -93,4 +92,14 @@ export const getSymbolValue = (symbol) => {
       reject(error);
     }
   });
+};
+
+export const addQuotesToUser = async (userId, symbols) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, { quotes: symbols });
+    return true;
+  } catch (error) {
+    console.log(error);
+  }
 };
