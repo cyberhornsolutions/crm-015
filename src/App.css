@@ -1,3 +1,14 @@
 .reportTab {
-  max-height: 80vh;
+  max-height: 10vh;
+}
+
+.greenText {
+  color: green;
+}
+.orangeText {
+  color: orange;
+}
+
+.redText {
+  color: red;
 }

@@ -1,22 +1,21 @@
 // Example: EditModal.js
-import React, { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
 import {
-  collection,
   doc,
   onSnapshot,
-  query,
+  serverTimestamp,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { calculateProfit } from "../helper/helpers";
 
-const DelOrderModal = ({ onClose, show, selectedOrder }) => {
-  const [price, setPrice] = useState(0);
+const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
   const [isFull, setIsFull] = useState(false);
   const [isPartial, setIsPartial] = useState(false);
   const newVolume = parseInt(selectedOrder.volume);
   const [volume, setVolume] = useState(newVolume);
+
   const handleChange = (isChecked, type) => {
     if (type == "isFull") {
       setIsFull(true);
@@ -26,43 +25,41 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
       setIsPartial(true);
     }
   };
-
-  const getSymbolValue = (symbol) => {
-    return new Promise((resolve, reject) => {
-      try {
-        const symbolsCollection = collection(db, "symbols");
-        const q = query(symbolsCollection, where("symbol", "==", symbol));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-          let price = null;
-          querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            price = doc.data().price;
-          });
-          const parsePrice = parseFloat(price);
-          resolve(setPrice(parsePrice));
-        });
-        // If you need to handle errors within the snapshot listener
-        // querySnapshot should have an error handler
-        // querySnapshot.onError((error) => reject(error));
-      } catch (error) {
-        reject(error);
-      }
-    });
+  const currentPrice = symbols?.find(
+    (el) => el.symbol == selectedOrder?.symbol
+  );
+  const calculateUpdatedProfit = () => {
+    if (selectedOrder.status === "Pending") {
+      const newPrice = symbols?.find(
+        (item) => item.symbol === selectedOrder.symbol
+      );
+      return calculateProfit(
+        selectedOrder.type,
+        newPrice?.price,
+        selectedOrder.symbolValue,
+        selectedOrder.volume
+      );
+    } else {
+      return selectedOrder.profit;
+    }
   };
-  useEffect(() => {
-    getSymbolValue(selectedOrder.symbol);
-  }, [selectedOrder.symbol]);
+
+  const profit = calculateUpdatedProfit();
   const updateOrderStatus = (orderId, newStatus) => {
     return new Promise((resolve, reject) => {
       try {
         const orderRef = doc(db, "orders", orderId);
-
         const unsubscribe = onSnapshot(
           orderRef,
           (docSnapshot) => {
             if (docSnapshot.exists()) {
               // Update the order status
-              updateDoc(orderRef, { status: newStatus })
+              updateDoc(orderRef, {
+                status: newStatus,
+                closedDate: serverTimestamp(),
+                closedPrice: currentPrice?.price,
+                profit: profit,
+              })
                 .then(() => {
                   resolve("Order status updated successfully");
                 })
@@ -79,7 +76,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
         );
 
         // Optionally returning unsubscribe function for cleanup if needed
-        // return unsubscribe;
+        return unsubscribe;
       } catch (error) {
         reject(error);
       }
@@ -163,7 +160,8 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
             </div>
           )}
           <div className="ps-3 fs-5">
-            Current Price: <span className="ms-2 text-success">{price}</span>
+            Current Price:{" "}
+            <span className={`ms-2 text-success`}>{currentPrice?.price}</span>
           </div>
           <div className="w-100 text-center my-2">
             <button

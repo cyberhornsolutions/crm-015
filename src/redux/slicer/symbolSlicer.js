@@ -8,12 +8,12 @@ const symbolSlicer = createSlice({
   name: "symbols",
   initialState,
   reducers: {
-    setSymbols: (state, action) => {
+    setSymbolsState: (state, action) => {
       state.symbols = action.payload;
     },
   },
-  extraReducers: {},
+  // extraReducers: {},
 });
 
-export const { setSymbols } = symbolSlicer.actions;
+export const { setSymbolsState } = symbolSlicer.actions;
 export default symbolSlicer.reducer;

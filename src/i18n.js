@@ -79,6 +79,7 @@ const resources = {
       Q6: "Q: What are the trading hours?",
       ANS6: " A: Our trading platform operates 24/7, but specific trading hours for different assets may vary. Check the asset's trading hours in the platform.",
       referralCode: "Referral Code",
+      closedPrice: "Closed Price",
     },
   },
   ru: {

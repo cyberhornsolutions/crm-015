@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import DataTable from "react-data-table-component";
@@ -8,13 +8,58 @@ import {
   generalColumns,
   tradOptColumns,
 } from "../helper/Tablecolumns";
-function ReportTabs() {
+import {
+  collection,
+  where,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
+import { db } from "../firebase";
+function ReportTabs({ orders, userId }) {
   const [key, setKey] = useState("generalReport");
+  const [deposits, setDeposits] = useState([]);
+
+  const getDeposits = async (userId) => {
+    try {
+      const depositsRef = collection(db, "deposits");
+      const userDepositsQuery = query(
+        depositsRef,
+        orderBy("createdAt", "desc"),
+        where("userId", "==", userId)
+      );
+
+      const unsubscribe = onSnapshot(
+        userDepositsQuery,
+        (snapshot) => {
+          const depositsData = [];
+          snapshot.forEach((doc) => {
+            depositsData.push({ id: doc.id, ...doc.data() });
+          });
+          console.log(depositsData, 9090);
+          setDeposits(depositsData);
+        },
+        (error) => {
+          console.error("Error fetching data:", error);
+        }
+      );
+
+      // Optionally returning unsubscribe function for cleanup if needed
+      // return unsubscribe;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const general = [{ no: 1 }];
   const customStyle = {
-    table: { style: { height: "80vh", backgroundColor: "#2f323d" } },
+    table: { style: { height: "70vh", backgroundColor: "#2f323d" } },
   };
+
+  useEffect(() => {
+    getDeposits(userId);
+  }, []);
+
   return (
     <Tabs
       id="controlled-tab-example"
@@ -29,8 +74,10 @@ function ReportTabs() {
       >
         <DataTable
           columns={generalColumns}
-          data={general}
+          data={orders}
           customStyles={customStyle}
+          pagination
+          theme="dark"
         />
         <div
           style={{ backgroundColor: "rgba(40,40,40,255)" }}
@@ -82,7 +129,7 @@ function ReportTabs() {
       <Tab eventKey="deposit" title="Deposit">
         <DataTable
           columns={depositColumns}
-          data={general}
+          data={deposits}
           customStyles={customStyle}
         />
         <div className="d-flex justify-content-between align-items-center w-100 mt-2">

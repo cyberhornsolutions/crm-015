@@ -22,7 +22,6 @@ import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import {
   doc,
-  getDoc,
   setDoc,
   collection,
   addDoc,
@@ -41,19 +40,22 @@ import {
   faClose,
   faCaretDown,
   faCaretUp,
+  faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import EditOrderModal from "./EditOrderModal";
 import DelOrderModal from "./DelOrderModal ";
 import ReportModal from "./ReportModal";
 import MessageModal from "./MessageModal";
 import {
-  getUserData,
   updateOnlineStatus,
-  getData,
   getSymbolValue,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import CurrentValue from "./CurrentValue.jsx";
+import MyBarChart from "./BarChart.js";
+import CurrentProfit from "./CurrentProfit.js";
+import { useDispatch, useSelector } from "react-redux";
+import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
 // import rd3 from "react-d3-library";
 // const BarChart = rd3.BarChart;
 // const RD3Component = rd3.BarChart;
@@ -61,6 +63,8 @@ import CurrentValue from "./CurrentValue.jsx";
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const dbSymbols = useSelector((state) => state?.symbols?.symbols);
   const [symbols, setSymbols] = useState([]);
   const [orderData, setOrderData] = useState({
     symbol: null,
@@ -85,7 +89,7 @@ export default function HomeRu() {
   const [currentUserId, setCurrentUserId] = useState("");
   const [selectedOrder, setSelectedOrder] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [dbSymbols, setDbSymbols] = useState([]);
+  // const [dbSymbols, setDbSymbols] = useState([]);
   const [userProfit, setUserProfit] = useState("");
   const [userProfile, setUserProfile] = useState({
     name: "",
@@ -97,7 +101,6 @@ export default function HomeRu() {
     comment: "...",
     isUserEdited: false,
   });
-  const [allSymbols, setAllSymbols] = useState([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [messageModal, setMessageModal] = useState({
     show: false,
@@ -109,6 +112,41 @@ export default function HomeRu() {
 
   const handleEditModal = () => {
     setIsModalOpen(true);
+  };
+
+  const getAllSymbols1 = async () => {
+    try {
+      setIsLoading(true);
+
+      const symbolsRef = collection(db, "symbols");
+
+      const unsubscribe = onSnapshot(
+        symbolsRef,
+        (snapshot) => {
+          const symbolsData = [];
+          snapshot.forEach((doc) => {
+            symbolsData.push({ id: doc.id, ...doc.data() });
+          });
+          setSymbols(
+            symbolsData?.map((f) => {
+              return { value: f.symbol, label: f.symbol };
+            }) || []
+          );
+
+          dispatch(setSymbolsState(symbolsData));
+          setIsLoading(false);
+        },
+        (error) => {
+          console.error("Error fetching data:", error);
+          setIsLoading(false);
+        }
+      );
+
+      // Optionally returning unsubscribe function for cleanup if needed
+      // return unsubscribe;
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleCloseModal = () => {
@@ -140,7 +178,7 @@ export default function HomeRu() {
       } else {
         signOut(auth)
           .then(() => {
-            console.log("Signout The User");
+            // console.log("Signout The User");
             navigate("/");
           })
           .catch((error) => {
@@ -182,14 +220,14 @@ export default function HomeRu() {
       return null;
     }
     setCurrentUserId(user.id);
-    console.log("UID:", user.uid);
+    // console.log("UID:", user.uid);
 
     try {
       const userRef = doc(db, "users", user.uid);
       const unsubscribe = onSnapshot(userRef, (userDoc) => {
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          console.log("User data:", userData);
+          // console.log("User data:", userData);
           setUserProfile(userData);
           // You can perform additional actions here with the updated user data
         } else {
@@ -223,7 +261,10 @@ export default function HomeRu() {
           });
           let profit = 0;
           orders.map((el) => {
-            if (el?.status?.toLocaleLowerCase() == "success") {
+            if (
+              el?.status?.toLocaleLowerCase() == "success" ||
+              el?.status?.toLocaleLowerCase() == "closed"
+            ) {
               profit = profit + el.profit;
             }
           });
@@ -351,17 +392,29 @@ export default function HomeRu() {
     {
       name: t("status"),
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className={`order-column ${
+            row.status == "Success"
+              ? "greenText"
+              : row.status == "Closed"
+              ? "redText"
+              : "orangeText"
+          } `}
+          onDoubleClick={handleEditModal}
+        >
           {row.status}
         </div>
       ),
       sortable: true,
     },
     {
-      name: t("currentPrice"),
+      name: t("closedPrice"),
       selector: (row) => (
         <div className="order-column" onDoubleClick={handleEditModal}>
-          <CurrentValue symbol={row.symbol} getSymbolValue={getSymbolValue} />
+          {/* <CurrentValue symbol={row.symbol} getSymbolValue={getSymbolValue} /> */}
+          {row.status == "Success" || row.status == "Closed"
+            ? row.closedPrice
+            : ""}
         </div>
       ),
       sortable: true,
@@ -370,8 +423,8 @@ export default function HomeRu() {
       name: t("profit"),
       selector: (row) => (
         <div className="order-column" onDoubleClick={handleEditModal}>
-          <div style={{ color: `${row?.profit < 0 ? "red" : "green"}` }}>
-            {row.profit}
+          <div>
+            <CurrentProfit orderData={row} symbols={dbSymbols} />
           </div>
         </div>
       ),
@@ -410,6 +463,11 @@ export default function HomeRu() {
     sltp: `${order?.sl || ""}/${order?.tp || ""}`,
     status: order?.status,
     profit: order?.profit,
+    sl: order.sl,
+    tp: order.tp,
+    closedDate: order?.closedDate,
+    closedPrice: order.closedPrice,
+    createdTime: order.createdTime,
   }));
 
   const openOrderHistory = () => {
@@ -428,7 +486,7 @@ export default function HomeRu() {
       ordersHistoryButton.style.border = "1px solid rgb(0, 255, 110)";
       ordersHistoryButton.style.color = "rgb(0, 255, 110)";
       ordersHistoryButton.style.fontWeight = "bold";
-
+      newDealButton.removeAttribute("style");
       tableOrders.style.maxHeight = "350px";
       tradeToToggle.style.display = "none";
       navButtons.setAttribute("style", "margin-top: 5px;");
@@ -437,7 +495,7 @@ export default function HomeRu() {
       ordersHistoryButton.removeAttribute("style");
 
       // tableOrders.style.maxHeight = "150px";
-      tradeToToggle.style.display = "flex";
+      // tradeToToggle.style.display = "flex";
       sideButtonTrade?.classList.add("active");
       iconTrade?.classList.add("active");
       navButtons.setAttribute("style", "margin-top: 0;");
@@ -458,6 +516,7 @@ export default function HomeRu() {
     const tableOrders = document.getElementById("orders");
     const sideButtonAssets = document.getElementById("side-button-assets");
     const ordersHistoryButton = document.getElementById("ordersHistoryButton");
+    const tradeToToggle = document.getElementById("trade");
     if (
       !newDealButton.classList.contains("active") &&
       !ordersHistoryButton.classList.contains("active")
@@ -475,6 +534,11 @@ export default function HomeRu() {
       newDealButton.removeAttribute("style");
 
       // tableOrders.style.maxHeight = "150px";
+    } else {
+      tradeToToggle.style.display = "flex";
+      ordersHistoryButton?.classList.remove("active");
+      ordersHistoryButton.removeAttribute("style");
+      newDealButton?.classList.add("active");
     }
     if (sideButtonAssets.classList.contains("active")) {
       // tableOrders.style.maxHeight = "150px";
@@ -482,7 +546,7 @@ export default function HomeRu() {
   };
 
   useEffect(() => {
-    getSymbols();
+    getAllSymbols1();
   }, []);
 
   useEffect(() => {
@@ -514,7 +578,7 @@ export default function HomeRu() {
     e.preventDefault();
     const form = document.getElementById("newOrderForm");
 
-    console.log({ form, orderData });
+    // console.log({ form, orderData });
     // Create a formatted date string
     const formattedDate = new Date().toLocaleDateString("en-US");
 
@@ -600,7 +664,6 @@ export default function HomeRu() {
       }
     }
   };
-
   const getSymbols = async () => {
     // await axios.get(`https://api.binance.com/api/v3/exchangeInfo`).then((e) => {
     //   setSymbols(
@@ -609,16 +672,8 @@ export default function HomeRu() {
     //     }) || []
     //   );
     // });
-    setIsLoading(true);
-    const data = await getData("symbols");
-    setDbSymbols(data);
-    setSymbols(
-      data?.map((f) => {
-        return { value: f.symbol, label: f.symbol };
-      }) || []
-    );
-
-    setIsLoading(false);
+    // const data = await getData("symbols");
+    // setIsLoading(false);
   };
 
   // const customStyles = {
@@ -677,11 +732,20 @@ export default function HomeRu() {
   // const dataSet=dbSymbols.map(el=>{label:el.symbol, value:el.price})
   // const symbolData = [{ symbol: "AUD", price: 35 }];
 
+  const bal = parseFloat(userProfile.totalBalance) + parseFloat(userProfit);
+
+  const refreshPrice = () => {
+    const latestPrice = dbSymbols.find(
+      (el) => el.symbol == orderData?.symbol.value
+    );
+    let order = { ...orderData, symbolValue: latestPrice?.price };
+    setOrderData(order);
+  };
+
   return (
     <>
       {/* <div>
-        <h2>Bar Chart</h2>
-        <RD3Component data={dataSets} />
+        <MyBarChart />
       </div> */}
 
       <div id="header">
@@ -697,10 +761,11 @@ export default function HomeRu() {
             <div className="balance-item">
               <h2 className="balance-title">{t("balance")}:</h2>
               <input
-                type="number"
+                type="text"
                 className="balance-nums"
                 readOnly={true}
-                defaultValue={convertIntoFourDecimal(userProfile?.totalBalance)}
+                value={bal}
+                defaultValue={bal}
               />
             </div>
             <div className="balance-item">
@@ -842,14 +907,35 @@ export default function HomeRu() {
                 {tab === "assets" && (
                   <div id="assets">
                     {/* <TradingWidget locale="en" /> */}
-                    <DataTable
+                    {/* <DataTable
                       columns={symbolColumn}
                       data={dbSymbols}
                       paginationRowsPerPageOptions={[5, 10, 25, 50, 100]}
                       pagination
                       responsive
                       paginationPerPage={5}
-                    />
+                      theme="dark"
+                    /> */}
+                    <div style={{ backgroundColor: "blue" }}>
+                      <h5>Quotes</h5>
+                      <div
+                        style={{ backgroundColor: "red" }}
+                        className="d-flex justify-content-between flex-column h-auto"
+                      >
+                        <div className="row ">
+                          <div className="col-md-4 d-flex justify-content-center align-items-center">
+                            Symbol
+                          </div>
+                          <div className="col-md-4 d-flex justify-content-center align-items-center">
+                            Bid
+                          </div>
+                          <div className="col-md-4 d-flex justify-content-center align-items-center">
+                            Ask
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-end">okara</div>
+                      </div>
+                    </div>
                   </div>
                 )}
                 <div id="chart">
@@ -907,7 +993,7 @@ export default function HomeRu() {
                           let _tabs = [...tabs, highest + 1];
                           setTabs(_tabs);
                           setActiveTab(_tabs.length);
-                          console.log({ _tabs, length: _tabs.length });
+                          // console.log({ _tabs, length: _tabs.length });
                         }}
                       >
                         +
@@ -955,13 +1041,23 @@ export default function HomeRu() {
                         <label htmlFor="symbol-current-value">
                           {t("price")}
                         </label>
-                        <input
-                          type="number"
-                          id="symbol-current-value"
-                          name="symbolValue"
-                          readOnly={true}
-                          value={orderData?.symbolValue}
-                        />
+                        <div>
+                          <input
+                            type="number"
+                            id="symbol-current-value"
+                            name="symbolValue"
+                            readOnly={true}
+                            value={orderData?.symbolValue}
+                          />
+                          <FontAwesomeIcon
+                            className="ml-3"
+                            onClick={() => {
+                              refreshPrice();
+                            }}
+                            icon={faRefresh}
+                          />
+                        </div>
+
                         <label htmlFor="symbol-amount">{t("volume")}</label>
                         <input
                           type="number"
@@ -1005,7 +1101,7 @@ export default function HomeRu() {
                           className="newOrderButton buyButton"
                           onClick={(e) => {
                             placeOrder(e, "Buy");
-                            console.log("Here");
+                            // console.log("Here");
                           }}
                           type="submit"
                         >
@@ -1680,11 +1776,16 @@ export default function HomeRu() {
           show={isDelModalOpen}
           onClose={handleCloseModal}
           selectedOrder={selectedOrder}
-          getSymbolValue={getSymbolValue}
+          symbols={dbSymbols}
         />
       )}
       {isReportModalOpen && (
-        <ReportModal show={isReportModalOpen} onClose={handleCloseModal} />
+        <ReportModal
+          show={isReportModalOpen}
+          onClose={handleCloseModal}
+          orders={data}
+          userId={currentUserId}
+        />
       )}
       {messageModal?.show && (
         <MessageModal
