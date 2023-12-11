@@ -19,7 +19,7 @@ import { db } from "../firebase";
 function ReportTabs({ orders, userId }) {
   const [key, setKey] = useState("generalReport");
   const [deposits, setDeposits] = useState([]);
-
+  console.log(7070, userId);
   const getDeposits = async (userId) => {
     try {
       const depositsRef = collection(db, "deposits");
@@ -36,7 +36,7 @@ function ReportTabs({ orders, userId }) {
           snapshot.forEach((doc) => {
             depositsData.push({ id: doc.id, ...doc.data() });
           });
-          console.log(depositsData, 9090);
+          console.log(depositsData, 7070);
           setDeposits(depositsData);
         },
         (error) => {
@@ -58,8 +58,9 @@ function ReportTabs({ orders, userId }) {
 
   useEffect(() => {
     getDeposits(userId);
-  }, []);
-
+  }, [userId]);
+  const dep = getDeposits(userId);
+  console.log(7070, dep);
   return (
     <Tabs
       id="controlled-tab-example"

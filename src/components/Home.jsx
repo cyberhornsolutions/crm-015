@@ -488,34 +488,34 @@ export default function HomeRu() {
     const sideButtonAssets = document.getElementById("side-button-assets");
     const newDealButton = document.getElementById("newDealButton");
 
-    if (!ordersHistoryButton?.classList.contains("active")) {
-      ordersHistoryButton?.classList.add("active");
-      ordersHistoryButton.style.backgroundColor = "#1e222d";
-      ordersHistoryButton.style.border = "1px solid rgb(0, 255, 110)";
-      ordersHistoryButton.style.color = "rgb(0, 255, 110)";
-      ordersHistoryButton.style.fontWeight = "bold";
-      newDealButton.removeAttribute("style");
-      tableOrders.style.maxHeight = "350px";
-      tradeToToggle.style.display = "none";
-      navButtons.setAttribute("style", "margin-top: 5px;");
-    } else {
-      ordersHistoryButton?.classList.remove("active");
-      ordersHistoryButton.removeAttribute("style");
+    // if (!ordersHistoryButton?.classList.contains("active")) {
+    ordersHistoryButton?.classList.add("active");
+    ordersHistoryButton.style.backgroundColor = "#1e222d";
+    ordersHistoryButton.style.border = "1px solid rgb(0, 255, 110)";
+    ordersHistoryButton.style.color = "rgb(0, 255, 110)";
+    ordersHistoryButton.style.fontWeight = "bold";
+    newDealButton.removeAttribute("style");
+    tableOrders.style.maxHeight = "350px";
+    tradeToToggle.style.display = "none";
+    navButtons.setAttribute("style", "margin-top: 5px;");
+    // } else {
+    //   ordersHistoryButton?.classList.remove("active");
+    //   ordersHistoryButton.removeAttribute("style");
 
-      // tableOrders.style.maxHeight = "150px";
-      // tradeToToggle.style.display = "flex";
-      sideButtonTrade?.classList.add("active");
-      iconTrade?.classList.add("active");
-      navButtons.setAttribute("style", "margin-top: 0;");
+    // tableOrders.style.maxHeight = "150px";
+    // tradeToToggle.style.display = "flex";
+    // sideButtonTrade?.classList.add("active");
+    // iconTrade?.classList.add("active");
+    // navButtons.setAttribute("style", "margin-top: 0;");
 
-      if (newDealButton?.classList.contains("active")) {
-        if (sideButtonAssets?.classList.contains("active")) {
-          tableOrders.style.maxHeight = "150px";
-        } else {
-          tableOrders.style.maxHeight = "115px";
-        }
-      }
-    }
+    // if (newDealButton?.classList.contains("active")) {
+    //   if (sideButtonAssets?.classList.contains("active")) {
+    //     tableOrders.style.maxHeight = "150px";
+    //   } else {
+    //     tableOrders.style.maxHeight = "115px";
+    //   }
+    // }
+    // }
   };
 
   const openOrderPanel = () => {
