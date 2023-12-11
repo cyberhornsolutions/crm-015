@@ -8,7 +8,10 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { toastify } from "../helper/toastHelper";
-import { updateOnlineStatus } from "../helper/firebaseHelpers";
+import {
+  addUserNewBalance,
+  updateOnlineStatus,
+} from "../helper/firebaseHelpers";
 // import "./style.css";
 // import { toastify } from "react-toastify";
 
@@ -99,6 +102,11 @@ export default function Auth() {
             isUserEdited: false,
           })
             .then(() => {
+              addUserNewBalance(user.uid, 100)
+                .then((data) => {
+                  console.log("Balance added");
+                })
+                .catch((error) => console.log(error));
               console.log("User data added to Firestore");
               signOut(auth)
                 .then(() => {
