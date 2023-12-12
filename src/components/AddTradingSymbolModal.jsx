@@ -11,7 +11,7 @@ const AddTradingSymbol = ({
   userId,
 }) => {
   const [formData, setFormData] = useState({ symbol: "" });
-
+  console.log(userQuotes, 909090);
   const { symbol } = formData;
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,10 +19,10 @@ const AddTradingSymbol = ({
       toast.error("Please select symbol!");
     } else {
       let isExists = false;
-      if (!userQuotes) {
+      if (userQuotes?.length > 0) {
         isExists = userQuotes?.includes(symbol);
       }
-
+      console.log(isExists, 909090);
       if (isExists) {
         toast.error("Symbol already exists in your quotes");
       } else {

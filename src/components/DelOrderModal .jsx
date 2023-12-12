@@ -2,15 +2,27 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import {
+  addDoc,
+  collection,
   doc,
+  getDoc,
   onSnapshot,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { calculateProfit } from "../helper/helpers";
+import { toast } from "react-toastify";
 
-const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
+const DelOrderModal = ({
+  onClose,
+  show,
+  selectedOrder,
+  symbols,
+  currentUserId,
+}) => {
+  console.log(777, selectedOrder);
   const [isFull, setIsFull] = useState(false);
   const [isPartial, setIsPartial] = useState(false);
   const newVolume = parseInt(selectedOrder.volume);
@@ -45,42 +57,82 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
   };
 
   const profit = calculateUpdatedProfit();
-  const updateOrderStatus = (orderId, newStatus) => {
-    return new Promise((resolve, reject) => {
-      try {
-        const orderRef = doc(db, "orders", orderId);
-        const unsubscribe = onSnapshot(
-          orderRef,
-          (docSnapshot) => {
-            if (docSnapshot.exists()) {
-              // Update the order status
-              updateDoc(orderRef, {
-                status: newStatus,
-                closedDate: serverTimestamp(),
-                closedPrice: currentPrice?.price,
-                profit: profit,
-              })
-                .then(() => {
-                  resolve("Order status updated successfully");
-                })
-                .catch((error) => {
-                  reject(error);
-                });
-            } else {
-              reject("Order does not exist");
-            }
-          },
-          (error) => {
-            reject(error);
-          }
-        );
 
-        // Optionally returning unsubscribe function for cleanup if needed
-        return unsubscribe;
-      } catch (error) {
-        reject(error);
+  const newOrder = async () => {
+    if (isPartial) {
+      if (parseFloat(volume) > parseFloat(selectedOrder.volume)) {
+        toast.error(
+          "Please add a volume which is less or equal than the current volume"
+        );
+      } else {
+        try {
+          const formattedDate = new Date().toLocaleDateString("en-US");
+
+          const newOrder = {
+            symbol: selectedOrder.symbol,
+            symbolValue: selectedOrder.symbolValue,
+            volume: volume,
+            sl: selectedOrder.sl,
+            tp: selectedOrder.tp,
+            profit: 0,
+            createdTime: serverTimestamp(),
+            type: selectedOrder.type,
+            createdAt: formattedDate,
+            status: "Pending",
+            userId: currentUserId,
+          };
+          console.log(newOrder, 777);
+          const orderRef = collection(db, "orders");
+
+          await addDoc(orderRef, newOrder);
+          await updateOrderStatus(selectedOrder.orderId, "Closed", volume);
+
+          onClose();
+        } catch (error) {
+          console.log(error, 777);
+        }
       }
-    });
+    } else {
+      updateOrderStatus(selectedOrder.orderId, "Closed");
+    }
+  };
+
+  const updateOrderStatus = async (orderId, newStatus, volume1) => {
+    try {
+      const orderRef = doc(db, "orders", orderId);
+
+      const docSnapshot = await getDoc(orderRef);
+      let newData = {};
+      if (volume1 != null) {
+        const newVolume = parseFloat(selectedOrder.sum) - parseFloat(volume1);
+        newData = {
+          status: newStatus,
+          closedDate: serverTimestamp(),
+          closedPrice: currentPrice?.price,
+          profit: profit,
+          closedVolume: newVolume,
+        };
+      } else {
+        newData = {
+          status: newStatus,
+          closedDate: serverTimestamp(),
+          closedPrice: currentPrice?.price,
+          profit: profit,
+        };
+      }
+      console.log(8080, newData);
+      if (docSnapshot.exists()) {
+        // Update the order status
+        await updateDoc(orderRef, newData);
+        onClose(); // Close the order
+
+        return "Order status updated successfully";
+      } else {
+        throw new Error("Order does not exist");
+      }
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
@@ -167,8 +219,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
             <button
               className="modal-close-btn btn btn-success fs-5 rounded-4 mx-auto"
               onClick={() => {
-                updateOrderStatus(selectedOrder.orderId, "Closed");
-                onClose();
+                newOrder();
               }}
             >
               Close position

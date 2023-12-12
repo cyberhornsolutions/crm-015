@@ -45,7 +45,7 @@ function ReportTabs({ orders, userId }) {
       );
 
       // Optionally returning unsubscribe function for cleanup if needed
-      // return unsubscribe;
+      return unsubscribe;
     } catch (error) {
       console.error("Error:", error);
     }
@@ -58,9 +58,7 @@ function ReportTabs({ orders, userId }) {
 
   useEffect(() => {
     getDeposits(userId);
-  }, [userId]);
-  const dep = getDeposits(userId);
-  console.log(7070, dep);
+  }, []);
   return (
     <Tabs
       id="controlled-tab-example"
@@ -75,7 +73,7 @@ function ReportTabs({ orders, userId }) {
       >
         <DataTable
           columns={generalColumns}
-          data={orders}
+          data={orders.filter((el) => el.status != "Pending")}
           customStyles={customStyle}
           pagination
           theme="dark"

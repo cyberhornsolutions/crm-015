@@ -1,4 +1,5 @@
 import moment from "moment/moment";
+import CurrentProfit from "../components/CurrentProfit";
 
 const newDate = (date) => {
   const jsDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
@@ -20,10 +21,7 @@ export const generalColumns = [
   { name: "Volume", selector: (row) => row.volume },
   {
     name: "Close date",
-    selector: (row) =>
-      row.closedDate
-        ? moment(row?.closedDate).format("MM/DD/YYYY hh:mm:ss A")
-        : "",
+    selector: (row) => (row.closedDate ? newDate(row?.closedDate) : ""),
     width: "200px",
   },
   { name: "Open price", selector: (row) => row?.symbolValue },
@@ -31,8 +29,26 @@ export const generalColumns = [
   { name: "TP", selector: (row) => row.tp },
   { name: "SL", selector: (row) => row.sl },
   { name: "Swap", selector: (row) => <p></p> },
-  { name: "profit", selector: (row) => row.profit },
-  { name: "Comment", selector: (row) => <p></p> },
+  {
+    name: "profit",
+    selector: (row) => <CurrentProfit orderData={row} />,
+  },
+  {
+    name: "Status",
+    selector: (row) => (
+      <div
+        className={`order-column ${
+          row.status == "Success"
+            ? "greenText"
+            : row.status == "Closed"
+            ? "redText"
+            : "orangeText"
+        } `}
+      >
+        {row.status}
+      </div>
+    ),
+  },
 ];
 
 export const tradOptColumns = [

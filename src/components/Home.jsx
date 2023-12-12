@@ -276,6 +276,7 @@ export default function HomeRu() {
               profit = profit + el.profit;
             }
           });
+          console.log(7070, orders);
           setOrdersHistory(orders);
 
           setUserProfit(profit.toFixed(6));
@@ -306,9 +307,9 @@ export default function HomeRu() {
     });
 
     return () => {
-      unsubscribe(); // Unsubscribe from the listener when the component unmounts
+      return unsubscribe(); // Unsubscribe from the listener when the component unmounts
     };
-  }, [orderData.sl]);
+  }, [orderData?.sl]);
   const hanldeLogout = () => {
     const auth = getAuth();
     signOut(auth)
@@ -442,7 +443,13 @@ export default function HomeRu() {
       name: t(""),
       selector: (row) => (
         <div className="order-actions">
-          <div className="custom-edit-icon" onClick={handleEditModal}>
+          <div
+            className="custom-edit-icon"
+            onClick={() => {
+              setSelectedOrder(row);
+              handleEditModal();
+            }}
+          >
             <FontAwesomeIcon icon={faEdit} />
           </div>
           <div
@@ -460,23 +467,25 @@ export default function HomeRu() {
     },
   ];
 
-  const data = ordersHistory.map((order, i) => ({
-    id: i + 1,
-    orderId: order?.id,
-    createdAt: order?.createdAt,
-    symbol: order?.symbol,
-    type: order?.type,
-    volume: order?.volume,
-    symbolValue: order?.symbolValue,
-    sltp: `${order?.sl || ""}/${order?.tp || ""}`,
-    status: order?.status,
-    profit: order?.profit,
-    sl: order.sl,
-    tp: order.tp,
-    closedDate: order?.closedDate,
-    closedPrice: order.closedPrice,
-    createdTime: order.createdTime,
-  }));
+  const data = ordersHistory?.map((order, i) => {
+    return {
+      id: i + 1,
+      orderId: order?.id,
+      createdAt: order?.createdAt,
+      symbol: order?.symbol,
+      type: order?.type,
+      volume: order?.volume,
+      symbolValue: order?.symbolValue,
+      sltp: `${order?.sl || ""}/${order?.tp || ""}`,
+      status: order?.status,
+      profit: order?.profit,
+      sl: order.sl,
+      tp: order.tp,
+      closedDate: order?.closedDate,
+      closedPrice: order.closedPrice,
+      createdTime: order.createdTime,
+    };
+  });
 
   const openOrderHistory = () => {
     const ordersHistoryButton = document.getElementById("ordersHistoryButton");
@@ -577,8 +586,10 @@ export default function HomeRu() {
     //   console.log("-------->", e);
 
     // });
-    const price = await getSymbolValue(orderData.symbol);
-    let obj = { ...orderData, symbolValue: price };
+    console.log(orderData.symbol, 808080);
+    const price = dbSymbols?.find((el) => el.symbol == orderData.symbol?.value);
+    console.log(808080, price);
+    let obj = { ...orderData, symbolValue: price?.price };
     setOrderData(obj);
   };
 
@@ -732,15 +743,14 @@ export default function HomeRu() {
   };
 
   const symbolColumn = [
-    { name: "Symbol", selector: (row) => row.symbol },
-    { name: "Bid", selector: (row) => row.price },
-    { name: "Ask" },
+    { name: "Symbol", selector: (row) => row?.symbol },
+    { name: "Price", selector: (row) => row?.price },
   ];
 
   // const dataSet=dbSymbols.map(el=>{label:el.symbol, value:el.price})
   // const symbolData = [{ symbol: "AUD", price: 35 }];
 
-  const bal = parseFloat(userProfile.totalBalance) + parseFloat(userProfit);
+  const bal = parseFloat(userProfile?.totalBalance) + parseFloat(userProfit);
 
   const refreshPrice = () => {
     if (orderData?.symbol?.value != null && orderData.symbol != null) {
@@ -772,7 +782,27 @@ export default function HomeRu() {
     }
   };
 
-  console.log(9090, 8080, bQuotesValues());
+  const freeMargin = () => {
+    const userBalance1 = parseFloat(userProfile?.totalBalance);
+    let freeMarginOpened = 0;
+    let newBal = parseFloat(userProfile?.totalBalance) + parseFloat(userProfit);
+
+    ordersHistory?.map((el) => {
+      const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
+      const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
+      if (el.status == "Pending") {
+        freeMarginOpened = newBal - parseFloat(dealSum);
+      }
+
+      // else {
+      //   newBal = newBal + parseFloat(dealSum) + parseFloat(el.profit);
+      // }
+    });
+    console.log(909090, freeMarginOpened);
+    return freeMarginOpened;
+  };
+  console.log(909090, orderData);
+  const freeMarginData = freeMargin();
   return (
     <>
       {/* <div>
@@ -795,7 +825,7 @@ export default function HomeRu() {
                 type="text"
                 className="balance-nums"
                 readOnly={true}
-                value={bal}
+                value={bal < 0 ? 0 : bal}
                 defaultValue={bal}
               />
             </div>
@@ -810,7 +840,8 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                defaultValue={100.0}
+                value={freeMarginData}
+                // defaultValue={100.0}
               />
             </div>
             <div className="balance-item">
@@ -950,16 +981,49 @@ export default function HomeRu() {
                     <div className="tradingWidget">
                       <h5>Quotes</h5>
                       <div className="d-flex justify-content-between flex-column innerTradingDiv ">
-                        <div className="row ">
-                          <div className="col-md-4 d-flex justify-content-center align-items-center">
-                            Symbol
+                        <div>
+                          <div className="row">
+                            <div className="col-md-6 d-flex justify-content-center align-items-center">
+                              Symbol
+                            </div>
+                            <div className="col-md-6 d-flex justify-content-center align-items-center">
+                              Current Price
+                            </div>
+                            <div class="w-100"></div>
                           </div>
-                          <div className="col-md-4 d-flex justify-content-center align-items-center">
-                            Bid
-                          </div>
-                          <div className="col-md-4 d-flex justify-content-center align-items-center">
-                            Ask
-                          </div>
+                          {userProfile?.quotes?.map((el, idx) => {
+                            return (
+                              <div
+                                className="row"
+                                key={idx}
+                                onDoubleClick={() => {
+                                  const newDealButton =
+                                    document.getElementById("newDealButton");
+                                  let a = document.getElementById("newOrder");
+
+                                  a.style.display = "none";
+                                  newDealButton.classList.remove("active");
+                                  newDealButton.removeAttribute("style");
+
+                                  // setTab("trade");
+                                  openOrderPanel();
+                                  let newOr = {
+                                    ...orderData,
+                                    symbol: { value: el, label: el },
+                                  };
+                                  setOrderData(newOr);
+                                }}
+                              >
+                                <div className="col-md-6 d-flex justify-content-center align-items-center">
+                                  {el}
+                                </div>
+                                <div className="col-md-6 d-flex justify-content-center align-items-center">
+                                  <CurrentValue symbol={el} />
+                                </div>
+                                <div class="w-100"></div>
+                              </div>
+                            );
+                          })}
                         </div>
                         <div className="d-flex justify-content-center align-items-center">
                           <button
@@ -1043,6 +1107,7 @@ export default function HomeRu() {
                         locale="en"
                         hide={activeTab === i + 1 ? false : true}
                         index={i}
+                        selectedSymbol={orderData?.symbol?.value}
                       />
                     );
                   })}
@@ -1074,6 +1139,7 @@ export default function HomeRu() {
                           }
                           styles={customStyles}
                           value={orderData.symbol}
+                          selectedValue={orderData.symbol}
                         />
                         <label htmlFor="symbol-current-value">
                           {t("price")}
@@ -1200,7 +1266,7 @@ export default function HomeRu() {
                 <div id="orders">
                   <DataTable
                     columns={columns}
-                    data={data}
+                    data={data?.filter((el) => el.status == "Pending")}
                     pagination
                     paginationPerPage={5}
                     paginationRowsPerPageOptions={[5, 10, 20, 50]}
@@ -1806,7 +1872,11 @@ export default function HomeRu() {
         </div>
       </div>
       {isModalOpen && (
-        <EditOrderModal show={isModalOpen} onClose={handleCloseModal} />
+        <EditOrderModal
+          show={isModalOpen}
+          onClose={handleCloseModal}
+          selectedOrder={selectedOrder}
+        />
       )}
       {isDelModalOpen && (
         <DelOrderModal
@@ -1814,6 +1884,7 @@ export default function HomeRu() {
           onClose={handleCloseModal}
           selectedOrder={selectedOrder}
           symbols={dbSymbols}
+          currentUserId={currentUserId}
         />
       )}
       {isReportModalOpen && (

@@ -2,7 +2,8 @@ import React from "react";
 import { calculateProfit } from "../helper/helpers";
 import { useSelector } from "react-redux";
 
-const CurrentProfit = ({ orderData, symbols }) => {
+const CurrentProfit = ({ orderData }) => {
+  const symbols = useSelector((state) => state?.symbols?.symbols);
   const calculateUpdatedProfit = () => {
     if (orderData.status === "Pending") {
       const newPrice = symbols?.find(
