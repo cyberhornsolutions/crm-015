@@ -77,6 +77,7 @@ function ReportTabs({ orders, userId }) {
           customStyles={customStyle}
           pagination
           theme="dark"
+          paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
         />
         <div
           style={{ backgroundColor: "rgba(40,40,40,255)" }}

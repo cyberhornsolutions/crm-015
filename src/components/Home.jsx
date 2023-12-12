@@ -1269,7 +1269,7 @@ export default function HomeRu() {
                     data={data?.filter((el) => el.status == "Pending")}
                     pagination
                     paginationPerPage={5}
-                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                    paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
                     highlightOnHover
                     pointerOnHover
                     responsive
