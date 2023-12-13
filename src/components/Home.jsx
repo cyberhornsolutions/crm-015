@@ -601,7 +601,8 @@ export default function HomeRu() {
     // console.log({ form, orderData });
     // Create a formatted date string
     const formattedDate = new Date().toLocaleDateString("en-US");
-    if (userProfile?.allowTrading) {
+    console.log(userProfile?.allowTrading, 808080);
+    if (!userProfile?.allowTrading) {
       toastify("Trading is disabled for you.");
     } else if (!orderData?.symbol) {
       toastify("Symbol is missing.");
@@ -800,11 +801,10 @@ export default function HomeRu() {
       //   newBal = newBal + parseFloat(dealSum) + parseFloat(el.profit);
       // }
     });
-    console.log(909090, freeMarginOpened);
     return freeMarginOpened;
   };
-  console.log(909090, orderData);
   const freeMarginData = freeMargin();
+  console.log(userProfile, 9090);
   return (
     <>
       {/* <div>
