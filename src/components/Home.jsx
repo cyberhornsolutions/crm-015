@@ -105,6 +105,7 @@ export default function HomeRu() {
     city: "",
     comment: "...",
     isUserEdited: false,
+    allowTrading: false,
   });
   const [userQuotes, setUserQuotes] = useState([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -600,8 +601,9 @@ export default function HomeRu() {
     // console.log({ form, orderData });
     // Create a formatted date string
     const formattedDate = new Date().toLocaleDateString("en-US");
-
-    if (!orderData?.symbol) {
+    if (userProfile?.allowTrading) {
+      toastify("Trading is disabled for you.");
+    } else if (!orderData?.symbol) {
       toastify("Symbol is missing.");
     } else if (!orderData?.volume) {
       toastify("Volume is missing.");

@@ -27,6 +27,7 @@ const DelOrderModal = ({
   const [isPartial, setIsPartial] = useState(false);
   const newVolume = parseInt(selectedOrder.volume);
   const [volume, setVolume] = useState(newVolume);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (isChecked, type) => {
     if (type == "isFull") {
@@ -66,6 +67,8 @@ const DelOrderModal = ({
         );
       } else {
         try {
+          setIsLoading(true);
+
           const formattedDate = new Date().toLocaleDateString("en-US");
 
           const newOrder = {
@@ -85,11 +88,13 @@ const DelOrderModal = ({
           const orderRef = collection(db, "orders");
 
           await addDoc(orderRef, newOrder);
-          await updateOrderStatus(selectedOrder.orderId, "Closed", volume);
-
           onClose();
+          setIsLoading(false);
+
+          await updateOrderStatus(selectedOrder.orderId, "Closed", volume);
         } catch (error) {
           console.log(error, 777);
+          setIsLoading(false);
         }
       }
     } else {
@@ -124,6 +129,8 @@ const DelOrderModal = ({
       if (docSnapshot.exists()) {
         // Update the order status
         await updateDoc(orderRef, newData);
+        setIsLoading(false);
+
         onClose(); // Close the order
 
         return "Order status updated successfully";
@@ -131,7 +138,9 @@ const DelOrderModal = ({
         throw new Error("Order does not exist");
       }
     } catch (error) {
-      throw error;
+      setIsLoading(false);
+
+      throw new Error(error);
     }
   };
 
@@ -221,6 +230,7 @@ const DelOrderModal = ({
               onClick={() => {
                 newOrder();
               }}
+              disabled={isLoading}
             >
               Close position
             </button>
