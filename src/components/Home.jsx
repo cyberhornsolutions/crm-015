@@ -602,7 +602,7 @@ export default function HomeRu() {
     // Create a formatted date string
     const formattedDate = new Date().toLocaleDateString("en-US");
     console.log(userProfile?.allowTrading, 808080);
-    if (!userProfile?.allowTrading) {
+    if (userProfile?.allowTrading == false) {
       toastify("Trading is disabled for you.");
     } else if (!orderData?.symbol) {
       toastify("Symbol is missing.");
