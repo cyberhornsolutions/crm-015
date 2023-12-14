@@ -21,7 +21,7 @@ const ReportModal = ({ onClose, show, orders, userId }) => {
           <p className="bg-transparent mb-0 w-100">Report</p>
         </Modal.Header>
         <Modal.Body className="bg-secondry d-flex flex-column gap-3 p-3 pt-0">
-          <ReportTabs orders={orders} userId={userId} />
+          <ReportTabs orders={orders} userId={userId} onClose={onClose} />
         </Modal.Body>
       </Modal>
     </>

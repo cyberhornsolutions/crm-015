@@ -159,7 +159,6 @@ export default function HomeRu() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsDelModalOpen(false);
-    setIsReportModalOpen(false);
     setIsTradingModal(false);
     setMessageModal({
       show: false,
@@ -167,7 +166,11 @@ export default function HomeRu() {
       message: "",
     });
   };
+  const handleCloseReportModal = () => {
+    setIsReportModalOpen(false);
 
+    fetchOrders();
+  };
   const handleDelModal = () => {
     setIsDelModalOpen(true);
   };
@@ -1892,7 +1895,7 @@ export default function HomeRu() {
       {isReportModalOpen && (
         <ReportModal
           show={isReportModalOpen}
-          onClose={handleCloseModal}
+          onClose={handleCloseReportModal}
           orders={data}
           userId={currentUserId}
         />
