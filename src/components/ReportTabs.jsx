@@ -23,7 +23,6 @@ function ReportTabs({ orders, userId, onClose }) {
   const [filterDeposits, setFilterDeposits] = useState([]);
   const [showRecord, setShowRecord] = useState("all");
   const [userOrders, setUserOrders] = useState(orders);
-  console.log(7070, userId);
   const getDeposits = async (userId) => {
     try {
       const depositsRef = collection(db, "deposits");
