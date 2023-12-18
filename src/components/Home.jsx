@@ -672,7 +672,7 @@ export default function HomeRu() {
           symbol: orderData?.symbol.value,
           createdTime: serverTimestamp(),
         });
-        toastify("Order added to Database");
+        toastify("Order added to Database", "success");
         console.log("Order added to Database");
         setOrderData((pre) => ({
           symbol: null,
