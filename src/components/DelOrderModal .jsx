@@ -61,7 +61,9 @@ const DelOrderModal = ({
   const newOrder = async () => {
     if (isPartial) {
       if (parseFloat(volume) >= parseFloat(selectedOrder.volume)) {
-        toast.error("Please add a volume which is less the current volume");
+        toast.error(
+          "Please add a volume which is less than the current volume"
+        );
       } else {
         try {
           setIsLoading(true);

@@ -468,6 +468,34 @@ export default function HomeRu() {
       sortable: true,
     },
   ];
+  const [quoteSearch, setQuoteSearch] = useState("");
+  const filteredQuotes = quoteSearch
+    ? userProfile?.quotes.filter((quote) =>
+        quote.toUpperCase().includes(quoteSearch.toUpperCase())
+      )
+    : userProfile?.quotes;
+
+  const assetsColumns = [
+    {
+      name: t("symbol"),
+      selector: (row) => <div>{row}</div>,
+      sortable: true,
+    },
+    {
+      name: t("currentPrice"),
+      selector: (row) => <CurrentValue symbol={row} />,
+      sortable: true,
+    },
+  ];
+  const conditionalRowStyles = [
+    {
+      when: (row) => row,
+      style: {
+        backgroundColor: "#D1FFBD",
+        userSelect: "none",
+      },
+    },
+  ];
 
   const data = ordersHistory?.map((order, i) => {
     return {
@@ -966,73 +994,49 @@ export default function HomeRu() {
               <div id="trade">
                 {tab === "assets" && (
                   <div id="assets">
-                    {/* <TradingWidget locale="en" /> */}
-                    {/* <DataTable
-                      columns={symbolColumn}
-                      data={dbSymbols}
-                      paginationRowsPerPageOptions={[5, 10, 25, 50, 100]}
-                      pagination
-                      responsive
-                      paginationPerPage={5}
-                      theme="dark"
-                    /> */}
                     <div className="tradingWidget">
                       <h5>Quotes</h5>
-                      <div className="d-flex justify-content-between flex-column innerTradingDiv ">
-                        <div>
-                          <div className="row">
-                            <div className="col-md-6 d-flex justify-content-center align-items-center">
-                              Symbol
-                            </div>
-                            <div className="col-md-6 d-flex justify-content-center align-items-center">
-                              Current Price
-                            </div>
-                            <div class="w-100"></div>
-                          </div>
-                          {userProfile?.quotes?.map((el, idx) => {
-                            return (
-                              <div
-                                className="row"
-                                key={idx}
-                                onDoubleClick={() => {
-                                  const newDealButton =
-                                    document.getElementById("newDealButton");
-                                  let a = document.getElementById("newOrder");
+                      <Form.Control
+                        type="text"
+                        placeholder="Search..."
+                        value={quoteSearch}
+                        onChange={(e) => setQuoteSearch(e.target.value)}
+                      />
+                      <DataTable
+                        columns={assetsColumns}
+                        data={filteredQuotes}
+                        highlightOnHover
+                        pointerOnHover
+                        responsive
+                        theme="dark"
+                        conditionalRowStyles={conditionalRowStyles}
+                        onRowDoubleClicked={(row) => {
+                          const newDealButton =
+                            document.getElementById("newDealButton");
+                          let a = document.getElementById("newOrder");
 
-                                  a.style.display = "none";
-                                  newDealButton.classList.remove("active");
-                                  newDealButton.removeAttribute("style");
+                          a.style.display = "none";
+                          newDealButton.classList.remove("active");
+                          newDealButton.removeAttribute("style");
 
-                                  // setTab("trade");
-                                  openOrderPanel();
-                                  let newOr = {
-                                    ...orderData,
-                                    symbol: { value: el, label: el },
-                                  };
-                                  setOrderData(newOr);
-                                }}
-                              >
-                                <div className="col-md-6 d-flex justify-content-center align-items-center">
-                                  {el}
-                                </div>
-                                <div className="col-md-6 d-flex justify-content-center align-items-center">
-                                  <CurrentValue symbol={el} />
-                                </div>
-                                <div class="w-100"></div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        <div className="d-flex justify-content-center align-items-center">
-                          <button
-                            className="btn btn-success"
-                            onClick={() => {
-                              handleTradingModal();
-                            }}
-                          >
-                            + Add Symbol
-                          </button>
-                        </div>
+                          // setTab("trade");
+                          openOrderPanel();
+                          let newOr = {
+                            ...orderData,
+                            symbol: { value: row, label: row },
+                          };
+                          setOrderData(newOr);
+                        }}
+                      />
+                      <div className="text-center">
+                        <button
+                          className="btn btn-success"
+                          onClick={() => {
+                            handleTradingModal();
+                          }}
+                        >
+                          + Add Symbol
+                        </button>
                       </div>
                     </div>
                   </div>
