@@ -22,7 +22,6 @@ const DelOrderModal = ({
   symbols,
   currentUserId,
 }) => {
-  console.log(777, selectedOrder);
   const [isFull, setIsFull] = useState(false);
   const [isPartial, setIsPartial] = useState(false);
   const newVolume = parseInt(selectedOrder.volume);
@@ -61,10 +60,8 @@ const DelOrderModal = ({
 
   const newOrder = async () => {
     if (isPartial) {
-      if (parseFloat(volume) > parseFloat(selectedOrder.volume)) {
-        toast.error(
-          "Please add a volume which is less or equal than the current volume"
-        );
+      if (parseFloat(volume) >= parseFloat(selectedOrder.volume)) {
+        toast.error("Please add a volume which is less the current volume");
       } else {
         try {
           setIsLoading(true);
@@ -74,7 +71,7 @@ const DelOrderModal = ({
           const newOrder = {
             symbol: selectedOrder.symbol,
             symbolValue: selectedOrder.symbolValue,
-            volume: volume,
+            volume: parseFloat(selectedOrder.volume) - parseFloat(volume),
             sl: selectedOrder.sl,
             tp: selectedOrder.tp,
             profit: 0,
@@ -84,7 +81,6 @@ const DelOrderModal = ({
             status: "Pending",
             userId: currentUserId,
           };
-          console.log(newOrder, 777);
           const orderRef = collection(db, "orders");
 
           await addDoc(orderRef, newOrder);
@@ -108,14 +104,13 @@ const DelOrderModal = ({
 
       const docSnapshot = await getDoc(orderRef);
       let newData = {};
-      if (volume1 != null) {
-        const newVolume = parseFloat(selectedOrder.sum) - parseFloat(volume1);
+      if (volume1) {
         newData = {
           status: newStatus,
           closedDate: serverTimestamp(),
           closedPrice: currentPrice?.price,
           profit: profit,
-          closedVolume: newVolume,
+          volume: volume1,
         };
       } else {
         newData = {
@@ -125,7 +120,6 @@ const DelOrderModal = ({
           profit: profit,
         };
       }
-      console.log(8080, newData);
       if (docSnapshot.exists()) {
         // Update the order status
         await updateDoc(orderRef, newData);

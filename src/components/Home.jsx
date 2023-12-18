@@ -238,7 +238,6 @@ export default function HomeRu() {
       const unsubscribe = onSnapshot(userRef, (userDoc) => {
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          console.log("User data:", userData, 9090);
           setUserQuotes(userData?.quotes);
           setUserProfile(userData);
           // You can perform additional actions here with the updated user data
@@ -280,7 +279,6 @@ export default function HomeRu() {
               profit = profit + el.profit;
             }
           });
-          console.log(7070, orders);
           setOrdersHistory(orders);
 
           setUserProfit(profit.toFixed(6));
@@ -807,7 +805,6 @@ export default function HomeRu() {
     return freeMarginOpened;
   };
   const freeMarginData = freeMargin();
-  console.log(userProfile, 9090);
   return (
     <>
       {/* <div>

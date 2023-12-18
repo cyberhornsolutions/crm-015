@@ -18,7 +18,7 @@ import {
 import { db } from "../firebase";
 import moment from "moment";
 function ReportTabs({ orders, userId, onClose }) {
-  const [key, setKey] = useState("generalReport");
+  const [key, setKey] = useState("tradeOperations");
   const [deposits, setDeposits] = useState([]);
   const [filterDeposits, setFilterDeposits] = useState([]);
   const [showRecord, setShowRecord] = useState("all");
@@ -39,7 +39,6 @@ function ReportTabs({ orders, userId, onClose }) {
           snapshot.forEach((doc) => {
             depositsData.push({ id: doc.id, ...doc.data() });
           });
-          console.log(depositsData, 7070);
           setDeposits(depositsData);
           setFilterDeposits(depositsData);
         },
@@ -63,13 +62,13 @@ function ReportTabs({ orders, userId, onClose }) {
     const jsDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
     return moment(jsDate).format("MM/DD/YYYY hh:mm:ss A");
   };
-  console.log(showRecord, 9080);
+
   useEffect(() => {
     getDeposits(userId);
   }, []);
   const today = moment();
 
-  const filterOrdersData = () => {
+  const filterOrdersData = (showRecord) => {
     if (showRecord == "all") {
       setUserOrders(orders);
     } else if (showRecord === "today") {
@@ -89,7 +88,6 @@ function ReportTabs({ orders, userId, onClose }) {
       const dataCreatedToday = orders.filter((order) => {
         return moment(newDate(order.createdTime)).isSameOrAfter(lastMonth);
       });
-      console.log(dataCreatedToday, 9080, "moment");
       setUserOrders(dataCreatedToday);
     } else if (showRecord === "last3Month") {
       const last90Days = moment().subtract(90, "days");
@@ -100,7 +98,7 @@ function ReportTabs({ orders, userId, onClose }) {
     }
   };
 
-  const filterDepositsData = () => {
+  const filterDepositsData = (showRecord) => {
     if (showRecord == "all") {
       getDeposits();
     } else if (showRecord === "today") {
@@ -120,7 +118,6 @@ function ReportTabs({ orders, userId, onClose }) {
       const dataCreatedToday = deposits.filter((dep) => {
         return moment(newDate(dep.createdAt)).isSameOrAfter(lastMonth);
       });
-      console.log(dataCreatedToday, 9080, "moment");
       setFilterDeposits(dataCreatedToday);
     } else if (showRecord === "last3Month") {
       const last90Days = moment().subtract(90, "days");
@@ -143,8 +140,8 @@ function ReportTabs({ orders, userId, onClose }) {
       className="mb-3"
     >
       <Tab
-        eventKey="generalReport"
-        title="General report"
+        eventKey="tradeOperations"
+        title="Trade operations"
         className="reportTab"
       >
         <DataTable
@@ -165,7 +162,7 @@ function ReportTabs({ orders, userId, onClose }) {
               <select
                 style={{ backgroundColor: "rgba(80,80,80,255)" }}
                 onChange={(e) => {
-                  setShowRecord(e.target.value);
+                  filterOrdersData(e.target.value);
                 }}
               >
                 <option label="All Operations" value="all"></option>
@@ -177,7 +174,10 @@ function ReportTabs({ orders, userId, onClose }) {
             </div>
           </div>
           <div className="d-flex gap-2">
-            <button className="greenBtn" onClick={filterOrdersData}>
+            <button
+              className="greenBtn"
+              onClick={() => filterOrdersData(showRecord)}
+            >
               show
             </button>
             <button className=" greyBtn px-4 " onClick={onClose}>
@@ -186,42 +186,7 @@ function ReportTabs({ orders, userId, onClose }) {
           </div>
         </div>
       </Tab>
-      <Tab eventKey="tradeOperations" title="Trade operations">
-        <DataTable
-          columns={tradOptColumns}
-          data={general}
-          customStyles={customStyle}
-          pagination
-          theme="dark"
-          paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
-        />
-        <div className="d-flex justify-content-between align-items-center w-100 mt-2">
-          <div className="d-flex  justify-content-center align-items-center gap-2">
-            <div>Period</div>
-            <div>
-              <select
-                style={{ backgroundColor: "rgba(80,80,80,255)" }}
-                onChange={(e) => {
-                  setShowRecord(e.target.value);
-                }}
-              >
-                <option label="All Operations" value="all"></option>
-                <option label="Today" value="today"></option>
-                <option label="Last Week" value="lastWeek"></option>
-                <option label="Last Month" value="lastMonth"></option>
-                <option label="Last 3 Month" value="last3Month"></option>
-              </select>
-            </div>
-          </div>
-          <div className="d-flex gap-2 ">
-            <button className="greenBtn">show</button>
-            <button className=" greyBtn px-4 " onClick={onClose}>
-              Close
-            </button>
-          </div>
-        </div>
-      </Tab>
-      <Tab eventKey="deposit" title="Deposit">
+      <Tab eventKey="balanceOperations" title="Balance operations">
         <DataTable
           columns={depositColumns}
           data={filterDeposits}
@@ -237,7 +202,7 @@ function ReportTabs({ orders, userId, onClose }) {
               <select
                 style={{ backgroundColor: "rgba(80,80,80,255)" }}
                 onChange={(e) => {
-                  setShowRecord(e.target.value);
+                  filterDepositsData(e.target.value);
                 }}
               >
                 <option label="All Operations" value="all"></option>
@@ -249,7 +214,10 @@ function ReportTabs({ orders, userId, onClose }) {
             </div>
           </div>
           <div className="d-flex gap-2">
-            <button className=" greenBtn" onClick={filterDepositsData}>
+            <button
+              className=" greenBtn"
+              onClick={() => filterDepositsData(showRecord)}
+            >
               show
             </button>
             <button className=" greyBtn px-4 " onClick={onClose}>
@@ -257,41 +225,6 @@ function ReportTabs({ orders, userId, onClose }) {
             </button>
           </div>
         </div>
-      </Tab>
-      <Tab eventKey="executedOrders" title="Executed orders">
-        <DataTable
-          columns={executedOrderColumns}
-          data={general}
-          customStyles={customStyle}
-          pagination
-          theme="dark"
-          paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
-        />
-        <div className="d-flex justify-content-between align-items-center w-100 mt-2">
-          <div className="d-flex  justify-content-center align-items-center gap-2">
-            <div>Period</div>
-            <div>
-              <select
-                style={{ backgroundColor: "rgba(80,80,80,255)" }}
-                onChange={(e) => {
-                  setShowRecord(e.target.value);
-                }}
-              >
-                <option label="All Operations" value="all"></option>
-                <option label="Today" value="today"></option>
-                <option label="Last Week" value="lastWeek"></option>
-                <option label="Last Month" value="lastMonth"></option>
-                <option label="Last 3 Month" value="last3Month"></option>
-              </select>
-            </div>
-          </div>
-          <div className="d-flex gap-2">
-            <button className="greenBtn">show</button>
-            <button className=" greyBtn px-4 " onClick={onClose}>
-              Close
-            </button>
-          </div>
-        </div>{" "}
       </Tab>
     </Tabs>
   );
