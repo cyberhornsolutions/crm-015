@@ -5,7 +5,7 @@ import ruFlagIcon from "../assets/images/ru-fl.png";
 import accPlaceholder from "../assets/images/acc-img-placeholder.png";
 import {
   InformationCircle,
-  List,
+  ListCircle,
   LogOut,
   PersonCircle,
   StatsChartSharp,
@@ -884,17 +884,11 @@ export default function HomeRu() {
           <div id="side-main-menu">
             <div id="side-trade" onClick={() => setTab("trade")}>
               <StatsChartSharp
-                color={
-                  tab === "trade" || tab === "assets"
-                    ? "rgba(0, 255, 110, 0.952)"
-                    : "#ffffff"
-                }
+                color={tab === "trade" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"}
               />
               <button
                 id="side-button-trade"
-                className={`side-button ${
-                  (tab === "trade" || tab === "assets") && " active"
-                }`}
+                className={`side-button ${tab === "trade" && " active"}`}
               >
                 {t("trade")}
               </button>
@@ -906,7 +900,7 @@ export default function HomeRu() {
               }}
             >
               {/* <ion-icon id="side-button-assets-icon" name="list" /> */}
-              <List
+              <ListCircle
                 color={
                   tab === "assets" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"
                 }
