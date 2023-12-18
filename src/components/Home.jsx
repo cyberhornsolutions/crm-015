@@ -850,7 +850,9 @@ export default function HomeRu() {
               <h2 className="balance-title">{t("profit")}:</h2>
               <input
                 type="number"
-                className="balance-nums"
+                className={`balance-nums ${
+                  userProfit < 0 ? "text-danger" : ""
+                }`}
                 readOnly={true}
                 defaultValue={userProfit}
               />
