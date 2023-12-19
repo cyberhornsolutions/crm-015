@@ -650,25 +650,21 @@ export default function HomeRu() {
         message: "Insufficient Balance",
       });
     } else if (
-      ((orderData.sl >= orderData.symbolValue &&
-        orderData.tp <= orderData.symbolValue) ||
-        (orderData.sl >= orderData.symbolValue &&
-          orderData.tp >= orderData.symbolValue) ||
-        (orderData.sl == "" && orderData.tp <= orderData.symbolValue) ||
-        (orderData.tp == "" && orderData.sl >= orderData.symbolValue)) &&
-      type == "Buy"
+      type == "Buy" &&
+      orderData.sl &&
+      orderData.tp &&
+      (orderData.sl >= orderData.symbolValue ||
+        orderData.tp <= orderData.symbolValue)
     ) {
       toast.error(
         "Make sure that the sl is less than current value and tp is greater than current value buy"
       );
     } else if (
-      ((orderData.sl <= orderData.symbolValue &&
-        orderData.tp >= orderData.symbolValue) ||
-        (orderData.sl >= orderData.symbolValue &&
-          orderData.tp >= orderData.symbolValue) ||
-        (orderData.sl <= orderData.symbolValue && orderData.tp == "") ||
-        (orderData.sl == "" && orderData.tp >= orderData.symbolValue)) &&
-      type == "Sell"
+      type == "Sell" &&
+      orderData.sl &&
+      orderData.tp &&
+      (orderData.sl <= orderData.symbolValue ||
+        orderData.tp >= orderData.symbolValue)
     ) {
       toast.error(
         "Make sure that the sl is greater than current value and tp is less than current value sell"
