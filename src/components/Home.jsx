@@ -491,7 +491,7 @@ export default function HomeRu() {
     {
       when: (row) => row === orderData?.symbol?.value,
       style: {
-        backgroundColor: "#D1FFBD",
+        backgroundColor: "rgba(0, 255, 110, 0.952)",
         color: "#000",
       },
     },
