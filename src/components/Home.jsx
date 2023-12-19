@@ -470,7 +470,7 @@ export default function HomeRu() {
   ];
   const [quoteSearch, setQuoteSearch] = useState("");
   const filteredQuotes = quoteSearch
-    ? userProfile?.quotes.filter((quote) =>
+    ? userProfile?.quotes?.filter((quote) =>
         quote.toUpperCase().includes(quoteSearch.toUpperCase())
       )
     : userProfile?.quotes;
