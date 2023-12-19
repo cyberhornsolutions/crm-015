@@ -623,7 +623,6 @@ export default function HomeRu() {
     //   console.log("-------->", e);
 
     // });
-    console.log(orderData.symbol, 808080);
     const price = dbSymbols?.find((el) => el.symbol == orderData.symbol?.value);
     console.log(808080, price);
     let obj = { ...orderData, symbolValue: price?.price };
@@ -637,7 +636,6 @@ export default function HomeRu() {
     // console.log({ form, orderData });
     // Create a formatted date string
     const formattedDate = new Date().toLocaleDateString("en-US");
-    console.log(userProfile?.allowTrading, 808080);
     if (userProfile?.allowTrading == false) {
       toastify("Trading is disabled for you.");
     } else if (!orderData?.symbol) {
@@ -684,12 +682,8 @@ export default function HomeRu() {
       try {
         orderData.userId = userId;
         orderData.type = type;
+        orderData.status = "Pending";
         orderData.createdAt = formattedDate;
-        if (!orderData?.sl && !orderData?.tp) {
-          orderData.status = "Success";
-        } else {
-          orderData.status = "Pending";
-        }
 
         orderData.profit = 0;
 
