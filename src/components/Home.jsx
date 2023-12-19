@@ -692,14 +692,6 @@ export default function HomeRu() {
         }
 
         orderData.profit = 0;
-        const orderPrice =
-          parseFloat(orderData.symbolValue) * parseFloat(orderData.volume);
-        const userRef = doc(db, "users", userId);
-        const newTotalBalance = userProfile?.totalBalance - orderPrice;
-        await updateDoc(userRef, {
-          totalBalance: newTotalBalance > 0 ? newTotalBalance : 0.0,
-        });
-        userProfile.totalBalance = newTotalBalance;
 
         // Write the order data to Firestore as a new document
         await addDoc(ordersCollectionRef, {
@@ -823,23 +815,18 @@ export default function HomeRu() {
 
   const freeMargin = () => {
     const userBalance1 = parseFloat(userProfile?.totalBalance);
-    let freeMarginOpened = 0;
-    let newBal = parseFloat(userProfile?.totalBalance) + parseFloat(userProfit);
-
-    ordersHistory?.map((el) => {
-      const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
-      const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
+    let newBal = userBalance1 + parseFloat(userProfit);
+    let freeMarginOpened = newBal;
+    ordersHistory?.forEach((el) => {
       if (el.status == "Pending") {
-        freeMarginOpened = newBal - parseFloat(dealSum);
+        const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
+        const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
+        freeMarginOpened -= parseFloat(dealSum);
       }
-
-      // else {
-      //   newBal = newBal + parseFloat(dealSum) + parseFloat(el.profit);
-      // }
     });
     return freeMarginOpened;
   };
-  const freeMarginData = freeMargin();
+
   return (
     <>
       {/* <div>
@@ -877,8 +864,7 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                value={freeMarginData}
-                // defaultValue={100.0}
+                value={freeMargin()}
               />
             </div>
             <div className="balance-item">

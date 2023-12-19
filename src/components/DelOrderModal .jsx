@@ -67,9 +67,7 @@ const DelOrderModal = ({
       } else {
         try {
           setIsLoading(true);
-
           const formattedDate = new Date().toLocaleDateString("en-US");
-
           const newOrder = {
             symbol: selectedOrder.symbol,
             symbolValue: selectedOrder.symbolValue,
@@ -86,17 +84,25 @@ const DelOrderModal = ({
           const orderRef = collection(db, "orders");
 
           await addDoc(orderRef, newOrder);
-          onClose();
-          setIsLoading(false);
 
           await updateOrderStatus(selectedOrder.orderId, "Closed", volume);
+
+          const orderPrice =
+            parseFloat(selectedOrder.symbolValue) * parseFloat(volume);
+          await updateUserBalance(orderPrice);
+          onClose();
         } catch (error) {
-          console.log(error, 777);
-          setIsLoading(false);
+          toast.error(error.message);
+          console.log(error);
         }
+        setIsLoading(false);
       }
     } else {
-      updateOrderStatus(selectedOrder.orderId, "Closed");
+      await updateOrderStatus(selectedOrder.orderId, "Closed");
+      const orderPrice =
+        parseFloat(selectedOrder.symbolValue) *
+        parseFloat(selectedOrder.volume);
+      await updateUserBalance(orderPrice);
     }
   };
 
@@ -125,18 +131,31 @@ const DelOrderModal = ({
       if (docSnapshot.exists()) {
         // Update the order status
         await updateDoc(orderRef, newData);
-        setIsLoading(false);
-
-        onClose(); // Close the order
-
-        return "Order status updated successfully";
+        toast.success("Order status updated successfully");
       } else {
         throw new Error("Order does not exist");
       }
     } catch (error) {
-      setIsLoading(false);
-
+      toast.error(error.message);
       throw new Error(error);
+    }
+  };
+  const updateUserBalance = async (orderPrice) => {
+    try {
+      const userRef = doc(db, "users", currentUserId);
+      const userSnapshot = await getDoc(userRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        await updateDoc(userRef, {
+          totalBalance: userData?.totalBalance - orderPrice,
+        });
+        toast.success("Balance updated successfully");
+      } else {
+        toast.error("User not found");
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
     }
   };
 
