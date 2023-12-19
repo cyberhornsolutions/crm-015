@@ -489,10 +489,17 @@ export default function HomeRu() {
   ];
   const conditionalRowStyles = [
     {
-      when: (row) => row,
+      when: (row) => row === orderData?.symbol?.value,
       style: {
         backgroundColor: "#D1FFBD",
-        userSelect: "none",
+        color: "#000",
+      },
+    },
+    {
+      when: (row) => row !== orderData?.symbol?.value,
+      style: {
+        backgroundColor: "inherit",
+        color: "#fff",
       },
     },
   ];
@@ -1007,8 +1014,17 @@ export default function HomeRu() {
                         data={filteredQuotes}
                         highlightOnHover
                         pointerOnHover
-                        responsive
-                        theme="dark"
+                        customStyles={{
+                          rows: {
+                            style: {
+                              userSelect: "none",
+                              "*": {
+                                backgroundColor: "unset",
+                                color: "unset",
+                              },
+                            },
+                          },
+                        }}
                         conditionalRowStyles={conditionalRowStyles}
                         onRowDoubleClicked={(row) => {
                           const newDealButton =
