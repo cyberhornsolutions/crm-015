@@ -69,6 +69,5 @@ export const newFormulaForProfit = (
     }
     // log("XXXXXXXXXXXX in sell", symbolExists);
   }
-  console.log(pnl, 9090);
   return pnl;
 };

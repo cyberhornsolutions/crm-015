@@ -77,7 +77,7 @@ export const depositColumns = [
     // : "",
   },
   { name: "Sum", selector: (row) => row.amount },
-  { name: "Comment", selector: (row) => row.comment },
+  { name: "Type", selector: (row) => row.type },
 ];
 
 export const executedOrderColumns = [

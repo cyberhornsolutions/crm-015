@@ -5,7 +5,7 @@ import ruFlagIcon from "../assets/images/ru-fl.png";
 import accPlaceholder from "../assets/images/acc-img-placeholder.png";
 import {
   InformationCircle,
-  List,
+  ListCircle,
   LogOut,
   PersonCircle,
   StatsChartSharp,
@@ -238,7 +238,6 @@ export default function HomeRu() {
       const unsubscribe = onSnapshot(userRef, (userDoc) => {
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          console.log("User data:", userData, 9090);
           setUserQuotes(userData?.quotes);
           setUserProfile(userData);
           // You can perform additional actions here with the updated user data
@@ -280,7 +279,6 @@ export default function HomeRu() {
               profit = profit + el.profit;
             }
           });
-          console.log(7070, orders);
           setOrdersHistory(orders);
 
           setUserProfit(profit.toFixed(6));
@@ -470,6 +468,41 @@ export default function HomeRu() {
       sortable: true,
     },
   ];
+  const [quoteSearch, setQuoteSearch] = useState("");
+  const filteredQuotes = quoteSearch
+    ? userProfile?.quotes.filter((quote) =>
+        quote.toUpperCase().includes(quoteSearch.toUpperCase())
+      )
+    : userProfile?.quotes;
+
+  const assetsColumns = [
+    {
+      name: t("symbol"),
+      selector: (row) => <div>{row}</div>,
+      sortable: true,
+    },
+    {
+      name: t("currentPrice"),
+      selector: (row) => <CurrentValue symbol={row} />,
+      sortable: true,
+    },
+  ];
+  const conditionalRowStyles = [
+    {
+      when: (row) => row === orderData?.symbol?.value,
+      style: {
+        backgroundColor: "rgba(0, 255, 110, 0.952)",
+        color: "#000",
+      },
+    },
+    {
+      when: (row) => row !== orderData?.symbol?.value,
+      style: {
+        backgroundColor: "inherit",
+        color: "#fff",
+      },
+    },
+  ];
 
   const data = ordersHistory?.map((order, i) => {
     return {
@@ -590,7 +623,6 @@ export default function HomeRu() {
     //   console.log("-------->", e);
 
     // });
-    console.log(orderData.symbol, 808080);
     const price = dbSymbols?.find((el) => el.symbol == orderData.symbol?.value);
     console.log(808080, price);
     let obj = { ...orderData, symbolValue: price?.price };
@@ -604,7 +636,6 @@ export default function HomeRu() {
     // console.log({ form, orderData });
     // Create a formatted date string
     const formattedDate = new Date().toLocaleDateString("en-US");
-    console.log(userProfile?.allowTrading, 808080);
     if (userProfile?.allowTrading == false) {
       toastify("Trading is disabled for you.");
     } else if (!orderData?.symbol) {
@@ -619,25 +650,21 @@ export default function HomeRu() {
         message: "Insufficient Balance",
       });
     } else if (
-      ((orderData.sl >= orderData.symbolValue &&
-        orderData.tp <= orderData.symbolValue) ||
-        (orderData.sl >= orderData.symbolValue &&
-          orderData.tp >= orderData.symbolValue) ||
-        (orderData.sl == "" && orderData.tp <= orderData.symbolValue) ||
-        (orderData.tp == "" && orderData.sl >= orderData.symbolValue)) &&
-      type == "Buy"
+      type == "Buy" &&
+      orderData.sl &&
+      orderData.tp &&
+      (orderData.sl >= orderData.symbolValue ||
+        orderData.tp <= orderData.symbolValue)
     ) {
       toast.error(
         "Make sure that the sl is less than current value and tp is greater than current value buy"
       );
     } else if (
-      ((orderData.sl <= orderData.symbolValue &&
-        orderData.tp >= orderData.symbolValue) ||
-        (orderData.sl >= orderData.symbolValue &&
-          orderData.tp >= orderData.symbolValue) ||
-        (orderData.sl <= orderData.symbolValue && orderData.tp == "") ||
-        (orderData.sl == "" && orderData.tp >= orderData.symbolValue)) &&
-      type == "Sell"
+      type == "Sell" &&
+      orderData.sl &&
+      orderData.tp &&
+      (orderData.sl <= orderData.symbolValue ||
+        orderData.tp >= orderData.symbolValue)
     ) {
       toast.error(
         "Make sure that the sl is greater than current value and tp is less than current value sell"
@@ -651,22 +678,10 @@ export default function HomeRu() {
       try {
         orderData.userId = userId;
         orderData.type = type;
+        orderData.status = "Pending";
         orderData.createdAt = formattedDate;
-        if (!orderData?.sl && !orderData?.tp) {
-          orderData.status = "Success";
-        } else {
-          orderData.status = "Pending";
-        }
 
         orderData.profit = 0;
-        const orderPrice =
-          parseFloat(orderData.symbolValue) * parseFloat(orderData.volume);
-        const userRef = doc(db, "users", userId);
-        const newTotalBalance = userProfile?.totalBalance - orderPrice;
-        await updateDoc(userRef, {
-          totalBalance: newTotalBalance > 0 ? newTotalBalance : 0.0,
-        });
-        userProfile.totalBalance = newTotalBalance;
 
         // Write the order data to Firestore as a new document
         await addDoc(ordersCollectionRef, {
@@ -674,7 +689,7 @@ export default function HomeRu() {
           symbol: orderData?.symbol.value,
           createdTime: serverTimestamp(),
         });
-        toastify("Order added to Database");
+        toastify("Order added to Database", "success");
         console.log("Order added to Database");
         setOrderData((pre) => ({
           symbol: null,
@@ -790,24 +805,18 @@ export default function HomeRu() {
 
   const freeMargin = () => {
     const userBalance1 = parseFloat(userProfile?.totalBalance);
-    let freeMarginOpened = 0;
-    let newBal = parseFloat(userProfile?.totalBalance) + parseFloat(userProfit);
-
-    ordersHistory?.map((el) => {
-      const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
-      const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
+    let newBal = userBalance1 + parseFloat(userProfit);
+    let freeMarginOpened = newBal;
+    ordersHistory?.forEach((el) => {
       if (el.status == "Pending") {
-        freeMarginOpened = newBal - parseFloat(dealSum);
+        const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
+        const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
+        freeMarginOpened -= parseFloat(dealSum);
       }
-
-      // else {
-      //   newBal = newBal + parseFloat(dealSum) + parseFloat(el.profit);
-      // }
     });
     return freeMarginOpened;
   };
-  const freeMarginData = freeMargin();
-  console.log(userProfile, 9090);
+
   return (
     <>
       {/* <div>
@@ -845,15 +854,16 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                value={freeMarginData}
-                // defaultValue={100.0}
+                value={freeMargin()}
               />
             </div>
             <div className="balance-item">
               <h2 className="balance-title">{t("profit")}:</h2>
               <input
                 type="number"
-                className="balance-nums"
+                className={`balance-nums ${
+                  userProfit < 0 ? "text-danger" : ""
+                }`}
                 readOnly={true}
                 defaultValue={userProfit}
               />
@@ -885,17 +895,11 @@ export default function HomeRu() {
           <div id="side-main-menu">
             <div id="side-trade" onClick={() => setTab("trade")}>
               <StatsChartSharp
-                color={
-                  tab === "trade" || tab === "assets"
-                    ? "rgba(0, 255, 110, 0.952)"
-                    : "#ffffff"
-                }
+                color={tab === "trade" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"}
               />
               <button
                 id="side-button-trade"
-                className={`side-button ${
-                  (tab === "trade" || tab === "assets") && " active"
-                }`}
+                className={`side-button ${tab === "trade" && " active"}`}
               >
                 {t("trade")}
               </button>
@@ -907,7 +911,7 @@ export default function HomeRu() {
               }}
             >
               {/* <ion-icon id="side-button-assets-icon" name="list" /> */}
-              <List
+              <ListCircle
                 color={
                   tab === "assets" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"
                 }
@@ -973,73 +977,58 @@ export default function HomeRu() {
               <div id="trade">
                 {tab === "assets" && (
                   <div id="assets">
-                    {/* <TradingWidget locale="en" /> */}
-                    {/* <DataTable
-                      columns={symbolColumn}
-                      data={dbSymbols}
-                      paginationRowsPerPageOptions={[5, 10, 25, 50, 100]}
-                      pagination
-                      responsive
-                      paginationPerPage={5}
-                      theme="dark"
-                    /> */}
                     <div className="tradingWidget">
                       <h5>Quotes</h5>
-                      <div className="d-flex justify-content-between flex-column innerTradingDiv ">
-                        <div>
-                          <div className="row">
-                            <div className="col-md-6 d-flex justify-content-center align-items-center">
-                              Symbol
-                            </div>
-                            <div className="col-md-6 d-flex justify-content-center align-items-center">
-                              Current Price
-                            </div>
-                            <div class="w-100"></div>
-                          </div>
-                          {userProfile?.quotes?.map((el, idx) => {
-                            return (
-                              <div
-                                className="row"
-                                key={idx}
-                                onDoubleClick={() => {
-                                  const newDealButton =
-                                    document.getElementById("newDealButton");
-                                  let a = document.getElementById("newOrder");
+                      <Form.Control
+                        type="text"
+                        placeholder="Search..."
+                        value={quoteSearch}
+                        onChange={(e) => setQuoteSearch(e.target.value)}
+                      />
+                      <DataTable
+                        columns={assetsColumns}
+                        data={filteredQuotes}
+                        highlightOnHover
+                        pointerOnHover
+                        customStyles={{
+                          rows: {
+                            style: {
+                              userSelect: "none",
+                              "*": {
+                                backgroundColor: "unset",
+                                color: "unset",
+                              },
+                            },
+                          },
+                        }}
+                        conditionalRowStyles={conditionalRowStyles}
+                        onRowDoubleClicked={(row) => {
+                          const newDealButton =
+                            document.getElementById("newDealButton");
+                          let a = document.getElementById("newOrder");
 
-                                  a.style.display = "none";
-                                  newDealButton.classList.remove("active");
-                                  newDealButton.removeAttribute("style");
+                          a.style.display = "none";
+                          newDealButton.classList.remove("active");
+                          newDealButton.removeAttribute("style");
 
-                                  // setTab("trade");
-                                  openOrderPanel();
-                                  let newOr = {
-                                    ...orderData,
-                                    symbol: { value: el, label: el },
-                                  };
-                                  setOrderData(newOr);
-                                }}
-                              >
-                                <div className="col-md-6 d-flex justify-content-center align-items-center">
-                                  {el}
-                                </div>
-                                <div className="col-md-6 d-flex justify-content-center align-items-center">
-                                  <CurrentValue symbol={el} />
-                                </div>
-                                <div class="w-100"></div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        <div className="d-flex justify-content-center align-items-center">
-                          <button
-                            className="btn btn-success"
-                            onClick={() => {
-                              handleTradingModal();
-                            }}
-                          >
-                            + Add Symbol
-                          </button>
-                        </div>
+                          // setTab("trade");
+                          openOrderPanel();
+                          let newOr = {
+                            ...orderData,
+                            symbol: { value: row, label: row },
+                          };
+                          setOrderData(newOr);
+                        }}
+                      />
+                      <div className="text-center">
+                        <button
+                          className="btn btn-success"
+                          onClick={() => {
+                            handleTradingModal();
+                          }}
+                        >
+                          + Add Symbol
+                        </button>
                       </div>
                     </div>
                   </div>

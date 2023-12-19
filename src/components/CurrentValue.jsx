@@ -31,7 +31,7 @@ const CurrentValue = ({ symbol }) => {
   useEffect(() => {
     getSymbolValue(symbol);
   }, [symbol]);
-  return <p>{price}</p>;
+  return price;
 };
 
 export default CurrentValue;

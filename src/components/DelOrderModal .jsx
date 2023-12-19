@@ -22,7 +22,6 @@ const DelOrderModal = ({
   symbols,
   currentUserId,
 }) => {
-  console.log(777, selectedOrder);
   const [isFull, setIsFull] = useState(false);
   const [isPartial, setIsPartial] = useState(false);
   const newVolume = parseInt(selectedOrder.volume);
@@ -61,20 +60,18 @@ const DelOrderModal = ({
 
   const newOrder = async () => {
     if (isPartial) {
-      if (parseFloat(volume) > parseFloat(selectedOrder.volume)) {
+      if (parseFloat(volume) >= parseFloat(selectedOrder.volume)) {
         toast.error(
-          "Please add a volume which is less or equal than the current volume"
+          "Please add a volume which is less than the current volume"
         );
       } else {
         try {
           setIsLoading(true);
-
           const formattedDate = new Date().toLocaleDateString("en-US");
-
           const newOrder = {
             symbol: selectedOrder.symbol,
             symbolValue: selectedOrder.symbolValue,
-            volume: volume,
+            volume: parseFloat(selectedOrder.volume) - parseFloat(volume),
             sl: selectedOrder.sl,
             tp: selectedOrder.tp,
             profit: 0,
@@ -84,21 +81,28 @@ const DelOrderModal = ({
             status: "Pending",
             userId: currentUserId,
           };
-          console.log(newOrder, 777);
           const orderRef = collection(db, "orders");
 
           await addDoc(orderRef, newOrder);
-          onClose();
-          setIsLoading(false);
 
           await updateOrderStatus(selectedOrder.orderId, "Closed", volume);
+
+          const orderPrice =
+            parseFloat(selectedOrder.symbolValue) * parseFloat(volume);
+          await updateUserBalance(orderPrice);
+          onClose();
         } catch (error) {
-          console.log(error, 777);
-          setIsLoading(false);
+          toast.error(error.message);
+          console.log(error);
         }
+        setIsLoading(false);
       }
     } else {
-      updateOrderStatus(selectedOrder.orderId, "Closed");
+      await updateOrderStatus(selectedOrder.orderId, "Closed");
+      const orderPrice =
+        parseFloat(selectedOrder.symbolValue) *
+        parseFloat(selectedOrder.volume);
+      await updateUserBalance(orderPrice);
     }
   };
 
@@ -108,14 +112,13 @@ const DelOrderModal = ({
 
       const docSnapshot = await getDoc(orderRef);
       let newData = {};
-      if (volume1 != null) {
-        const newVolume = parseFloat(selectedOrder.sum) - parseFloat(volume1);
+      if (volume1) {
         newData = {
           status: newStatus,
           closedDate: serverTimestamp(),
           closedPrice: currentPrice?.price,
           profit: profit,
-          closedVolume: newVolume,
+          volume: volume1,
         };
       } else {
         newData = {
@@ -125,22 +128,34 @@ const DelOrderModal = ({
           profit: profit,
         };
       }
-      console.log(8080, newData);
       if (docSnapshot.exists()) {
         // Update the order status
         await updateDoc(orderRef, newData);
-        setIsLoading(false);
-
-        onClose(); // Close the order
-
-        return "Order status updated successfully";
+        toast.success("Order status updated successfully");
       } else {
         throw new Error("Order does not exist");
       }
     } catch (error) {
-      setIsLoading(false);
-
+      toast.error(error.message);
       throw new Error(error);
+    }
+  };
+  const updateUserBalance = async (orderPrice) => {
+    try {
+      const userRef = doc(db, "users", currentUserId);
+      const userSnapshot = await getDoc(userRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        await updateDoc(userRef, {
+          totalBalance: userData?.totalBalance - orderPrice,
+        });
+        toast.success("Balance updated successfully");
+      } else {
+        toast.error("User not found");
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
     }
   };
 
