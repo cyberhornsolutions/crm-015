@@ -22,21 +22,11 @@ const DelOrderModal = ({
   symbols,
   currentUserId,
 }) => {
-  const [isFull, setIsFull] = useState(false);
   const [isPartial, setIsPartial] = useState(false);
   const newVolume = parseInt(selectedOrder.volume);
   const [volume, setVolume] = useState(newVolume);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (isChecked, type) => {
-    if (type == "isFull") {
-      setIsFull(true);
-      setIsPartial(false);
-    } else if (type == "isPartial") {
-      setIsFull(false);
-      setIsPartial(true);
-    }
-  };
   const currentPrice = symbols?.find(
     (el) => el.symbol == selectedOrder?.symbol
   );
@@ -60,7 +50,7 @@ const DelOrderModal = ({
 
   const newOrder = async () => {
     if (isPartial) {
-      if (parseFloat(volume) >= parseFloat(selectedOrder.volume)) {
+      if (!volume || parseFloat(volume) >= parseFloat(selectedOrder.volume)) {
         toast.error(
           "Please add a volume which is less than the current volume"
         );
@@ -191,9 +181,9 @@ const DelOrderModal = ({
                   type="radio"
                   name="inlineRadioOptions"
                   id="inlineRadio1"
-                  value={isFull}
+                  checked={!isPartial}
                   onChange={(e) => {
-                    handleChange(e.target.checked, "isFull");
+                    if (isPartial) setIsPartial(false);
                   }}
                 />
                 <label class="form-check-label" for="inlineRadio1">
@@ -206,9 +196,9 @@ const DelOrderModal = ({
                   type="radio"
                   name="inlineRadioOptions"
                   id="inlineRadio2"
-                  value={isPartial}
+                  checked={isPartial}
                   onChange={(e) => {
-                    handleChange(e.target.checked, "isPartial");
+                    if (!isPartial) setIsPartial(true);
                   }}
                 />
                 <label class="form-check-label" for="inlineRadio2">
