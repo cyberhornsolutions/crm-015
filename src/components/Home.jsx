@@ -270,13 +270,13 @@ export default function HomeRu() {
           querySnapshot.forEach((doc) => {
             orders.push({ id: doc.id, ...doc.data() });
           });
-          let profit = 0;
+          let profit = 0.0;
           orders.map((el) => {
             if (
               el?.status?.toLocaleLowerCase() == "success" ||
               el?.status?.toLocaleLowerCase() == "closed"
             ) {
-              profit = profit + el.profit;
+              profit = profit + parseFloat(el.profit);
             }
           });
           setOrdersHistory(orders);
