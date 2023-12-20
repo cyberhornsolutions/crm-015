@@ -72,7 +72,7 @@ export default function HomeRu() {
   const [orderData, setOrderData] = useState({
     symbol: null,
     symbolValue: null,
-    volume: null,
+    volume: 0,
     sl: null,
     tp: null,
   });
@@ -1160,12 +1160,11 @@ export default function HomeRu() {
                           type="number"
                           id="symbol-amount"
                           name="volume"
-                          defaultValue={0.0}
                           max={100}
                           onChange={(e) =>
                             setOrderData({
                               ...orderData,
-                              volume: e.target.value,
+                              volume: parseFloat(e.target.value),
                             })
                           }
                           value={orderData?.volume}
