@@ -95,7 +95,7 @@ export default function HomeRu() {
   const [isTradingModal, setIsTradingModal] = useState(false);
   const [bQuotes, setBQuotes] = useState([]);
   // const [dbSymbols, setDbSymbols] = useState([]);
-  const [userProfit, setUserProfit] = useState("");
+  const [userProfit, setUserProfit] = useState(0.0);
   const [userProfile, setUserProfile] = useState({
     name: "",
     surname: "",
@@ -280,7 +280,6 @@ export default function HomeRu() {
             }
           });
           setOrdersHistory(orders);
-
           setUserProfit(profit.toFixed(6));
         });
         // Return a cleanup function to unsubscribe when the component unmounts
@@ -771,7 +770,8 @@ export default function HomeRu() {
   // const dataSet=dbSymbols.map(el=>{label:el.symbol, value:el.price})
   // const symbolData = [{ symbol: "AUD", price: 35 }];
 
-  const bal = parseFloat(userProfile?.totalBalance) + parseFloat(userProfit);
+  const bal =
+    parseFloat(userProfile?.totalBalance) + parseFloat(userProfit) || 0.0;
 
   const refreshPrice = () => {
     if (orderData?.symbol?.value != null && orderData.symbol != null) {
@@ -814,7 +814,7 @@ export default function HomeRu() {
         freeMarginOpened -= parseFloat(dealSum);
       }
     });
-    return freeMarginOpened;
+    return freeMarginOpened || 0.0;
   };
 
   return (
@@ -1034,11 +1034,13 @@ export default function HomeRu() {
                   </div>
                 )}
                 <div id="chart">
-                  <ul class="nav nav-tabs" id="myTabs">
+                  <ul className="nav nav-tabs" id="myTabs">
                     {tabs?.map((e, i) => (
-                      <li class="nav-item">
+                      <li className="nav-item">
                         <a
-                          class={`nav-link ${activeTab === i + 1 && "active"}`}
+                          className={`nav-link ${
+                            activeTab === i + 1 && "active"
+                          }`}
                           data-bs-toggle="tab"
                           style={{
                             fontSize: "14px",
@@ -1072,10 +1074,10 @@ export default function HomeRu() {
                         </a>
                       </li>
                     ))}
-                    <li class="nav-item">
+                    <li className="nav-item">
                       <button
                         id="addTabButton"
-                        class="btn btn-primary"
+                        className="btn btn-primary"
                         style={{ background: "transparent", border: "none" }}
                         // onClick={addChart}
                         onClick={() => {
