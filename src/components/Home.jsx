@@ -117,7 +117,8 @@ export default function HomeRu() {
 
   const { t, i18n } = useTranslation();
 
-  const handleEditModal = () => {
+  const handleEditModal = (row) => {
+    setSelectedOrder(row);
     setIsModalOpen(true);
   };
 
@@ -328,7 +329,10 @@ export default function HomeRu() {
     {
       name: "ID",
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className="order-column"
+          onDoubleClick={() => handleEditModal(row)}
+        >
           {row.id}
         </div>
       ),
@@ -336,7 +340,10 @@ export default function HomeRu() {
     {
       name: t("date"), // Translate the header using your t function
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className="order-column"
+          onDoubleClick={() => handleEditModal(row)}
+        >
           {row.createdAt}
         </div>
       ),
@@ -345,7 +352,10 @@ export default function HomeRu() {
     {
       name: t("symbol"),
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className="order-column"
+          onDoubleClick={() => handleEditModal(row)}
+        >
           {row.symbol}
         </div>
       ),
@@ -355,14 +365,20 @@ export default function HomeRu() {
       name: t("type"),
       selector: (row) =>
         row.type == "Buy" ? (
-          <div className="order-column" onDoubleClick={handleEditModal}>
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
             <div className="custom-caret-up-icon">
               <FontAwesomeIcon icon={faCaretUp} />
               <div style={{ marginLeft: "3px" }}>{row.type}</div>
             </div>
           </div>
         ) : (
-          <div className="order-column" onDoubleClick={handleEditModal}>
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
             <div className="custom-caret-down-icon">
               <FontAwesomeIcon icon={faCaretDown} />
               <div style={{ marginLeft: "3px" }}>{row.type}</div>
@@ -374,7 +390,10 @@ export default function HomeRu() {
     {
       name: t("volume"),
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className="order-column"
+          onDoubleClick={() => handleEditModal(row)}
+        >
           {row.volume}
         </div>
       ),
@@ -383,7 +402,10 @@ export default function HomeRu() {
     {
       name: t("openPrice"),
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className="order-column"
+          onDoubleClick={() => handleEditModal(row)}
+        >
           {row.symbolValue}
         </div>
       ),
@@ -392,7 +414,10 @@ export default function HomeRu() {
     {
       name: "SL / TP",
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className="order-column"
+          onDoubleClick={() => handleEditModal(row)}
+        >
           {row.sltp}
         </div>
       ),
@@ -410,7 +435,7 @@ export default function HomeRu() {
               ? "redText"
               : "orangeText"
           } `}
-          onDoubleClick={handleEditModal}
+          onDoubleClick={() => handleEditModal(row)}
         >
           {row.status}
         </div>
@@ -420,7 +445,10 @@ export default function HomeRu() {
     {
       name: t("closedPrice"),
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className="order-column"
+          onDoubleClick={() => handleEditModal(row)}
+        >
           {/* <CurrentValue symbol={row.symbol} getSymbolValue={getSymbolValue} /> */}
           {row.status == "Success" || row.status == "Closed"
             ? row.closedPrice
@@ -432,7 +460,10 @@ export default function HomeRu() {
     {
       name: t("profit"),
       selector: (row) => (
-        <div className="order-column" onDoubleClick={handleEditModal}>
+        <div
+          className="order-column"
+          onDoubleClick={() => handleEditModal(row)}
+        >
           <div>
             <CurrentProfit orderData={row} symbols={dbSymbols} />
           </div>
@@ -446,10 +477,7 @@ export default function HomeRu() {
         <div className="order-actions">
           <div
             className="custom-edit-icon"
-            onClick={() => {
-              setSelectedOrder(row);
-              handleEditModal();
-            }}
+            onClick={() => handleEditModal(row)}
           >
             <FontAwesomeIcon icon={faEdit} />
           </div>
