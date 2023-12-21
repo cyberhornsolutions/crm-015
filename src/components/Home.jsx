@@ -94,8 +94,6 @@ export default function HomeRu() {
   const [isLoading, setIsLoading] = useState(false);
   const [isTradingModal, setIsTradingModal] = useState(false);
   const [bQuotes, setBQuotes] = useState([]);
-  // const [dbSymbols, setDbSymbols] = useState([]);
-  const [userProfit, setUserProfit] = useState(0.0);
   const [userProfile, setUserProfile] = useState({
     name: "",
     surname: "",
@@ -281,7 +279,6 @@ export default function HomeRu() {
             }
           });
           setOrdersHistory(orders);
-          setUserProfit(profit.toFixed(6));
         });
         // Return a cleanup function to unsubscribe when the component unmounts
         return () => {
@@ -798,9 +795,6 @@ export default function HomeRu() {
   // const dataSet=dbSymbols.map(el=>{label:el.symbol, value:el.price})
   // const symbolData = [{ symbol: "AUD", price: 35 }];
 
-  const bal =
-    parseFloat(userProfile?.totalBalance) + parseFloat(userProfit) || 0.0;
-
   const refreshPrice = () => {
     if (orderData?.symbol?.value != null && orderData.symbol != null) {
       const latestPrice = dbSymbols.find(
@@ -830,6 +824,23 @@ export default function HomeRu() {
       console.log(error);
     }
   };
+
+  const calculateProfit = () => {
+    let totalProfit = 0.0;
+    ordersHistory?.map((el) => {
+      if (
+        el.status.toLocaleLowerCase() == "success" ||
+        el.status.toLocaleLowerCase() == "closed"
+      ) {
+        totalProfit = totalProfit + parseFloat(el.profit);
+      }
+    });
+    return totalProfit;
+  };
+  const userProfit = calculateProfit();
+
+  const balance =
+    parseFloat(userProfile?.totalBalance) + parseFloat(userProfit) || 0.0;
 
   const freeMargin = () => {
     const userBalance1 = parseFloat(userProfile?.totalBalance);
@@ -867,8 +878,7 @@ export default function HomeRu() {
                 type="text"
                 className="balance-nums"
                 readOnly={true}
-                value={bal < 0 ? 0 : bal}
-                defaultValue={bal}
+                value={balance < 0 ? 0 : balance.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -882,7 +892,7 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                value={freeMargin()}
+                value={freeMargin().toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -893,7 +903,7 @@ export default function HomeRu() {
                   userProfit < 0 ? "text-danger" : ""
                 }`}
                 readOnly={true}
-                defaultValue={userProfit}
+                value={userProfit.toFixed(6)}
               />
             </div>
             <div
