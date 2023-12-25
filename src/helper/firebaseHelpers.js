@@ -9,8 +9,31 @@ import {
   serverTimestamp,
   addDoc,
   setDoc,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "../firebase";
+
+export const fetchAllOrdersByUserId = (userId, setState) => {
+  if (!userId) return;
+  try {
+    const q = query(
+      collection(db, "orders"),
+      orderBy("createdTime", "desc"),
+      where("userId", "==", userId)
+    );
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const orders = [];
+      querySnapshot.forEach((doc) => {
+        orders.push({ id: doc.id, ...doc.data() });
+      });
+      setState(orders);
+    });
+    return () => unsubscribe();
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+  }
+};
 
 //update user onlineStatus
 export const updateOnlineStatus = async (userId, newStatus) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import logoIcon from "../assets/images/logo.png";
 import enFlagIcon from "../assets/images/gb-fl.png";
 import ruFlagIcon from "../assets/images/ru-fl.png";
@@ -18,7 +18,7 @@ import axios from "axios";
 import Select from "react-select";
 import { Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 
 import {
@@ -50,6 +50,7 @@ import MessageModal from "./MessageModal";
 import {
   updateOnlineStatus,
   getSymbolValue,
+  fetchAllOrdersByUserId,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import CurrentValue from "./CurrentValue.jsx";
@@ -57,6 +58,7 @@ import MyBarChart from "./BarChart.js";
 import CurrentProfit from "./CurrentProfit.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
+import { setOrdersState } from "../redux/slicer/orderSlicer.js";
 import AddTradingSymbolModal from "./AddTradingSymbolModal.jsx";
 
 // import rd3 from "react-d3-library";
@@ -76,7 +78,7 @@ export default function HomeRu() {
     sl: null,
     tp: null,
   });
-  const [ordersHistory, setOrdersHistory] = useState([]);
+  const orders = useSelector((state) => state.orders);
   const [uploadModal, setUploadModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [depositModal, setDepositModal] = useState(false);
@@ -167,8 +169,6 @@ export default function HomeRu() {
   };
   const handleCloseReportModal = () => {
     setIsReportModalOpen(false);
-
-    fetchOrders();
   };
   const handleDelModal = () => {
     setIsDelModalOpen(true);
@@ -179,16 +179,15 @@ export default function HomeRu() {
     i18n.changeLanguage(lng);
   };
 
-  const getCurrentUser = () => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+  const checkCurrentUser = () => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
+        setCurrentUserId(user.uid);
         console.log("User Already Login");
         navigate("/main");
       } else {
         signOut(auth)
           .then(() => {
-            // console.log("Signout The User");
             navigate("/");
           })
           .catch((error) => {
@@ -196,6 +195,7 @@ export default function HomeRu() {
           });
       }
     });
+    return () => unsubscribe();
   };
 
   const handleChange = (e) => {
@@ -222,95 +222,49 @@ export default function HomeRu() {
       console.error("Error saving data to Firestore:", error);
     }
   };
-  const getUserDataByUID = async () => {
-    const user = auth.currentUser;
-
-    if (!user) {
-      console.log("User is not authenticated.");
-      return null;
-    }
-    setCurrentUserId(user.id);
-    // console.log("UID:", user.uid);
-
+  const getUserDataByUID = () => {
     try {
-      const userRef = doc(db, "users", user.uid);
+      const userRef = doc(db, "users", auth.currentUser.uid);
       const unsubscribe = onSnapshot(userRef, (userDoc) => {
         if (userDoc.exists()) {
           const userData = userDoc.data();
           setUserQuotes(userData?.quotes);
           setUserProfile(userData);
-          // You can perform additional actions here with the updated user data
         } else {
           console.log("User document does not exist.");
           setUserProfile(null);
         }
       });
-
-      // Returning the unsubscribe function to stop listening when needed
       return unsubscribe;
     } catch (error) {
       console.error("Error fetching user data:", error);
-      return null;
     }
   };
-  const fetchOrders = async () => {
-    try {
-      const user = auth.currentUser;
-      if (user) {
-        const userId = user.uid;
-        const q = query(
-          collection(db, "orders"),
-          orderBy("createdTime", "desc"),
-          where("userId", "==", userId)
-        );
 
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-          const orders = [];
-          querySnapshot.forEach((doc) => {
-            orders.push({ id: doc.id, ...doc.data() });
-          });
-          let profit = 0.0;
-          orders.map((el) => {
-            if (
-              el?.status?.toLocaleLowerCase() == "success" ||
-              el?.status?.toLocaleLowerCase() == "closed"
-            ) {
-              profit = profit + parseFloat(el.profit);
-            }
-          });
-          setOrdersHistory(orders);
-        });
-        // Return a cleanup function to unsubscribe when the component unmounts
-        return () => {
-          unsubscribe();
-        };
-      }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
-  useEffect(() => {
-    getCurrentUser();
-  }, [isEditable]);
+  const setOrders = useCallback((data) => {
+    dispatch(setOrdersState(data));
+  });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is authenticated, fetch user data here
-        getUserDataByUID();
-        fetchOrders();
-        setCurrentUserId(auth.currentUser.uid);
-      } else {
-        console.log("User is not authenticated.");
-      }
-    });
+    return checkCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    if (!currentUserId) return;
+
+    const unsubUserData = getUserDataByUID();
+    const unsubOrderData = fetchAllOrdersByUserId(
+      auth.currentUser.uid,
+      setOrders
+    );
 
     return () => {
-      return unsubscribe(); // Unsubscribe from the listener when the component unmounts
+      unsubUserData();
+      if (unsubOrderData) unsubOrderData();
     };
-  }, [orderData?.sl]);
+  }, [currentUserId]);
+
   const hanldeLogout = () => {
-    const auth = getAuth();
     signOut(auth)
       .then(async () => {
         await updateOnlineStatus(currentUserId, false);
@@ -525,7 +479,7 @@ export default function HomeRu() {
     },
   ];
 
-  const data = ordersHistory?.map((order, i) => {
+  const mappedOrders = orders?.map((order, i) => {
     return {
       ...order,
       id: i + 1,
@@ -812,7 +766,7 @@ export default function HomeRu() {
 
   const calculateProfit = () => {
     let totalProfit = 0.0;
-    ordersHistory?.map((el) => {
+    orders?.map((el) => {
       if (
         el.status.toLocaleLowerCase() == "success" ||
         el.status.toLocaleLowerCase() == "closed"
@@ -829,7 +783,7 @@ export default function HomeRu() {
 
   const calculateFreeMargin = () => {
     let freeMarginOpened = balance;
-    ordersHistory?.forEach((el) => {
+    orders?.forEach((el) => {
       if (el.status == "Pending") {
         const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
         const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
@@ -1281,7 +1235,7 @@ export default function HomeRu() {
                 <div id="orders">
                   <DataTable
                     columns={columns}
-                    data={data?.filter((el) => el.status == "Pending")}
+                    data={mappedOrders?.filter((el) => el.status == "Pending")}
                     pagination
                     paginationPerPage={5}
                     paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
@@ -1906,7 +1860,6 @@ export default function HomeRu() {
         <ReportModal
           show={isReportModalOpen}
           onClose={handleCloseReportModal}
-          orders={data}
           userId={currentUserId}
         />
       )}

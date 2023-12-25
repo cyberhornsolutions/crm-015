@@ -17,12 +17,15 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import moment from "moment";
-function ReportTabs({ orders, userId, onClose }) {
+import { useSelector } from "react-redux";
+
+function ReportTabs({ userId, onClose }) {
+  const orders = useSelector((state) => state.orders);
   const [key, setKey] = useState("tradeOperations");
   const [deposits, setDeposits] = useState([]);
   const [filterDeposits, setFilterDeposits] = useState([]);
   const [showRecord, setShowRecord] = useState("all");
-  const [userOrders, setUserOrders] = useState(orders);
+
   const getDeposits = async (userId) => {
     try {
       const depositsRef = collection(db, "deposits");
@@ -68,35 +71,34 @@ function ReportTabs({ orders, userId, onClose }) {
   }, []);
   const today = moment();
 
-  const filterOrdersData = (showRecord) => {
-    if (showRecord == "all") {
-      setUserOrders(orders);
-    } else if (showRecord === "today") {
-      const todayStart = today.startOf("day"); // Start of today
-      const dataCreatedToday = orders.filter((order) => {
-        return moment(newDate(order.createdTime)).isSame(todayStart, "day");
-      });
-      setUserOrders(dataCreatedToday);
-    } else if (showRecord === "lastWeek") {
-      const sevenDaysAgo = moment().subtract(7, "days");
-      const dataCreatedToday = orders.filter((order) => {
-        return moment(newDate(order.createdTime)).isSameOrAfter(sevenDaysAgo);
-      });
-      setUserOrders(dataCreatedToday);
-    } else if (showRecord === "lastMonth") {
-      const lastMonth = moment().subtract(30, "days");
-      const dataCreatedToday = orders.filter((order) => {
-        return moment(newDate(order.createdTime)).isSameOrAfter(lastMonth);
-      });
-      setUserOrders(dataCreatedToday);
-    } else if (showRecord === "last3Month") {
-      const last90Days = moment().subtract(90, "days");
-      const dataCreatedToday = orders.filter((order) => {
-        return moment(newDate(order.createdTime)).isSameOrAfter(last90Days);
-      });
-      setUserOrders(dataCreatedToday);
-    }
-  };
+  let filteredOrders;
+  if (showRecord == "all") {
+    filteredOrders = orders;
+  } else if (showRecord === "today") {
+    const todayStart = today.startOf("day"); // Start of today
+    const dataCreatedToday = orders.filter((order) => {
+      return moment(newDate(order.createdTime)).isSame(todayStart, "day");
+    });
+    filteredOrders = dataCreatedToday;
+  } else if (showRecord === "lastWeek") {
+    const sevenDaysAgo = moment().subtract(7, "days");
+    const dataCreatedToday = orders.filter((order) => {
+      return moment(newDate(order.createdTime)).isSameOrAfter(sevenDaysAgo);
+    });
+    filteredOrders = dataCreatedToday;
+  } else if (showRecord === "lastMonth") {
+    const lastMonth = moment().subtract(30, "days");
+    const dataCreatedToday = orders.filter((order) => {
+      return moment(newDate(order.createdTime)).isSameOrAfter(lastMonth);
+    });
+    filteredOrders = dataCreatedToday;
+  } else if (showRecord === "last3Month") {
+    const last90Days = moment().subtract(90, "days");
+    const dataCreatedToday = orders.filter((order) => {
+      return moment(newDate(order.createdTime)).isSameOrAfter(last90Days);
+    });
+    filteredOrders = dataCreatedToday;
+  }
 
   const filterDepositsData = (showRecord) => {
     if (showRecord == "all") {
@@ -128,10 +130,6 @@ function ReportTabs({ orders, userId, onClose }) {
     }
   };
 
-  // useEffect(() => {
-  //   filterOrdersData();
-  // }, [showRecord]);
-
   return (
     <Tabs
       id="controlled-tab-example"
@@ -146,7 +144,7 @@ function ReportTabs({ orders, userId, onClose }) {
       >
         <DataTable
           columns={generalColumns}
-          data={userOrders.filter((el) => el.status != "Pending")}
+          data={filteredOrders?.filter((el) => el.status != "Pending")}
           customStyles={customStyle}
           pagination
           theme="dark"
@@ -162,7 +160,7 @@ function ReportTabs({ orders, userId, onClose }) {
               <select
                 style={{ backgroundColor: "rgba(80,80,80,255)" }}
                 onChange={(e) => {
-                  filterOrdersData(e.target.value);
+                  setShowRecord(e.target.value);
                 }}
               >
                 <option label="All Operations" value="all"></option>
@@ -174,10 +172,7 @@ function ReportTabs({ orders, userId, onClose }) {
             </div>
           </div>
           <div className="d-flex gap-2">
-            <button
-              className="greenBtn"
-              onClick={() => filterOrdersData(showRecord)}
-            >
+            <button className="greenBtn" onClick={() => setShowRecord("all")}>
               show
             </button>
             <button className=" greyBtn px-4 " onClick={onClose}>
@@ -216,9 +211,9 @@ function ReportTabs({ orders, userId, onClose }) {
           <div className="d-flex gap-2">
             <button
               className=" greenBtn"
-              onClick={() => filterDepositsData(showRecord)}
+              onClick={() => filterDepositsData("all")}
             >
-              show
+              Show
             </button>
             <button className=" greyBtn px-4 " onClick={onClose}>
               Close
