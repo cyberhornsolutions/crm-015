@@ -72,7 +72,7 @@ export default function HomeRu() {
   const [orderData, setOrderData] = useState({
     symbol: null,
     symbolValue: null,
-    volume: 0,
+    sum: 0,
     sl: null,
     tp: null,
   });
@@ -440,16 +440,13 @@ export default function HomeRu() {
       sortable: true,
     },
     {
-      name: t("closedPrice"),
+      name: "Sum",
       selector: (row) => (
         <div
           className="order-column"
           onDoubleClick={() => handleEditModal(row)}
         >
-          {/* <CurrentValue symbol={row.symbol} getSymbolValue={getSymbolValue} /> */}
-          {row.status == "Success" || row.status == "Closed"
-            ? row.closedPrice
-            : ""}
+          {row.sum}
         </div>
       ),
       sortable: true,
@@ -530,21 +527,10 @@ export default function HomeRu() {
 
   const data = ordersHistory?.map((order, i) => {
     return {
+      ...order,
       id: i + 1,
       orderId: order?.id,
-      createdAt: order?.createdAt,
-      symbol: order?.symbol,
-      type: order?.type,
-      volume: order?.volume,
-      symbolValue: order?.symbolValue,
       sltp: `${order?.sl || ""}/${order?.tp || ""}`,
-      status: order?.status,
-      profit: order?.profit,
-      sl: order.sl,
-      tp: order.tp,
-      closedDate: order?.closedDate,
-      closedPrice: order.closedPrice,
-      createdTime: order.createdTime,
     };
   });
 
@@ -660,13 +646,13 @@ export default function HomeRu() {
     // console.log({ form, orderData });
     // Create a formatted date string
     const formattedDate = new Date().toLocaleDateString("en-US");
-    if (userProfile?.allowTrading == false) {
+    if (!userProfile?.allowTrading) {
       toastify("Trading is disabled for you.");
     } else if (!orderData?.symbol) {
       toastify("Symbol is missing.");
-    } else if (!orderData?.volume) {
-      toastify("Volume is missing.");
-    } else if (orderData?.symbolValue > userProfile?.totalBalance) {
+    } else if (!orderData?.sum) {
+      toastify("Sum is missing.");
+    } else if (orderData.sum > freeMargin) {
       // toastify("You have insufficient balance to buy this coin!");
       setMessageModal({
         show: true,
@@ -700,28 +686,27 @@ export default function HomeRu() {
       const ordersCollectionRef = collection(db, "orders");
 
       try {
-        orderData.userId = userId;
-        orderData.type = type;
-        orderData.status = "Pending";
-        orderData.createdAt = formattedDate;
-
-        orderData.profit = 0;
-
         // Write the order data to Firestore as a new document
         await addDoc(ordersCollectionRef, {
           ...orderData,
+          userId,
+          type,
+          status: "Pending",
+          profit: 0,
           symbol: orderData?.symbol.value,
+          volume: orderData.sum / orderData.symbolValue,
+          createdAt: formattedDate,
           createdTime: serverTimestamp(),
         });
         toastify("Order added to Database", "success");
         console.log("Order added to Database");
-        setOrderData((pre) => ({
+        setOrderData({
           symbol: null,
           symbolValue: null,
-          volume: null,
+          volume: 0,
           sl: null,
           tp: null,
-        }));
+        });
         form.reset();
       } catch (error) {
         console.error("Error adding order: ", error);
@@ -842,10 +827,8 @@ export default function HomeRu() {
   const balance =
     parseFloat(userProfile?.totalBalance) + parseFloat(userProfit) || 0.0;
 
-  const freeMargin = () => {
-    const userBalance1 = parseFloat(userProfile?.totalBalance);
-    let newBal = userBalance1 + parseFloat(userProfit);
-    let freeMarginOpened = newBal;
+  const calculateFreeMargin = () => {
+    let freeMarginOpened = balance;
     ordersHistory?.forEach((el) => {
       if (el.status == "Pending") {
         const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
@@ -853,8 +836,10 @@ export default function HomeRu() {
         freeMarginOpened -= parseFloat(dealSum);
       }
     });
-    return freeMarginOpened || 0.0;
+    return freeMarginOpened < 0 ? 0.0 : freeMarginOpened;
   };
+
+  const freeMargin = calculateFreeMargin();
 
   return (
     <>
@@ -875,10 +860,10 @@ export default function HomeRu() {
             <div className="balance-item">
               <h2 className="balance-title">{t("balance")}:</h2>
               <input
-                type="text"
+                type="number"
                 className="balance-nums"
                 readOnly={true}
-                value={balance < 0 ? 0 : balance.toFixed(6)}
+                value={balance < 0 ? 0.0 : balance.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -892,7 +877,7 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                value={freeMargin().toFixed(6)}
+                value={freeMargin.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1175,9 +1160,7 @@ export default function HomeRu() {
                           value={orderData.symbol}
                           selectedValue={orderData.symbol}
                         />
-                        <label htmlFor="symbol-current-value">
-                          {t("price")}
-                        </label>
+                        <label htmlFor="symbol-current-value">Price</label>
                         <div className="gap-2">
                           <input
                             type="number"
@@ -1195,19 +1178,18 @@ export default function HomeRu() {
                           />
                         </div>
 
-                        <label htmlFor="symbol-amount">{t("volume")}</label>
+                        <label htmlFor="symbol-amount">Sum</label>
                         <input
                           type="number"
                           id="symbol-amount"
                           name="volume"
-                          max={100}
                           onChange={(e) =>
-                            setOrderData({
-                              ...orderData,
-                              volume: parseFloat(e.target.value),
-                            })
+                            setOrderData((p) => ({
+                              ...p,
+                              sum: parseFloat(e.target.value),
+                            }))
                           }
-                          value={orderData?.volume}
+                          value={orderData.sum}
                         />
                         <label htmlFor="stop-loss">SL</label>
                         <input

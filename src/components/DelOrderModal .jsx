@@ -93,6 +93,7 @@ const DelOrderModal = ({
         parseFloat(selectedOrder.symbolValue) *
         parseFloat(selectedOrder.volume);
       await updateUserBalance(orderPrice);
+      onClose();
     }
   };
 
