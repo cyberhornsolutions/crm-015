@@ -76,10 +76,7 @@ const DelOrderModal = ({
           await addDoc(orderRef, newOrder);
 
           await updateOrderStatus(selectedOrder.orderId, "Closed", volume);
-
-          const orderPrice =
-            parseFloat(selectedOrder.symbolValue) * parseFloat(volume);
-          await updateUserBalance(orderPrice);
+          await updateUserBalance(selectedOrder.sum);
           onClose();
         } catch (error) {
           toast.error(error.message);
@@ -89,10 +86,7 @@ const DelOrderModal = ({
       }
     } else {
       await updateOrderStatus(selectedOrder.orderId, "Closed");
-      const orderPrice =
-        parseFloat(selectedOrder.symbolValue) *
-        parseFloat(selectedOrder.volume);
-      await updateUserBalance(orderPrice);
+      await updateUserBalance(selectedOrder.sum);
       onClose();
     }
   };
