@@ -10,11 +10,9 @@ export const generalColumns = [
   { name: "Number", selector: (row) => row.id },
   {
     name: "Open date",
-    selector: (row) =>
-      row.createdTime
-        ? moment(row.createdTime?.toDate()).format("MM/DD/YYYY hh:mm:ss A")
-        : "",
-    width: "200px",
+    selector: (row) => row.createdAt,
+    // ? moment(row.createdTime?.toDate()).format("MM/DD/YYYY hh:mm:ss A")
+    // : "",
   },
   { name: "Type", selector: (row) => row.type },
   { name: "Symbol", selector: (row) => row.symbol },
