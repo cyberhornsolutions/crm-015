@@ -14,7 +14,7 @@ const EditOrderModal = ({ onClose, show, selectedOrder }) => {
 
   const updateOrder = async () => {
     try {
-      const orderId = selectedOrder?.orderId;
+      const orderId = selectedOrder?.id;
       if (
         selectedOrder.type == "Buy" &&
         (newSl >= selectedOrder.symbolValue ||

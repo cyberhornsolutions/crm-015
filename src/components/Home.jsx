@@ -242,7 +242,11 @@ export default function HomeRu() {
   };
 
   const setOrders = useCallback((data) => {
-    dispatch(setOrdersState(data));
+    const mappedOrders = data.map((order) => ({
+      ...order,
+      sltp: `${order?.sl || ""}/${order?.tp || ""}`,
+    }));
+    dispatch(setOrdersState(mappedOrders));
   });
 
   useEffect(() => {
@@ -279,12 +283,12 @@ export default function HomeRu() {
   const columns = [
     {
       name: "ID",
-      selector: (row) => (
+      selector: (row, i) => (
         <div
           className="order-column"
           onDoubleClick={() => handleEditModal(row)}
         >
-          {row.id}
+          {i + 1}
         </div>
       ),
     },
@@ -478,15 +482,6 @@ export default function HomeRu() {
       },
     },
   ];
-
-  const mappedOrders = orders?.map((order, i) => {
-    return {
-      ...order,
-      id: i + 1,
-      orderId: order?.id,
-      sltp: `${order?.sl || ""}/${order?.tp || ""}`,
-    };
-  });
 
   const openOrderHistory = () => {
     const ordersHistoryButton = document.getElementById("ordersHistoryButton");
@@ -1235,7 +1230,7 @@ export default function HomeRu() {
                 <div id="orders">
                   <DataTable
                     columns={columns}
-                    data={mappedOrders?.filter((el) => el.status == "Pending")}
+                    data={orders?.filter((el) => el.status == "Pending")}
                     pagination
                     paginationPerPage={5}
                     paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
