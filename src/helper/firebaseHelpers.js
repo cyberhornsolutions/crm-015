@@ -166,7 +166,7 @@ export const addUserNewBalance = async (userId, amount) => {
   }
 };
 
-export const getAllSymbols = async (setState, setLoading) => {
+export const getAllSymbols = (setState, setLoading) => {
   setLoading(true);
   try {
     const symbolsRef = collection(db, "symbols");
