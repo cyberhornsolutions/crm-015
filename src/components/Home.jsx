@@ -51,6 +51,7 @@ import {
   updateOnlineStatus,
   fetchAllOrdersByUserId,
   getAllSymbols,
+  addQuotesToUser,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import CurrentValue from "./CurrentValue.jsx";
@@ -107,7 +108,6 @@ export default function HomeRu() {
     isUserEdited: false,
     allowTrading: false,
   });
-  const [userQuotes, setUserQuotes] = useState([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [messageModal, setMessageModal] = useState({
     show: false,
@@ -193,7 +193,6 @@ export default function HomeRu() {
       const unsubscribe = onSnapshot(userRef, (userDoc) => {
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setUserQuotes(userData?.quotes);
           setUserProfile(userData);
         } else {
           console.log("User document does not exist.");
@@ -243,6 +242,16 @@ export default function HomeRu() {
       .catch((error) => {
         console.log("Error", error);
       });
+  };
+
+  const handleDeleteAsset = async (asset) => {
+    const newAssets = userProfile?.quotes.filter((quote) => quote !== asset);
+    const res = await addQuotesToUser(currentUserId, newAssets);
+    if (!res) {
+      toast.error("Failed to delete symbol");
+    } else {
+      toast.success("Symbol deleted successfully");
+    }
   };
 
   const columns = [
@@ -429,6 +438,18 @@ export default function HomeRu() {
       name: t("currentPrice"),
       selector: (row) => <CurrentValue symbol={row} />,
       sortable: true,
+      compact: true,
+    },
+    {
+      name: "Delete",
+      selector: (row) => (
+        <FontAwesomeIcon
+          id="assetDeleteIcon"
+          icon={faClose}
+          onClick={() => handleDeleteAsset(row)}
+        />
+      ),
+      compact: true,
     },
   ];
   const conditionalRowStyles = [
@@ -713,21 +734,21 @@ export default function HomeRu() {
     setIsTradingModal(true);
   };
 
-  const bQuotesValues = async () => {
-    try {
-      const encodedSymbols = JSON.stringify(userQuotes);
+  // const bQuotesValues = async () => {
+  //   try {
+  //     const encodedSymbols = JSON.stringify(userQuotes);
 
-      const response = await axios.get(
-        "https://api.binance.us/api/v3/ticker/bookTicker?symbols=" +
-          [encodedSymbols]
-      );
+  //     const response = await axios.get(
+  //       "https://api.binance.us/api/v3/ticker/bookTicker?symbols=" +
+  //         [encodedSymbols]
+  //     );
 
-      console.log(response.data, 8080);
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     console.log(response.data, 8080);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const calculateProfit = () => {
     let totalProfit = 0.0;
@@ -1842,7 +1863,7 @@ export default function HomeRu() {
           show={isTradingModal}
           symbols={dbSymbols}
           handleCloseModal={handleCloseModal}
-          userQuotes={userQuotes}
+          userQuotes={userProfile?.quotes || []}
           userId={currentUserId}
         />
       )}
