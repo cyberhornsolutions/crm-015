@@ -165,3 +165,33 @@ export const addUserNewBalance = async (userId, amount) => {
     console.error("Error updating balance:", error);
   }
 };
+
+export const getAllSymbols = async (setState, setLoading) => {
+  setLoading(true);
+  try {
+    const symbolsRef = collection(db, "symbols");
+    const unsubscribe = onSnapshot(
+      symbolsRef,
+      (snapshot) => {
+        const symbols = [];
+        snapshot.forEach((doc) => {
+          symbols.push({ id: doc.id, ...doc.data() });
+        });
+
+        const symbolsData = symbols.filter(({ symbol }) =>
+          symbol.endsWith("USDT")
+        );
+
+        setState(symbolsData);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    );
+    return () => unsubscribe();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};

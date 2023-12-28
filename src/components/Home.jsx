@@ -49,8 +49,8 @@ import ReportModal from "./ReportModal";
 import MessageModal from "./MessageModal";
 import {
   updateOnlineStatus,
-  getSymbolValue,
   fetchAllOrdersByUserId,
+  getAllSymbols,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import CurrentValue from "./CurrentValue.jsx";
@@ -120,41 +120,6 @@ export default function HomeRu() {
   const handleEditModal = (row) => {
     setSelectedOrder(row);
     setIsModalOpen(true);
-  };
-
-  const getAllSymbols1 = async () => {
-    try {
-      setIsLoading(true);
-
-      const symbolsRef = collection(db, "symbols");
-
-      const unsubscribe = onSnapshot(
-        symbolsRef,
-        (snapshot) => {
-          const symbolsData = [];
-          snapshot.forEach((doc) => {
-            symbolsData.push({ id: doc.id, ...doc.data() });
-          });
-          setSymbols(
-            symbolsData?.map((f) => {
-              return { value: f.symbol, label: f.symbol };
-            }) || []
-          );
-
-          dispatch(setSymbolsState(symbolsData));
-          setIsLoading(false);
-        },
-        (error) => {
-          console.error("Error fetching data:", error);
-          setIsLoading(false);
-        }
-      );
-
-      // Optionally returning unsubscribe function for cleanup if needed
-      // return unsubscribe;
-    } catch (error) {
-      console.error("Error:", error);
-    }
   };
 
   const handleCloseModal = () => {
@@ -417,7 +382,7 @@ export default function HomeRu() {
           onDoubleClick={() => handleEditModal(row)}
         >
           <div>
-            <CurrentProfit orderData={row} symbols={dbSymbols} />
+            <CurrentProfit orderData={row} />
           </div>
         </div>
       ),
@@ -558,8 +523,13 @@ export default function HomeRu() {
     }
   };
 
+  const setDbSymbols = useCallback((data) => {
+    setSymbols(data.map((f) => ({ value: f.symbol, label: f.symbol })));
+    dispatch(setSymbolsState(data));
+  }, []);
+
   useEffect(() => {
-    getAllSymbols1();
+    return getAllSymbols(setDbSymbols, setIsLoading);
   }, []);
 
   useEffect(() => {
