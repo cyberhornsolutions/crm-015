@@ -184,12 +184,23 @@ export const getAllSymbols = (setState, setLoading) => {
           symbols.push({ id: doc.id, ...doc.data() });
         });
 
-        // const symbolsData = symbols.filter(({ symbol }) =>
-        //   symbol.endsWith("USDT")
-        // );
+        const symbolsData = symbols
+          // .filter(({ symbol }) => symbol.endsWith("USDT"))
+          .map((s) => {
+            return s.duplicates?.length
+              ? [
+                  s,
+                  ...s.duplicates.map((m) => ({
+                    symbol: m,
+                    price: s.price,
+                    duplicate: s.symbol,
+                  })),
+                ]
+              : s;
+          })
+          .flat();
 
-        // setState(symbolsData);
-        setState(symbols);
+        setState(symbolsData);
         setLoading(false);
       },
       (error) => {
