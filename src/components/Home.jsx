@@ -54,7 +54,6 @@ import {
   addQuotesToUser,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
-import CurrentValue from "./CurrentValue.jsx";
 import MyBarChart from "./BarChart.js";
 import CurrentProfit from "./CurrentProfit.jsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -71,7 +70,6 @@ export default function HomeRu() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const dbSymbols = useSelector((state) => state?.symbols?.symbols);
-  const [symbols, setSymbols] = useState([]);
   const [orderData, setOrderData] = useState({
     symbol: null,
     symbolValue: null,
@@ -436,7 +434,8 @@ export default function HomeRu() {
     },
     {
       name: t("currentPrice"),
-      selector: (row) => <CurrentValue symbol={row} />,
+      selector: (row) =>
+        dbSymbols.find((symbol) => symbol.symbol === row).price,
       sortable: true,
       compact: true,
     },
@@ -545,7 +544,6 @@ export default function HomeRu() {
   };
 
   const setDbSymbols = useCallback((data) => {
-    setSymbols(data.map((f) => ({ value: f.symbol, label: f.symbol })));
     dispatch(setSymbolsState(data));
   }, []);
 
@@ -1068,7 +1066,10 @@ export default function HomeRu() {
                         <label htmlFor="symbol-input">{t("symbol")}</label>
                         <Select
                           id="symbol-input"
-                          options={symbols}
+                          options={dbSymbols.map((f) => ({
+                            value: f.symbol,
+                            label: f.symbol,
+                          }))}
                           onChange={(e) =>
                             setOrderData({ ...orderData, symbol: e })
                           }
