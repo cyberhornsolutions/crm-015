@@ -469,14 +469,14 @@ export default function HomeRu() {
     {
       name: t("currentPrice"),
       selector: (row) =>
-        dbSymbols.find((symbol) => symbol.symbol === row).price,
+        dbSymbols.find((symbol) => symbol.symbol === row)?.price,
       sortable: true,
       compact: true,
     },
     {
       name: "Delete",
       selector: (row) =>
-        dbSymbols.find((symbol) => symbol.symbol === row).duplicate ? (
+        dbSymbols.find((symbol) => symbol.symbol === row)?.duplicate ? (
           <FontAwesomeIcon
             id="assetDeleteIcon"
             icon={faClose}
