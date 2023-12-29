@@ -653,18 +653,6 @@ export default function HomeRu() {
       }
     }
   };
-  const getSymbols = async () => {
-    // await axios.get(`https://api.binance.com/api/v3/exchangeInfo`).then((e) => {
-    //   setSymbols(
-    //     e.data.symbols?.map((f) => {
-    //       return { value: f.symbol, label: f.symbol };
-    //     }) || []
-    //   );
-    // });
-    // const data = await getData("symbols");
-    // setIsLoading(false);
-  };
-
   // const customStyles = {
   //   option: (provided, state) => ({
   //     ...provided,
@@ -707,18 +695,6 @@ export default function HomeRu() {
       borderColor: state.isFocused ? "blue" : "gray",
     }),
   };
-
-  const convertIntoFourDecimal = (number) => {
-    return number?.toFixed(4);
-  };
-
-  const symbolColumn = [
-    { name: "Symbol", selector: (row) => row?.symbol },
-    { name: "Price", selector: (row) => row?.price },
-  ];
-
-  // const dataSet=dbSymbols.map(el=>{label:el.symbol, value:el.price})
-  // const symbolData = [{ symbol: "AUD", price: 35 }];
 
   const refreshPrice = () => {
     if (orderData?.symbol?.value != null && orderData.symbol != null) {
