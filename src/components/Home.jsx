@@ -255,167 +255,201 @@ export default function HomeRu() {
   const columns = [
     {
       name: "ID",
-      selector: (row, i) => (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {i + 1}
-        </div>
-      ),
+      selector: (row, i) =>
+        row ? (
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            {i + 1}
+          </div>
+        ) : (
+          ""
+        ),
     },
     {
       name: t("date"), // Translate the header using your t function
-      selector: (row) => (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.createdAt}
-        </div>
-      ),
+      selector: (row) =>
+        row ? (
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            {row.createdAt}
+          </div>
+        ) : (
+          ""
+        ),
       sortable: true,
     },
     {
       name: t("symbol"),
-      selector: (row) => (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.symbol}
-        </div>
-      ),
+      selector: (row) =>
+        row ? (
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            {row.symbol}
+          </div>
+        ) : (
+          ""
+        ),
       sortable: true,
     },
     {
       name: t("type"),
       selector: (row) =>
-        row.type == "Buy" ? (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            <div className="custom-caret-up-icon">
-              <FontAwesomeIcon icon={faCaretUp} />
-              <div style={{ marginLeft: "3px" }}>{row.type}</div>
+        row ? (
+          row.type == "Buy" ? (
+            <div
+              className="order-column"
+              onDoubleClick={() => handleEditModal(row)}
+            >
+              <div className="custom-caret-up-icon">
+                <FontAwesomeIcon icon={faCaretUp} />
+                <div style={{ marginLeft: "3px" }}>{row.type}</div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div
+              className="order-column"
+              onDoubleClick={() => handleEditModal(row)}
+            >
+              <div className="custom-caret-down-icon">
+                <FontAwesomeIcon icon={faCaretDown} />
+                <div style={{ marginLeft: "3px" }}>{row.type}</div>
+              </div>
+            </div>
+          )
         ) : (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            <div className="custom-caret-down-icon">
-              <FontAwesomeIcon icon={faCaretDown} />
-              <div style={{ marginLeft: "3px" }}>{row.type}</div>
-            </div>
-          </div>
+          ""
         ),
       sortable: true,
     },
     {
       name: t("volume"),
-      selector: (row) => (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.volume}
-        </div>
-      ),
+      selector: (row) =>
+        row ? (
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            {row.volume}
+          </div>
+        ) : (
+          ""
+        ),
       sortable: true,
     },
     {
       name: t("openPrice"),
-      selector: (row) => (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.symbolValue}
-        </div>
-      ),
+      selector: (row) =>
+        row ? (
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            {row.symbolValue}
+          </div>
+        ) : (
+          ""
+        ),
       sortable: true,
     },
     {
       name: "SL / TP",
-      selector: (row) => (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.sltp}
-        </div>
-      ),
+      selector: (row) =>
+        row ? (
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            {row.sltp}
+          </div>
+        ) : (
+          ""
+        ),
       sortable: true,
       width: "200px",
     },
     {
       name: t("status"),
-      selector: (row) => (
-        <div
-          className={`order-column ${
-            row.status == "Success"
-              ? "greenText"
-              : row.status == "Closed"
-              ? "redText"
-              : "orangeText"
-          } `}
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.status}
-        </div>
-      ),
+      selector: (row) =>
+        row ? (
+          <div
+            className={`order-column ${
+              row.status == "Success"
+                ? "greenText"
+                : row.status == "Closed"
+                ? "redText"
+                : "orangeText"
+            } `}
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            {row.status}
+          </div>
+        ) : (
+          ""
+        ),
       sortable: true,
     },
     {
       name: "Sum",
-      selector: (row) => (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.sum}
-        </div>
-      ),
+      selector: (row) =>
+        row ? (
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            {row.sum}
+          </div>
+        ) : (
+          ""
+        ),
       sortable: true,
     },
     {
       name: t("profit"),
-      selector: (row) => (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          <div>
-            <CurrentProfit orderData={row} />
+      selector: (row) =>
+        row ? (
+          <div
+            className="order-column"
+            onDoubleClick={() => handleEditModal(row)}
+          >
+            <div>
+              <CurrentProfit orderData={row} />
+            </div>
           </div>
-        </div>
-      ),
+        ) : (
+          ""
+        ),
       sortable: true,
     },
     {
       name: t(""),
-      selector: (row) => (
-        <div className="order-actions">
-          <div
-            className="custom-edit-icon"
-            onClick={() => handleEditModal(row)}
-          >
-            <FontAwesomeIcon icon={faEdit} />
+      selector: (row) =>
+        row ? (
+          <div className="order-actions">
+            <div
+              className="custom-edit-icon"
+              onClick={() => handleEditModal(row)}
+            >
+              <FontAwesomeIcon icon={faEdit} />
+            </div>
+            <div
+              className="custom-delete-icon"
+              onClick={() => {
+                setSelectedOrder(row);
+                handleDelModal();
+              }}
+            >
+              <FontAwesomeIcon icon={faClose} />
+            </div>
           </div>
-          <div
-            className="custom-delete-icon"
-            onClick={() => {
-              setSelectedOrder(row);
-              handleDelModal();
-            }}
-          >
-            <FontAwesomeIcon icon={faClose} />
-          </div>
-        </div>
-      ),
+        ) : (
+          ""
+        ),
       sortable: true,
     },
   ];
@@ -727,6 +761,8 @@ export default function HomeRu() {
   //   }
   // };
 
+  const pendingOrders = orders.filter((order) => order.status === "Pending");
+
   const calculateProfit = () => {
     let totalProfit = 0.0;
     orders?.map((el) => {
@@ -746,12 +782,10 @@ export default function HomeRu() {
 
   const calculateFreeMargin = () => {
     let freeMarginOpened = balance;
-    orders?.forEach((el) => {
-      if (el.status == "Pending") {
-        const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
-        const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
-        freeMarginOpened -= parseFloat(dealSum);
-      }
+    pendingOrders.forEach((el) => {
+      const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
+      const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
+      freeMarginOpened -= parseFloat(dealSum);
     });
     return freeMarginOpened < 0 ? 0.0 : freeMarginOpened;
   };
@@ -1201,7 +1235,11 @@ export default function HomeRu() {
                 <div id="orders">
                   <DataTable
                     columns={columns}
-                    data={orders?.filter((el) => el.status == "Pending")}
+                    data={pendingOrders.concat(
+                      pendingOrders.length < 3
+                        ? new Array(3 - pendingOrders.length).fill("")
+                        : []
+                    )}
                     pagination
                     paginationPerPage={5}
                     paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
