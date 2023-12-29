@@ -28,8 +28,8 @@ export const generalColumns = [
   { name: "SL", selector: (row) => row.sl },
   { name: "Swap", selector: (row) => <p></p> },
   {
-    name: "profit",
-    selector: (row) => <CurrentProfit orderData={row} />,
+    name: "Profit",
+    selector: (row) => (row ? <CurrentProfit orderData={row} /> : ""),
   },
   {
     name: "Status",
@@ -69,7 +69,7 @@ export const tradOptColumns = [
 export const depositColumns = [
   {
     name: "Date",
-    selector: (row) => newDate(row.createdAt),
+    selector: (row) => (row ? newDate(row.createdAt) : ""),
 
     // ? moment(row.createdAt).format("MM/DD/YYYY hh:mm:ss A")
     // : "",

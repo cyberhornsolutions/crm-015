@@ -8,7 +8,6 @@ import {
   generalColumns,
   tradOptColumns,
 } from "../helper/Tablecolumns";
-import { db } from "../firebase";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { getDepositsByUser } from "../helper/firebaseHelpers";
@@ -90,6 +89,10 @@ function ReportTabs({ userId, onClose }) {
     filteredDeposits = dataCreatedToday;
   }
 
+  const pendingOrders = filteredOrders.filter(
+    (order) => order.status != "Pending"
+  );
+
   return (
     <Tabs
       id="controlled-tab-example"
@@ -104,7 +107,11 @@ function ReportTabs({ userId, onClose }) {
       >
         <DataTable
           columns={generalColumns}
-          data={filteredOrders?.filter((el) => el.status != "Pending")}
+          data={pendingOrders.concat(
+            pendingOrders.length < 5
+              ? new Array(5 - pendingOrders.length).fill("")
+              : []
+          )}
           customStyles={customStyle}
           pagination
           theme="dark"
@@ -144,7 +151,11 @@ function ReportTabs({ userId, onClose }) {
       <Tab eventKey="balanceOperations" title="Balance operations">
         <DataTable
           columns={depositColumns}
-          data={filteredDeposits}
+          data={filteredDeposits.concat(
+            filteredDeposits.length < 5
+              ? new Array(5 - filteredDeposits.length).fill("")
+              : []
+          )}
           customStyles={customStyle}
           pagination
           theme="dark"
