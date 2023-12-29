@@ -317,9 +317,6 @@ input {
   padding: 3px 35px !important;
 }
 
-.tradingWidget.rdt_Table {
-  background-color: #1e222d;
-}
 .tradingWidget .rdt_Table > div {
   background-color: #1e222d;
 }

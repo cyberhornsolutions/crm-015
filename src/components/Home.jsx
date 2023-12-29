@@ -917,7 +917,7 @@ export default function HomeRu() {
               <div id="trade">
                 {tab === "assets" && (
                   <div id="assets">
-                    <div className="tradingWidget">
+                    <div className="tradingWidget h-100">
                       <h5>Quotes</h5>
                       <Form.Control
                         type="text"
