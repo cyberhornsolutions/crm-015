@@ -8,56 +8,17 @@ import {
   generalColumns,
   tradOptColumns,
 } from "../helper/Tablecolumns";
-import {
-  collection,
-  where,
-  onSnapshot,
-  query,
-  orderBy,
-} from "firebase/firestore";
 import { db } from "../firebase";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import { getDepositsByUser } from "../helper/firebaseHelpers";
 
 function ReportTabs({ userId, onClose }) {
   const orders = useSelector((state) => state.orders);
   const [key, setKey] = useState("tradeOperations");
   const [deposits, setDeposits] = useState([]);
-  const [filterDeposits, setFilterDeposits] = useState([]);
   const [showRecord, setShowRecord] = useState("all");
 
-  const getDeposits = async (userId) => {
-    try {
-      const depositsRef = collection(db, "deposits");
-      const userDepositsQuery = query(
-        depositsRef,
-        orderBy("createdAt", "desc"),
-        where("userId", "==", userId)
-      );
-
-      const unsubscribe = onSnapshot(
-        userDepositsQuery,
-        (snapshot) => {
-          const depositsData = [];
-          snapshot.forEach((doc) => {
-            depositsData.push({ id: doc.id, ...doc.data() });
-          });
-          setDeposits(depositsData);
-          setFilterDeposits(depositsData);
-        },
-        (error) => {
-          console.error("Error fetching data:", error);
-        }
-      );
-
-      // Optionally returning unsubscribe function for cleanup if needed
-      return unsubscribe;
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const general = [{ no: 1 }];
   const customStyle = {
     table: { style: { height: "70vh", backgroundColor: "#2f323d" } },
   };
@@ -67,7 +28,7 @@ function ReportTabs({ userId, onClose }) {
   };
 
   useEffect(() => {
-    getDeposits(userId);
+    return getDepositsByUser(userId, setDeposits);
   }, []);
   const today = moment();
 
@@ -100,35 +61,34 @@ function ReportTabs({ userId, onClose }) {
     filteredOrders = dataCreatedToday;
   }
 
-  const filterDepositsData = (showRecord) => {
-    if (showRecord == "all") {
-      getDeposits();
-    } else if (showRecord === "today") {
-      const todayStart = today.startOf("day"); // Start of today
-      const dataCreatedToday = deposits.filter((dep) => {
-        return moment(newDate(dep.createdAt)).isSame(todayStart, "day");
-      });
-      setFilterDeposits(dataCreatedToday);
-    } else if (showRecord === "lastWeek") {
-      const sevenDaysAgo = moment().subtract(7, "days");
-      const dataCreatedToday = deposits.filter((dep) => {
-        return moment(newDate(dep.createdAt)).isSameOrAfter(sevenDaysAgo);
-      });
-      setFilterDeposits(dataCreatedToday);
-    } else if (showRecord === "lastMonth") {
-      const lastMonth = moment().subtract(30, "days");
-      const dataCreatedToday = deposits.filter((dep) => {
-        return moment(newDate(dep.createdAt)).isSameOrAfter(lastMonth);
-      });
-      setFilterDeposits(dataCreatedToday);
-    } else if (showRecord === "last3Month") {
-      const last90Days = moment().subtract(90, "days");
-      const dataCreatedToday = deposits.filter((dep) => {
-        return moment(newDate(dep.createdAt)).isSameOrAfter(last90Days);
-      });
-      setFilterDeposits(dataCreatedToday);
-    }
-  };
+  let filteredDeposits;
+  if (showRecord == "all") {
+    filteredDeposits = deposits;
+  } else if (showRecord === "today") {
+    const todayStart = today.startOf("day"); // Start of today
+    const dataCreatedToday = deposits.filter((dep) => {
+      return moment(newDate(dep.createdAt)).isSame(todayStart, "day");
+    });
+    filteredDeposits = dataCreatedToday;
+  } else if (showRecord === "lastWeek") {
+    const sevenDaysAgo = moment().subtract(7, "days");
+    const dataCreatedToday = deposits.filter((dep) => {
+      return moment(newDate(dep.createdAt)).isSameOrAfter(sevenDaysAgo);
+    });
+    filteredDeposits = dataCreatedToday;
+  } else if (showRecord === "lastMonth") {
+    const lastMonth = moment().subtract(30, "days");
+    const dataCreatedToday = deposits.filter((dep) => {
+      return moment(newDate(dep.createdAt)).isSameOrAfter(lastMonth);
+    });
+    filteredDeposits = dataCreatedToday;
+  } else if (showRecord === "last3Month") {
+    const last90Days = moment().subtract(90, "days");
+    const dataCreatedToday = deposits.filter((dep) => {
+      return moment(newDate(dep.createdAt)).isSameOrAfter(last90Days);
+    });
+    filteredDeposits = dataCreatedToday;
+  }
 
   return (
     <Tabs
@@ -184,7 +144,7 @@ function ReportTabs({ userId, onClose }) {
       <Tab eventKey="balanceOperations" title="Balance operations">
         <DataTable
           columns={depositColumns}
-          data={filterDeposits}
+          data={filteredDeposits}
           customStyles={customStyle}
           pagination
           theme="dark"
@@ -197,7 +157,7 @@ function ReportTabs({ userId, onClose }) {
               <select
                 style={{ backgroundColor: "rgba(80,80,80,255)" }}
                 onChange={(e) => {
-                  filterDepositsData(e.target.value);
+                  setShowRecord(e.target.value);
                 }}
               >
                 <option label="All Operations" value="all"></option>
@@ -209,10 +169,7 @@ function ReportTabs({ userId, onClose }) {
             </div>
           </div>
           <div className="d-flex gap-2">
-            <button
-              className=" greenBtn"
-              onClick={() => filterDepositsData("all")}
-            >
+            <button className=" greenBtn" onClick={() => setShowRecord("all")}>
               Show
             </button>
             <button className=" greyBtn px-4 " onClick={onClose}>

@@ -213,3 +213,31 @@ export const getAllSymbols = (setState, setLoading) => {
     console.error("Error:", error);
   }
 };
+
+export const getDepositsByUser = (userId, setState) => {
+  try {
+    const depositsRef = collection(db, "deposits");
+    const userDepositsQuery = query(
+      depositsRef,
+      orderBy("createdAt", "desc"),
+      where("userId", "==", userId)
+    );
+
+    const unsubscribe = onSnapshot(
+      userDepositsQuery,
+      (snapshot) => {
+        const depositsData = [];
+        snapshot.forEach((doc) => {
+          depositsData.push({ id: doc.id, ...doc.data() });
+        });
+        setState(depositsData);
+      },
+      (error) => {
+        console.error("Error fetching data:", error);
+      }
+    );
+    return () => unsubscribe();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
