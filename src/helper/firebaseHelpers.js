@@ -169,20 +169,27 @@ export const addUserNewBalance = async (userId, amount) => {
 export const getAllSymbols = (setState, setLoading) => {
   setLoading(true);
   try {
-    const symbolsRef = collection(db, "symbols");
+    const q = query(
+      collection(db, "symbols"),
+      where("symbol", "in", ["BTCUSDT", "ETHUSDT", "DOGEUSDT"])
+    );
+
+    // const symbolsRef = collection(db, "symbols");
     const unsubscribe = onSnapshot(
-      symbolsRef,
+      // symbolsRef,
+      q,
       (snapshot) => {
         const symbols = [];
         snapshot.forEach((doc) => {
           symbols.push({ id: doc.id, ...doc.data() });
         });
 
-        const symbolsData = symbols.filter(({ symbol }) =>
-          symbol.endsWith("USDT")
-        );
+        // const symbolsData = symbols.filter(({ symbol }) =>
+        //   symbol.endsWith("USDT")
+        // );
 
-        setState(symbolsData);
+        // setState(symbolsData);
+        setState(symbols);
         setLoading(false);
       },
       (error) => {
