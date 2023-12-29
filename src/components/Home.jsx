@@ -441,13 +441,16 @@ export default function HomeRu() {
     },
     {
       name: "Delete",
-      selector: (row) => (
-        <FontAwesomeIcon
-          id="assetDeleteIcon"
-          icon={faClose}
-          onClick={() => handleDeleteAsset(row)}
-        />
-      ),
+      selector: (row) =>
+        dbSymbols.find((symbol) => symbol.symbol === row).duplicate ? (
+          <FontAwesomeIcon
+            id="assetDeleteIcon"
+            icon={faClose}
+            onClick={() => handleDeleteAsset(row)}
+          />
+        ) : (
+          ""
+        ),
       compact: true,
     },
   ];
