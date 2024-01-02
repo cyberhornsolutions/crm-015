@@ -11,6 +11,7 @@ import {
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { getDepositsByUser } from "../helper/firebaseHelpers";
+import { convertTimestamptToDate } from "../helper/helpers";
 
 function ReportTabs({ userId, onClose }) {
   const orders = useSelector((state) => state.orders);
@@ -20,10 +21,6 @@ function ReportTabs({ userId, onClose }) {
 
   const customStyle = {
     table: { style: { height: "70vh", backgroundColor: "#2f323d" } },
-  };
-  const newDate = (date) => {
-    const jsDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
-    return moment(jsDate).format("MM/DD/YYYY hh:mm:ss A");
   };
 
   useEffect(() => {
@@ -37,25 +34,34 @@ function ReportTabs({ userId, onClose }) {
   } else if (showRecord === "today") {
     const todayStart = today.startOf("day"); // Start of today
     const dataCreatedToday = orders.filter((order) => {
-      return moment(newDate(order.createdTime)).isSame(todayStart, "day");
+      return convertTimestamptToDate(order.createdTime).isSame(
+        todayStart,
+        "day"
+      );
     });
     filteredOrders = dataCreatedToday;
   } else if (showRecord === "lastWeek") {
     const sevenDaysAgo = moment().subtract(7, "days");
     const dataCreatedToday = orders.filter((order) => {
-      return moment(newDate(order.createdTime)).isSameOrAfter(sevenDaysAgo);
+      return convertTimestamptToDate(order.createdTime).isSameOrAfter(
+        sevenDaysAgo
+      );
     });
     filteredOrders = dataCreatedToday;
   } else if (showRecord === "lastMonth") {
     const lastMonth = moment().subtract(30, "days");
     const dataCreatedToday = orders.filter((order) => {
-      return moment(newDate(order.createdTime)).isSameOrAfter(lastMonth);
+      return convertTimestamptToDate(order.createdTime).isSameOrAfter(
+        lastMonth
+      );
     });
     filteredOrders = dataCreatedToday;
   } else if (showRecord === "last3Month") {
     const last90Days = moment().subtract(90, "days");
     const dataCreatedToday = orders.filter((order) => {
-      return moment(newDate(order.createdTime)).isSameOrAfter(last90Days);
+      return convertTimestamptToDate(order.createdTime).isSameOrAfter(
+        last90Days
+      );
     });
     filteredOrders = dataCreatedToday;
   }
@@ -66,25 +72,25 @@ function ReportTabs({ userId, onClose }) {
   } else if (showRecord === "today") {
     const todayStart = today.startOf("day"); // Start of today
     const dataCreatedToday = deposits.filter((dep) => {
-      return moment(newDate(dep.createdAt)).isSame(todayStart, "day");
+      return convertTimestamptToDate(dep.createdAt).isSame(todayStart, "day");
     });
     filteredDeposits = dataCreatedToday;
   } else if (showRecord === "lastWeek") {
     const sevenDaysAgo = moment().subtract(7, "days");
     const dataCreatedToday = deposits.filter((dep) => {
-      return moment(newDate(dep.createdAt)).isSameOrAfter(sevenDaysAgo);
+      return convertTimestamptToDate(dep.createdAt).isSameOrAfter(sevenDaysAgo);
     });
     filteredDeposits = dataCreatedToday;
   } else if (showRecord === "lastMonth") {
     const lastMonth = moment().subtract(30, "days");
     const dataCreatedToday = deposits.filter((dep) => {
-      return moment(newDate(dep.createdAt)).isSameOrAfter(lastMonth);
+      return convertTimestamptToDate(dep.createdAt).isSameOrAfter(lastMonth);
     });
     filteredDeposits = dataCreatedToday;
   } else if (showRecord === "last3Month") {
     const last90Days = moment().subtract(90, "days");
     const dataCreatedToday = deposits.filter((dep) => {
-      return moment(newDate(dep.createdAt)).isSameOrAfter(last90Days);
+      return convertTimestamptToDate(dep.createdAt).isSameOrAfter(last90Days);
     });
     filteredDeposits = dataCreatedToday;
   }

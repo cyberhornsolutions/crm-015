@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const calculateProfit = (type, currentPrice, symbolPrice, volume) => {
   // console.log(9090, type, currentPrice, symbolPrice, volume);
   let pnl = 0;
@@ -8,6 +10,11 @@ export const calculateProfit = (type, currentPrice, symbolPrice, volume) => {
   }
   // console.log(pnl, 9090);
   return pnl * parseFloat(volume);
+};
+
+export const convertTimestamptToDate = (date) => {
+  const jsDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
+  return moment(jsDate).format("MM/DD/YYYY hh:mm:ss A");
 };
 
 export const newFormulaForProfit = (
