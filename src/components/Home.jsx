@@ -60,6 +60,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
 import { setOrdersState } from "../redux/slicer/orderSlicer.js";
 import AddTradingSymbolModal from "./AddTradingSymbolModal.jsx";
+import { convertTimestamptToDate } from "../helper/helpers.js";
 
 // import rd3 from "react-d3-library";
 // const BarChart = rd3.BarChart;
@@ -275,12 +276,14 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {row.createdAt}
+            {convertTimestamptToDate(row.createdTime)}
           </div>
         ) : (
           ""
         ),
       sortable: true,
+      compact: true,
+      grow: 1.5,
     },
     {
       name: t("symbol"),
@@ -371,7 +374,6 @@ export default function HomeRu() {
           ""
         ),
       sortable: true,
-      width: "200px",
     },
     {
       name: "Additional parameters",
@@ -391,8 +393,9 @@ export default function HomeRu() {
           ""
         );
       },
+      grow: 1.5,
+      compact: true,
       sortable: true,
-      width: "200px",
     },
     {
       name: "Sum",
@@ -791,6 +794,8 @@ export default function HomeRu() {
   };
 
   const freeMargin = calculateFreeMargin();
+
+  console.log("pending orders = ", pendingOrders);
 
   return (
     <>

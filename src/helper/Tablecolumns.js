@@ -1,26 +1,22 @@
-import moment from "moment/moment";
 import CurrentProfit from "../components/CurrentProfit";
+import { convertTimestamptToDate } from "./helpers";
 
-const newDate = (date) => {
-  const jsDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
-  return moment(jsDate).format("MM/DD/YYYY hh:mm:ss A");
-};
 //Reports table columns
 export const generalColumns = [
   { name: "Number", selector: (row) => row.id },
   {
     name: "Open date",
-    selector: (row) => row.createdAt,
-    // ? moment(row.createdTime?.toDate()).format("MM/DD/YYYY hh:mm:ss A")
-    // : "",
+    selector: (row) => row && convertTimestamptToDate(row.createdTime),
+    grow: 1.5,
   },
   { name: "Type", selector: (row) => row.type },
   { name: "Symbol", selector: (row) => row.symbol },
   { name: "Volume", selector: (row) => row.volume },
   {
     name: "Close date",
-    selector: (row) => (row.closedDate ? newDate(row?.closedDate) : ""),
-    width: "200px",
+    selector: (row) =>
+      row.closedDate && convertTimestamptToDate(row?.closedDate),
+    grow: 1.5,
   },
   { name: "Open price", selector: (row) => row?.symbolValue },
   { name: "Close price", selector: (row) => row?.closedPrice },
@@ -69,12 +65,9 @@ export const tradOptColumns = [
 export const depositColumns = [
   {
     name: "Date",
-    selector: (row) => (row ? newDate(row.createdAt) : ""),
-
-    // ? moment(row.createdAt).format("MM/DD/YYYY hh:mm:ss A")
-    // : "",
+    selector: (row) => row && convertTimestamptToDate(row.createdAt),
   },
-  { name: "Sum", selector: (row) => row.amount },
+  { name: "Sum", selector: (row) => row.sum },
   { name: "Type", selector: (row) => row.type },
 ];
 
