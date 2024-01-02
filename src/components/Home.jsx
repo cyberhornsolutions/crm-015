@@ -20,6 +20,7 @@ import { Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
+import { Tabs, Tab } from "react-bootstrap";
 
 import {
   doc,
@@ -68,6 +69,7 @@ import { convertTimestamptToDate } from "../helper/helpers.js";
 
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
+  const [dealsTab, setDealsTab] = useState("activeTab");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const dbSymbols = useSelector((state) => state?.symbols?.symbols);
@@ -1235,22 +1237,40 @@ export default function HomeRu() {
                   </button>
                 </div>
                 <div id="orders">
-                  <DataTable
-                    columns={columns}
-                    data={pendingOrders.concat(
-                      pendingOrders.length < 3
-                        ? new Array(3 - pendingOrders.length).fill("")
-                        : []
-                    )}
-                    pagination
-                    paginationPerPage={5}
-                    paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
-                    highlightOnHover
-                    pointerOnHover
-                    responsive
-                    theme="dark"
-                    className="custom-data-table"
-                  />
+                  <Tabs activeKey={dealsTab} onSelect={(k) => setDealsTab(k)}>
+                    <Tab eventKey="activeTab" title="Active">
+                      <DataTable
+                        columns={columns}
+                        data={pendingOrders.concat(
+                          pendingOrders.length < 3
+                            ? new Array(3 - pendingOrders.length).fill("")
+                            : []
+                        )}
+                        pagination
+                        paginationPerPage={5}
+                        paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                        highlightOnHover
+                        pointerOnHover
+                        responsive
+                        theme="dark"
+                        className="custom-data-table"
+                      />
+                    </Tab>
+                    <Tab eventKey="delayedTab" title="Delayed">
+                      <DataTable
+                        columns={columns}
+                        data={new Array(3).fill("")}
+                        pagination
+                        paginationPerPage={5}
+                        paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                        highlightOnHover
+                        pointerOnHover
+                        responsive
+                        theme="dark"
+                        className="custom-data-table"
+                      />
+                    </Tab>
+                  </Tabs>
                 </div>
               </div>
             </div>
