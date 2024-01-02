@@ -271,15 +271,13 @@ export default function HomeRu() {
     {
       name: t("date"), // Translate the header using your t function
       selector: (row) =>
-        row ? (
+        row.createdTime && (
           <div
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
             {convertTimestamptToDate(row.createdTime)}
           </div>
-        ) : (
-          ""
         ),
       sortable: true,
       compact: true,
