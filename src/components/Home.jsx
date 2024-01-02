@@ -43,6 +43,7 @@ import {
   faCaretDown,
   faCaretUp,
   faRefresh,
+  faAngleLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import EditOrderModal from "./EditOrderModal";
 import DelOrderModal from "./DelOrderModal ";
@@ -70,6 +71,7 @@ import { convertTimestamptToDate } from "../helper/helpers.js";
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
   const [dealsTab, setDealsTab] = useState("activeTab");
+  const [assetsTab, setAssetsTab] = useState("cryptoTab");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const dbSymbols = useSelector((state) => state?.symbols?.symbols);
@@ -957,47 +959,91 @@ export default function HomeRu() {
                   <div id="assets">
                     <div className="tradingWidget h-100">
                       <h5>Quotes</h5>
-                      <Form.Control
-                        type="text"
-                        placeholder="Search..."
-                        value={quoteSearch}
-                        onChange={(e) => setQuoteSearch(e.target.value)}
-                      />
-                      <DataTable
-                        columns={assetsColumns}
-                        data={filteredQuotes}
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={{
-                          rows: {
-                            style: {
-                              userSelect: "none",
-                              "*": {
-                                backgroundColor: "unset",
-                                color: "unset",
+                      <Tabs
+                        activeKey={assetsTab}
+                        onSelect={(k) => setAssetsTab(k)}
+                        className="mb-2 flex-nowrap overflow-hidden"
+                        fill
+                      >
+                        <Tab
+                          eventKey="cryptoTab"
+                          title="Crypto"
+                          tabClassName={
+                            assetsTab === "commoditiesTab" && "d-none"
+                          }
+                        >
+                          <Form.Control
+                            type="text"
+                            placeholder="Search..."
+                            value={quoteSearch}
+                            onChange={(e) => setQuoteSearch(e.target.value)}
+                          />
+                          <DataTable
+                            columns={assetsColumns}
+                            data={filteredQuotes}
+                            highlightOnHover
+                            pointerOnHover
+                            customStyles={{
+                              rows: {
+                                style: {
+                                  userSelect: "none",
+                                  "*": {
+                                    backgroundColor: "unset",
+                                    color: "unset",
+                                  },
+                                },
                               },
-                            },
-                          },
-                        }}
-                        conditionalRowStyles={conditionalRowStyles}
-                        onRowDoubleClicked={(row) => {
-                          const newDealButton =
-                            document.getElementById("newDealButton");
-                          let a = document.getElementById("newOrder");
+                            }}
+                            conditionalRowStyles={conditionalRowStyles}
+                            onRowDoubleClicked={(row) => {
+                              const newDealButton =
+                                document.getElementById("newDealButton");
+                              let a = document.getElementById("newOrder");
 
-                          a.style.display = "none";
-                          newDealButton.classList.remove("active");
-                          newDealButton.removeAttribute("style");
+                              a.style.display = "none";
+                              newDealButton.classList.remove("active");
+                              newDealButton.removeAttribute("style");
 
-                          // setTab("trade");
-                          openOrderPanel();
-                          let newOr = {
-                            ...orderData,
-                            symbol: { value: row, label: row },
-                          };
-                          setOrderData(newOr);
-                        }}
-                      />
+                              // setTab("trade");
+                              openOrderPanel();
+                              let newOr = {
+                                ...orderData,
+                                symbol: { value: row, label: row },
+                              };
+                              setOrderData(newOr);
+                            }}
+                          />
+                        </Tab>
+                        <Tab eventKey="currenciesTab" title="Currencies">
+                          <DataTable
+                            columns={assetsColumns}
+                            data={new Array(3).fill("")}
+                            highlightOnHover
+                            pointerOnHover
+                          />
+                        </Tab>
+                        <Tab eventKey="stocksTab" title="Stocks">
+                          <DataTable
+                            columns={assetsColumns}
+                            data={new Array(3).fill("")}
+                            highlightOnHover
+                            pointerOnHover
+                          />
+                        </Tab>
+                        <Tab eventKey="commoditiesTab" title="Commodities">
+                          <DataTable
+                            columns={assetsColumns}
+                            data={new Array(3).fill("")}
+                            highlightOnHover
+                            pointerOnHover
+                          />
+                        </Tab>
+                        <Tab
+                          eventKey="stocksTab"
+                          title={<FontAwesomeIcon icon={faAngleLeft} />}
+                          hidden={true}
+                        />
+                      </Tabs>
                       <div className="text-center">
                         <button
                           className="btn btn-success"
