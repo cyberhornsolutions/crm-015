@@ -428,25 +428,24 @@ export default function HomeRu() {
       sortable: true,
     },
     {
-      name: t(""),
+      name: t("Action"),
       selector: (row) =>
         row ? (
-          <div className="order-actions">
-            <div
-              className="custom-edit-icon"
+          <div className="">
+            <FontAwesomeIcon
+              icon={faEdit}
+              size="lg"
               onClick={() => handleEditModal(row)}
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </div>
-            <div
-              className="custom-delete-icon"
+            />
+            <FontAwesomeIcon
+              icon={faClose}
+              size="lg"
+              className="ms-3"
               onClick={() => {
                 setSelectedOrder(row);
                 handleDelModal();
               }}
-            >
-              <FontAwesomeIcon icon={faClose} />
-            </div>
+            />
           </div>
         ) : (
           ""
