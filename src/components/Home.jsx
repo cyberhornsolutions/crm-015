@@ -374,25 +374,25 @@ export default function HomeRu() {
       width: "200px",
     },
     {
-      name: t("status"),
-      selector: (row) =>
-        row ? (
+      name: "Additional parameters",
+      selector: (row) => {
+        const spread = row.sum / 100; // 1% of sum
+        const swap = 0.0;
+        const fee = spread;
+        const pledge = row.sum - spread - swap;
+        return row ? (
           <div
-            className={`order-column ${
-              row.status == "Success"
-                ? "greenText"
-                : row.status == "Closed"
-                ? "redText"
-                : "orangeText"
-            } `}
+            className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {row.status}
+            {`${pledge}/${spread}/${swap}/${fee}`}
           </div>
         ) : (
           ""
-        ),
+        );
+      },
       sortable: true,
+      width: "200px",
     },
     {
       name: "Sum",
