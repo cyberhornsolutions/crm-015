@@ -1038,11 +1038,13 @@ export default function HomeRu() {
                             pointerOnHover
                           />
                         </Tab>
-                        <Tab
-                          eventKey="stocksTab"
-                          title={<FontAwesomeIcon icon={faAngleLeft} />}
-                          hidden={true}
-                        />
+                        {assetsTab === "commoditiesTab" && (
+                          <Tab
+                            eventKey="stocksTab"
+                            title={<FontAwesomeIcon icon={faAngleLeft} />}
+                            hidden={true}
+                          />
+                        )}
                       </Tabs>
                       <div className="text-center">
                         <button
