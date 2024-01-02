@@ -207,7 +207,7 @@ export default function HomeRu() {
   const setOrders = useCallback((data) => {
     const mappedOrders = data.map((order) => ({
       ...order,
-      sltp: `${order?.sl || ""}/${order?.tp || ""}`,
+      sltp: `${order?.sl || ""} / ${order?.tp || ""}`,
     }));
     dispatch(setOrdersState(mappedOrders));
   });
@@ -385,7 +385,7 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {`${pledge}/${spread}/${swap}/${fee}`}
+            {`${pledge} / ${spread} / ${swap} / ${fee}`}
           </div>
         ) : (
           ""
