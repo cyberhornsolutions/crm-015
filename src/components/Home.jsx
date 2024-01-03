@@ -813,7 +813,18 @@ export default function HomeRu() {
 
   const freeMargin = calculateFreeMargin();
 
-  console.log("pending orders = ", pendingOrders);
+  const calculatePledge = () => {
+    let totalPledge = 0.0;
+    pendingOrders.forEach((el) => {
+      const spread = el.sum / 100; // 1% of sum
+      const swap = 0.0;
+      const pledge = el.sum - spread - swap;
+      totalPledge += pledge;
+    });
+    return +totalPledge;
+  };
+
+  const pledge = calculatePledge();
 
   return (
     <>
@@ -852,6 +863,17 @@ export default function HomeRu() {
                 className="balance-nums"
                 readOnly={true}
                 value={freeMargin.toFixed(6)}
+              />
+            </div>
+            <div className="balance-item">
+              <h2 className="balance-title" id="">
+                Pledge:
+              </h2>
+              <input
+                type="number"
+                className="balance-nums"
+                readOnly={true}
+                value={pledge.toFixed(6)}
               />
             </div>
             <div className="balance-item">
