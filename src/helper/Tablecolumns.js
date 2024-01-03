@@ -18,7 +18,7 @@ export const generalColumns = [
       row.closedDate && convertTimestamptToDate(row?.closedDate),
     grow: 1.5,
   },
-  { name: "Open price", selector: (row) => row?.symbolValue },
+  { name: "Open price", selector: (row) => row && +row?.symbolValue },
   { name: "Close price", selector: (row) => row?.closedPrice },
   { name: "TP", selector: (row) => row.tp },
   { name: "SL", selector: (row) => row.sl },

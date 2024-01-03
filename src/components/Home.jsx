@@ -271,6 +271,7 @@ export default function HomeRu() {
         ) : (
           ""
         ),
+      grow: 0.5,
     },
     {
       name: t("date"), // Translate the header using your t function
@@ -331,6 +332,7 @@ export default function HomeRu() {
           ""
         ),
       sortable: true,
+      compact: true,
     },
     {
       name: t("volume"),
@@ -355,7 +357,7 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {row.symbolValue}
+            {+row.symbolValue}
           </div>
         ) : (
           ""
@@ -1188,7 +1190,7 @@ export default function HomeRu() {
                             id="symbol-current-value"
                             name="symbolValue"
                             readOnly={true}
-                            value={orderData?.symbolValue}
+                            value={+orderData?.symbolValue}
                           />
                           <FontAwesomeIcon
                             className="ml-3"
