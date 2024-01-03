@@ -467,28 +467,43 @@ export default function HomeRu() {
   const assetsColumns = [
     {
       name: t("symbol"),
-      selector: (row) => <div>{row}</div>,
+      selector: (row) => row,
       sortable: true,
     },
     {
-      name: t("currentPrice"),
-      selector: (row) =>
-        dbSymbols.find((symbol) => symbol.symbol === row)?.price,
+      name: "Bid",
+      selector: (row) => {
+        if (!row) return;
+        const bidValue = dbSymbols.find(
+          (symbol) => symbol.symbol === row
+        )?.price;
+        return parseFloat(bidValue);
+      },
       sortable: true,
       compact: true,
     },
     {
-      name: "Delete",
-      selector: (row) =>
-        dbSymbols.find((symbol) => symbol.symbol === row)?.duplicate ? (
-          <FontAwesomeIcon
-            id="assetDeleteIcon"
-            icon={faClose}
-            onClick={() => handleDeleteAsset(row)}
-          />
-        ) : (
-          ""
-        ),
+      name: "Ask",
+      selector: (row) => {
+        if (!row) return;
+        const bidValue = dbSymbols.find(
+          (symbol) => symbol.symbol === row
+        )?.price;
+        const askValue = parseFloat(bidValue) + parseFloat(bidValue) / 100;
+        return (
+          <div className="row">
+            <div className="col">{askValue}</div>
+            <div className="col">
+              <FontAwesomeIcon
+                id="assetDeleteIcon"
+                icon={faClose}
+                onClick={() => handleDeleteAsset(row)}
+              />
+            </div>
+          </div>
+        );
+      },
+      sortable: true,
       compact: true,
     },
   ];
