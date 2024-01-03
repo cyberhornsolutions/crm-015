@@ -78,6 +78,7 @@ export default function HomeRu() {
   const [orderData, setOrderData] = useState({
     symbol: null,
     symbolValue: null,
+    volume: 0,
     sum: 0,
     sl: null,
     tp: null,
@@ -382,22 +383,24 @@ export default function HomeRu() {
     {
       name: "Additional parameters",
       selector: (row) => {
-        const spread = row.sum / 100; // 1% of sum
+        let spread = row.sum / 100; // 1% of sum
+        if (!Number.isInteger(spread)) spread = spread.toFixed(4);
         const swap = 0.0;
         const fee = spread;
-        const pledge = row.sum - spread - swap;
+        let pledge = row.sum - spread - swap;
+        if (!Number.isInteger(pledge)) pledge = pledge.toFixed(4);
         return row ? (
           <div
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {`${pledge} / ${spread} / ${swap} / ${fee}`}
+            {`${pledge} / ${spread} / ${swap} / ${+fee}`}
           </div>
         ) : (
           ""
         );
       },
-      grow: 1.5,
+      grow: 2.5,
       compact: true,
       sortable: true,
     },
@@ -630,8 +633,8 @@ export default function HomeRu() {
 
     // });
     const price = dbSymbols?.find((el) => el.symbol == orderData.symbol?.value);
-    console.log(808080, price);
-    let obj = { ...orderData, symbolValue: price?.price };
+    const sum = orderData.volume ? orderData.volume * price?.price : 0;
+    let obj = { ...orderData, symbolValue: price?.price, sum };
     setOrderData(obj);
   };
 
@@ -646,8 +649,8 @@ export default function HomeRu() {
       toastify("Trading is disabled for you.");
     } else if (!orderData?.symbol) {
       toastify("Symbol is missing.");
-    } else if (!orderData?.sum) {
-      toastify("Sum is missing.");
+    } else if (!orderData?.volume) {
+      toastify("Volume should be greater than 0.");
     } else if (orderData.sum > freeMargin) {
       // toastify("You have insufficient balance to buy this coin!");
       setMessageModal({
@@ -690,16 +693,17 @@ export default function HomeRu() {
           status: "Pending",
           profit: 0,
           symbol: orderData?.symbol.value,
-          volume: orderData.sum / orderData.symbolValue,
+          volume: orderData.volume,
+          sum: orderData.sum,
           createdAt: formattedDate,
           createdTime: serverTimestamp(),
         });
         toastify("Order added to Database", "success");
-        console.log("Order added to Database");
         setOrderData({
           symbol: null,
           symbolValue: null,
           volume: 0,
+          sum: 0,
           sl: null,
           tp: null,
         });
@@ -1223,19 +1227,42 @@ export default function HomeRu() {
                           />
                         </div>
 
-                        <label htmlFor="symbol-amount">Sum</label>
+                        <label htmlFor="symbol-amount">Volume</label>
                         <input
                           type="number"
+                          step={0.1}
                           id="symbol-amount"
                           name="volume"
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            let { value } = e.target;
+                            let volume, sum;
+                            if (!value || value < 0) {
+                              volume = "";
+                              sum = 0;
+                            } else {
+                              volume = value;
+                              sum = value * orderData.symbolValue;
+                            }
                             setOrderData((p) => ({
                               ...p,
-                              sum: parseFloat(e.target.value),
-                            }))
-                          }
-                          value={orderData.sum}
+                              volume,
+                              sum,
+                            }));
+                          }}
+                          value={orderData.volume}
                         />
+                        <label className="mt-1">
+                          Total: {orderData.sum} USDT
+                        </label>
+                        <label htmlFor="symbol-current-value">Open Price</label>
+                        <input
+                          type="number"
+                          id="symbol-current-value"
+                          name="symbolValue"
+                          readOnly={true}
+                          value={+orderData?.symbolValue}
+                        />
+
                         <label htmlFor="stop-loss">SL</label>
                         <input
                           type="number"
