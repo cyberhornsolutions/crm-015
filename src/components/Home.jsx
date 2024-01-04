@@ -496,15 +496,13 @@ export default function HomeRu() {
         )?.price;
         const askValue = parseFloat(bidValue) + parseFloat(bidValue) / 100;
         return (
-          <div className="row">
-            <div className="col">{askValue}</div>
-            <div className="col">
-              <FontAwesomeIcon
-                id="assetDeleteIcon"
-                icon={faClose}
-                onClick={() => handleDeleteAsset(row)}
-              />
-            </div>
+          <div className="d-flex align-items-center justify-content-between me-2">
+            {askValue}
+            <FontAwesomeIcon
+              id="assetDeleteIcon"
+              icon={faClose}
+              onClick={() => handleDeleteAsset(row)}
+            />
           </div>
         );
       },
