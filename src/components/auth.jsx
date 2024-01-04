@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
@@ -94,7 +94,7 @@ export default function Auth() {
             email: user.email,
             totalBalance: 100,
             status: "New",
-            createdAt: formattedDate,
+            createdAt: serverTimestamp(),
             refCode: generateRandomCode(8),
             useRefCode: referralCode,
             onlineStatus: false,
