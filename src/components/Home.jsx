@@ -62,7 +62,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
 import { setOrdersState } from "../redux/slicer/orderSlicer.js";
 import AddTradingSymbolModal from "./AddTradingSymbolModal.jsx";
-import { convertTimestamptToDate } from "../helper/helpers.js";
+import {
+  convertTimestamptToDate,
+  fillArrayWithEmptyRows,
+  getAskValue,
+  getBidValue,
+} from "../helper/helpers.js";
 
 // import rd3 from "react-d3-library";
 // const BarChart = rd3.BarChart;
@@ -405,19 +410,22 @@ export default function HomeRu() {
       sortable: true,
     },
     {
-      name: "Sum",
+      name: "Current Price",
       selector: (row) =>
         row ? (
           <div
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {row.sum}
+            {row.type === "Buy"
+              ? getBidValue(row.currentPrice)
+              : getAskValue(row.currentPrice)}
           </div>
         ) : (
           ""
         ),
       sortable: true,
+      compact: true,
     },
     {
       name: t("profit"),
@@ -479,10 +487,10 @@ export default function HomeRu() {
       name: "Bid",
       selector: (row) => {
         if (!row) return;
-        const bidValue = dbSymbols.find(
+        const currentPrice = dbSymbols.find(
           (symbol) => symbol.symbol === row
         )?.price;
-        return parseFloat(bidValue);
+        return currentPrice ? getBidValue(currentPrice) : 0.0;
       },
       sortable: true,
       compact: true,
@@ -491,23 +499,26 @@ export default function HomeRu() {
       name: "Ask",
       selector: (row) => {
         if (!row) return;
-        const bidValue = dbSymbols.find(
+        const currentPrice = dbSymbols.find(
           (symbol) => symbol.symbol === row
         )?.price;
-        const askValue = parseFloat(bidValue) + parseFloat(bidValue) / 100;
-        return (
-          <div className="d-flex align-items-center justify-content-between me-2">
-            {askValue}
-            <FontAwesomeIcon
-              id="assetDeleteIcon"
-              icon={faClose}
-              onClick={() => handleDeleteAsset(row)}
-            />
-          </div>
-        );
+        return currentPrice ? getAskValue(currentPrice) : "";
       },
       sortable: true,
       compact: true,
+    },
+    {
+      name: "",
+      selector: (row) =>
+        row && (
+          <FontAwesomeIcon
+            id="assetDeleteIcon"
+            icon={faClose}
+            onClick={() => handleDeleteAsset(row)}
+          />
+        ),
+      compact: true,
+      grow: 0.5,
     },
   ];
   const conditionalRowStyles = [
@@ -784,7 +795,13 @@ export default function HomeRu() {
   //   }
   // };
 
-  const pendingOrders = orders.filter((order) => order.status === "Pending");
+  const pendingOrders = orders
+    .filter((order) => order.status === "Pending")
+    .map((order) => ({
+      ...order,
+      currentPrice: dbSymbols.find((symbol) => symbol.symbol === order.symbol)
+        ?.price,
+    }));
 
   const calculateProfit = () => {
     let totalProfit = 0.0;
@@ -806,8 +823,7 @@ export default function HomeRu() {
   const calculateFreeMargin = () => {
     let freeMarginOpened = balance;
     pendingOrders.forEach((el) => {
-      const latestPrice = dbSymbols?.find((sym) => sym.symbol == el.symbol);
-      const dealSum = parseFloat(el.volume) * parseFloat(latestPrice?.price);
+      const dealSum = parseFloat(el.volume) * parseFloat(el?.currentPrice);
       freeMarginOpened -= parseFloat(dealSum);
     });
     return freeMarginOpened < 0 ? 0.0 : freeMarginOpened;
@@ -999,7 +1015,6 @@ export default function HomeRu() {
                 {tab === "assets" && (
                   <div id="assets">
                     <div className="tradingWidget h-100">
-                      <h5>Quotes</h5>
                       <Tabs
                         activeKey={assetsTab}
                         onSelect={(k) => setAssetsTab(k)}
@@ -1021,7 +1036,7 @@ export default function HomeRu() {
                           />
                           <DataTable
                             columns={assetsColumns}
-                            data={filteredQuotes}
+                            data={fillArrayWithEmptyRows(filteredQuotes, 10)}
                             highlightOnHover
                             pointerOnHover
                             customStyles={{
@@ -1058,7 +1073,7 @@ export default function HomeRu() {
                         <Tab eventKey="currenciesTab" title="Currencies">
                           <DataTable
                             columns={assetsColumns}
-                            data={new Array(3).fill("")}
+                            data={fillArrayWithEmptyRows([], 10)}
                             highlightOnHover
                             pointerOnHover
                           />
@@ -1066,7 +1081,7 @@ export default function HomeRu() {
                         <Tab eventKey="stocksTab" title="Stocks">
                           <DataTable
                             columns={assetsColumns}
-                            data={new Array(3).fill("")}
+                            data={fillArrayWithEmptyRows([], 10)}
                             highlightOnHover
                             pointerOnHover
                           />
@@ -1074,7 +1089,7 @@ export default function HomeRu() {
                         <Tab eventKey="commoditiesTab" title="Commodities">
                           <DataTable
                             columns={assetsColumns}
-                            data={new Array(3).fill("")}
+                            data={fillArrayWithEmptyRows([], 10)}
                             highlightOnHover
                             pointerOnHover
                           />
@@ -1353,11 +1368,7 @@ export default function HomeRu() {
                     <Tab eventKey="activeTab" title="Active">
                       <DataTable
                         columns={columns}
-                        data={pendingOrders.concat(
-                          pendingOrders.length < 3
-                            ? new Array(3 - pendingOrders.length).fill("")
-                            : []
-                        )}
+                        data={fillArrayWithEmptyRows(pendingOrders, 3)}
                         pagination
                         paginationPerPage={5}
                         paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
@@ -1370,7 +1381,9 @@ export default function HomeRu() {
                     </Tab>
                     <Tab eventKey="delayedTab" title="Delayed">
                       <DataTable
-                        columns={columns}
+                        columns={columns.filter(
+                          ({ name }) => name !== "Profit"
+                        )}
                         data={new Array(3).fill("")}
                         pagination
                         paginationPerPage={5}

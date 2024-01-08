@@ -11,7 +11,10 @@ import {
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { getDepositsByUser } from "../helper/firebaseHelpers";
-import { convertTimestamptToDate } from "../helper/helpers";
+import {
+  convertTimestamptToDate,
+  fillArrayWithEmptyRows,
+} from "../helper/helpers";
 
 function ReportTabs({ userId, onClose }) {
   const orders = useSelector((state) => state.orders);
@@ -95,7 +98,7 @@ function ReportTabs({ userId, onClose }) {
     filteredDeposits = dataCreatedToday;
   }
 
-  const pendingOrders = filteredOrders.filter(
+  const closedOrders = filteredOrders.filter(
     (order) => order.status != "Pending"
   );
 
@@ -113,11 +116,7 @@ function ReportTabs({ userId, onClose }) {
       >
         <DataTable
           columns={generalColumns}
-          data={pendingOrders.concat(
-            pendingOrders.length < 5
-              ? new Array(5 - pendingOrders.length).fill("")
-              : []
-          )}
+          data={fillArrayWithEmptyRows(closedOrders)}
           customStyles={customStyle}
           pagination
           theme="dark"

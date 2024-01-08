@@ -17,6 +17,13 @@ export const convertTimestamptToDate = (date) => {
   return moment(jsDate).format("MM/DD/YYYY hh:mm:ss A");
 };
 
+export const fillArrayWithEmptyRows = (arr, size) =>
+  arr.concat(arr.length < size ? new Array(size - arr.length).fill("") : []);
+
+export const getBidValue = (val) => parseFloat(val * 0.99).toFixed(6);
+
+export const getAskValue = (val) => (+val + val / 100).toFixed(6);
+
 export const newFormulaForProfit = (
   sl,
   tp,
