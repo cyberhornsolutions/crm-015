@@ -668,24 +668,25 @@ export default function HomeRu() {
         message: "Insufficient Balance",
       });
     } else if (
+      (orderData.sl && !orderData.tp) ||
+      (!orderData.sl && orderData.tp)
+    ) {
+      toast.error("Make sure to fill both SL & TP values");
+    } else if (
       type == "Buy" &&
-      orderData.sl &&
-      orderData.tp &&
-      (orderData.sl >= orderData.symbolValue ||
-        orderData.tp <= orderData.symbolValue)
+      (orderData.sl > getBidValue(orderData.symbolValue) ||
+        orderData.tp < orderData.symbolValue)
     ) {
       toast.error(
-        "Make sure that the sl is less than current value and tp is greater than current value buy"
+        "To Buy SL should be less than the bid value and TP should be greater than the current value"
       );
     } else if (
       type == "Sell" &&
-      orderData.sl &&
-      orderData.tp &&
-      (orderData.sl <= orderData.symbolValue ||
-        orderData.tp >= orderData.symbolValue)
+      (orderData.sl < getAskValue(orderData.symbolValue) ||
+        orderData.tp > orderData.symbolValue)
     ) {
       toast.error(
-        "Make sure that the sl is greater than current value and tp is less than current value sell"
+        "To Sell SL should be greater than the ask value and TP should be less than the current value"
       );
     } else {
       const user = auth.currentUser;
@@ -823,7 +824,11 @@ export default function HomeRu() {
   const calculateFreeMargin = () => {
     let freeMarginOpened = balance;
     pendingOrders.forEach((el) => {
-      const dealSum = parseFloat(el.volume) * parseFloat(el?.currentPrice);
+      const orderPrice =
+        el.type === "Buy"
+          ? getBidValue(el.currentPrice)
+          : getAskValue(el.currentPrice);
+      const dealSum = parseFloat(el.volume) * orderPrice;
       freeMarginOpened -= parseFloat(dealSum);
     });
     return freeMarginOpened < 0 ? 0.0 : freeMarginOpened;

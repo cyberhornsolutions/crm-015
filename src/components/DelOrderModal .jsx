@@ -10,7 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import { calculateProfit } from "../helper/helpers";
+import { calculateProfit, getAskValue, getBidValue } from "../helper/helpers";
 import { toast } from "react-toastify";
 
 const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
@@ -18,7 +18,10 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
   const [volume, setVolume] = useState(selectedOrder.volume);
   const [isLoading, setIsLoading] = useState(false);
 
-  const price = symbols?.find((el) => el.symbol == selectedOrder?.symbol);
+  const closedPrice =
+    selectedOrder.type === "Buy"
+      ? getBidValue(selectedOrder?.currentPrice)
+      : getAskValue(selectedOrder?.currentPrice);
 
   const updateOrderStatus = async (orderId, newStatus, newVolume) => {
     const orderRef = doc(db, "orders", orderId);
@@ -26,7 +29,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
 
     const profit = calculateProfit(
       selectedOrder.type,
-      price?.price,
+      closedPrice,
       selectedOrder?.symbolValue,
       selectedOrder?.volume
     );
@@ -34,13 +37,13 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
     const newData = {
       status: newStatus,
       closedDate: serverTimestamp(),
-      closedPrice: price?.price,
-      profit: profit,
+      closedPrice,
+      profit,
     };
 
     if (newVolume) {
       newData.volume = newVolume;
-      newData.sum = newVolume * selectedOrder.symbolValue;
+      newData.sum = newVolume * closedPrice;
     }
 
     if (docSnapshot.exists()) {
@@ -85,7 +88,10 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
 
   const newOrder = async () => {
     if (isPartial) {
-      if (parseFloat(volume) >= parseFloat(selectedOrder.volume)) {
+      if (
+        parseFloat(volume) <= 0 ||
+        parseFloat(volume) >= parseFloat(selectedOrder.volume)
+      ) {
         toast.error(
           "Please add a volume which is less than the current volume"
         );
@@ -94,7 +100,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
         try {
           await createNewOrder();
           await updateOrderStatus(selectedOrder.id, "Closed", volume);
-          const orderPrice = volume * selectedOrder.symbolValue;
+          const orderPrice = volume * closedPrice;
           await updateUserBalance(orderPrice);
           onClose();
         } catch (error) {
@@ -107,7 +113,8 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
       setIsLoading(true);
       try {
         await updateOrderStatus(selectedOrder.id, "Closed");
-        await updateUserBalance(selectedOrder.sum);
+        const orderPrice = volume * closedPrice;
+        await updateUserBalance(orderPrice);
         onClose();
       } catch (error) {
         console.log(error);
@@ -194,7 +201,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder, symbols }) => {
           )}
           <div className="ps-3 fs-5">
             Current Price:{" "}
-            <span className={`ms-2 text-success`}>{price?.price}</span>
+            <span className={`ms-2 text-success`}>{closedPrice}</span>
           </div>
           <div className="w-100 text-center my-2">
             <button
