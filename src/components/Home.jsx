@@ -104,6 +104,8 @@ export default function HomeRu() {
   const [currentUserId, setCurrentUserId] = useState("");
   const [selectedOrder, setSelectedOrder] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [enableOpenPrice, setEnableOpenPrice] = useState(false);
+  const [openPriceValue, setOpenPriceValue] = useState();
   const [isTradingModal, setIsTradingModal] = useState(false);
   const [bQuotes, setBQuotes] = useState([]);
   const [userProfile, setUserProfile] = useState({
@@ -1228,7 +1230,7 @@ export default function HomeRu() {
                           selectedValue={orderData.symbol}
                         />
                         <label htmlFor="symbol-current-value">Price</label>
-                        <div className="gap-2">
+                        <div className="d-flex align-items-center gap-3">
                           <input
                             type="number"
                             id="symbol-current-value"
@@ -1237,7 +1239,6 @@ export default function HomeRu() {
                             value={+orderData?.symbolValue}
                           />
                           <FontAwesomeIcon
-                            className="ml-3"
                             onClick={() => {
                               refreshPrice();
                             }}
@@ -1273,13 +1274,33 @@ export default function HomeRu() {
                           Total: {orderData.sum} USDT
                         </label>
                         <label htmlFor="symbol-current-value">Open Price</label>
-                        <input
-                          type="number"
-                          id="symbol-current-value"
-                          name="symbolValue"
-                          readOnly={true}
-                          value={+orderData?.symbolValue}
-                        />
+                        <div className="d-flex align-items-center gap-3">
+                          <input
+                            type="number"
+                            id="symbol-current-value"
+                            name="symbolValue"
+                            readOnly={!enableOpenPrice}
+                            disabled={!enableOpenPrice}
+                            className={!enableOpenPrice && "disabled"}
+                            value={
+                              enableOpenPrice
+                                ? openPriceValue
+                                : +orderData?.symbolValue
+                            }
+                            onChange={(e) => {
+                              console.log("value = ", e.target.value);
+                              setOpenPriceValue(e.target.value);
+                            }}
+                          />
+                          <input
+                            // className="form-check-input"
+                            type="checkbox"
+                            checked={enableOpenPrice}
+                            onChange={(e) =>
+                              setEnableOpenPrice(e.target.checked)
+                            }
+                          />
+                        </div>
 
                         <label htmlFor="stop-loss">SL</label>
                         <input
