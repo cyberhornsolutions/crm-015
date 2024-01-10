@@ -241,3 +241,35 @@ export const getDepositsByUser = (userId, setState) => {
     console.error("Error:", error);
   }
 };
+
+export const getAllBonus = (userId, setState) => {
+  try {
+    const depositsRef = collection(db, "deposits");
+    const userDepositsQuery = query(
+      depositsRef,
+      where("userId", "==", userId),
+      where("type", "==", "Bonus")
+    );
+
+    const unsubscribe = onSnapshot(
+      userDepositsQuery,
+      (snapshot) => {
+        const depositsData = [];
+        snapshot.forEach((doc) => {
+          depositsData.push({ id: doc.id, ...doc.data() });
+        });
+        const allBonus = depositsData.reduce(
+          (p, v) => p + parseFloat(v.sum),
+          0
+        );
+        setState(allBonus);
+      },
+      (error) => {
+        console.error("Error fetching data:", error);
+      }
+    );
+    return () => unsubscribe();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};

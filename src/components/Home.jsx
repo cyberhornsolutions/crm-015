@@ -54,6 +54,7 @@ import {
   fetchAllOrdersByUserId,
   getAllSymbols,
   addQuotesToUser,
+  getAllBonus,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import MyBarChart from "./BarChart.js";
@@ -101,6 +102,7 @@ export default function HomeRu() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState("");
+  const [allBonus, setAllBonus] = useState(0.0);
   const [selectedOrder, setSelectedOrder] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [enableOpenPrice, setEnableOpenPrice] = useState(false);
@@ -235,9 +237,11 @@ export default function HomeRu() {
       auth.currentUser.uid,
       setOrders
     );
+    const unsubAllBonus = getAllBonus(auth.currentUser.uid, setAllBonus);
 
     return () => {
       unsubUserData();
+      unsubAllBonus();
       if (unsubOrderData) unsubOrderData();
     };
   }, [currentUserId]);
@@ -852,6 +856,7 @@ export default function HomeRu() {
 
   const balance =
     parseFloat(userProfile?.totalBalance) + parseFloat(userProfit) || 0.0;
+  const equity = balance - allBonus || 0.0;
 
   const calculateFreeMargin = () => {
     let freeMarginOpened = balance;
@@ -918,6 +923,28 @@ export default function HomeRu() {
                 className="balance-nums"
                 readOnly={true}
                 value={freeMargin.toFixed(6)}
+              />
+            </div>
+            <div className="balance-item">
+              <h2 className="balance-title" id="">
+                Equity:
+              </h2>
+              <input
+                type="number"
+                className="balance-nums"
+                readOnly={true}
+                value={equity.toFixed(6)}
+              />
+            </div>
+            <div className="balance-item">
+              <h2 className="balance-title" id="">
+                Bonus:
+              </h2>
+              <input
+                type="number"
+                className="balance-nums"
+                readOnly={true}
+                value={allBonus.toFixed(6)}
               />
             </div>
             <div className="balance-item">
