@@ -84,7 +84,6 @@ export default function HomeRu() {
     symbol: null,
     symbolValue: null,
     volume: 0,
-    sum: 0,
     sl: null,
     tp: null,
   });
@@ -644,10 +643,26 @@ export default function HomeRu() {
 
     // });
     const price = dbSymbols?.find((el) => el.symbol == orderData.symbol?.value);
-    const sum = orderData.volume ? orderData.volume * price?.price : 0;
-    let obj = { ...orderData, symbolValue: price?.price, sum };
-    setOrderData(obj);
+    setOrderData({ ...orderData, symbolValue: price?.price });
   };
+
+  const calculateSum = () => {
+    let sum = 0.0;
+    if (orderData.symbol) {
+      const { price } = dbSymbols?.find(
+        (el) => el.symbol == orderData.symbol.value
+      );
+      if (orderData.volume) {
+        if (enableOpenPrice) {
+          sum = orderData.volume * openPriceValue;
+        } else {
+          sum = orderData.volume * price;
+        }
+      }
+    }
+    return sum;
+  };
+  const calculatedSum = calculateSum();
 
   const placeOrder = async (e, type) => {
     e.preventDefault();
@@ -662,7 +677,7 @@ export default function HomeRu() {
       toastify("Symbol is missing.");
     } else if (!orderData?.volume) {
       toastify("Volume should be greater than 0.");
-    } else if (orderData.sum > freeMargin) {
+    } else if (calculatedSum > freeMargin) {
       // toastify("You have insufficient balance to buy this coin!");
       setMessageModal({
         show: true,
@@ -676,6 +691,7 @@ export default function HomeRu() {
       toast.error("Make sure to fill both SL & TP values");
     } else if (
       type == "Buy" &&
+      orderData.sl &&
       (orderData.sl > getBidValue(orderData.symbolValue) ||
         orderData.tp < orderData.symbolValue)
     ) {
@@ -684,6 +700,7 @@ export default function HomeRu() {
       );
     } else if (
       type == "Sell" &&
+      orderData.sl &&
       (orderData.sl < getAskValue(orderData.symbolValue) ||
         orderData.tp > orderData.symbolValue)
     ) {
@@ -706,7 +723,9 @@ export default function HomeRu() {
           profit: 0,
           symbol: orderData?.symbol.value,
           volume: orderData.volume,
-          sum: orderData.sum,
+          sum: calculatedSum,
+          enableOpenPrice,
+          openPriceValue,
           createdAt: formattedDate,
           createdTime: serverTimestamp(),
         });
@@ -715,7 +734,6 @@ export default function HomeRu() {
           symbol: null,
           symbolValue: null,
           volume: 0,
-          sum: 0,
           sl: null,
           tp: null,
         });
@@ -800,11 +818,23 @@ export default function HomeRu() {
 
   const pendingOrders = orders
     .filter((order) => order.status === "Pending")
-    .map((order) => ({
-      ...order,
-      currentPrice: dbSymbols.find((symbol) => symbol.symbol === order.symbol)
-        ?.price,
-    }));
+    .map((order) => {
+      const currentPrice = dbSymbols.find(
+        (symbol) => symbol.symbol === order.symbol
+      )?.price;
+      let enableOpenPrice = false;
+      if (order.enableOpenPrice && order.openPriceValue !== currentPrice) {
+        enableOpenPrice = true;
+      }
+      return {
+        ...order,
+        currentPrice,
+        enableOpenPrice,
+      };
+    });
+
+  const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
+  const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
 
   const calculateProfit = () => {
     let totalProfit = 0.0;
@@ -1265,20 +1295,17 @@ export default function HomeRu() {
                             setOrderData((p) => ({
                               ...p,
                               volume,
-                              sum,
                             }));
                           }}
                           value={orderData.volume}
                         />
                         <label className="mt-1">
-                          Total: {orderData.sum} USDT
+                          Total: {calculatedSum.toFixed(6)} USDT
                         </label>
                         <label htmlFor="symbol-current-value">Open Price</label>
                         <div className="d-flex align-items-center gap-3">
                           <input
                             type="number"
-                            id="symbol-current-value"
-                            name="symbolValue"
                             readOnly={!enableOpenPrice}
                             disabled={!enableOpenPrice}
                             className={!enableOpenPrice && "disabled"}
@@ -1287,18 +1314,18 @@ export default function HomeRu() {
                                 ? openPriceValue
                                 : +orderData?.symbolValue
                             }
-                            onChange={(e) => {
-                              console.log("value = ", e.target.value);
-                              setOpenPriceValue(e.target.value);
-                            }}
+                            onChange={(e) => setOpenPriceValue(e.target.value)}
                           />
                           <input
                             // className="form-check-input"
                             type="checkbox"
                             checked={enableOpenPrice}
-                            onChange={(e) =>
-                              setEnableOpenPrice(e.target.checked)
-                            }
+                            onChange={(e) => {
+                              setOpenPriceValue(
+                                parseFloat(orderData.symbolValue)
+                              );
+                              setEnableOpenPrice(e.target.checked);
+                            }}
                           />
                         </div>
 
@@ -1394,7 +1421,7 @@ export default function HomeRu() {
                     <Tab eventKey="activeTab" title="Active">
                       <DataTable
                         columns={columns}
-                        data={fillArrayWithEmptyRows(pendingOrders, 3)}
+                        data={fillArrayWithEmptyRows(activeOrders, 3)}
                         pagination
                         paginationPerPage={5}
                         paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
@@ -1410,7 +1437,7 @@ export default function HomeRu() {
                         columns={columns.filter(
                           ({ name }) => name !== "Profit"
                         )}
-                        data={new Array(3).fill("")}
+                        data={fillArrayWithEmptyRows(delayedOrders, 3)}
                         pagination
                         paginationPerPage={5}
                         paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
