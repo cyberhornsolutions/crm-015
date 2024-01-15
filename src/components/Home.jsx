@@ -857,7 +857,7 @@ export default function HomeRu() {
 
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance);
-    if (userProfile) balance += parseFloat(userProfit);
+    if (userProfit) balance += parseFloat(userProfit);
     if (allowBonus) balance += parseFloat(userProfile?.bonus);
     return balance;
   };
