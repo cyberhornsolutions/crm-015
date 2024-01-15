@@ -1,35 +1,37 @@
 // Example: EditModal.js
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { Modal } from "react-bootstrap";
 import { db } from "../firebase";
 import { toast } from "react-toastify";
+import { getAskValue, getBidValue } from "../helper/helpers";
 
 const EditOrderModal = ({ onClose, show, selectedOrder }) => {
-  const symbols = useSelector((state) => state?.symbols?.symbols);
-  const currentPrice = symbols.find((el) => el.symbol == selectedOrder?.symbol);
   const [newSl, setNewSl] = useState(selectedOrder?.sl);
   const [newTp, setNewTp] = useState(selectedOrder?.tp);
 
   const updateOrder = async () => {
     try {
       const orderId = selectedOrder?.id;
-      if (
+      if (!newSl || !newTp) {
+        toast.error("Make sure to fill both SL & TP values");
+      } else if (
         selectedOrder.type == "Buy" &&
-        (newSl >= selectedOrder.symbolValue ||
-          newTp <= selectedOrder.symbolValue)
+        (newSl >=
+          getBidValue(selectedOrder.currentPrice, selectedOrder.bidSpread) ||
+          newTp <= selectedOrder.currentPrice)
       ) {
         toast.error(
-          "Make sure that the sl is less than current value and tp is greater than current value buy"
+          "To Buy SL should be less than the bid value and TP should be greater than the current value"
         );
       } else if (
         selectedOrder.type == "Sell" &&
-        (newSl <= selectedOrder.symbolValue ||
-          newTp >= selectedOrder.symbolValue)
+        (newSl <=
+          getAskValue(selectedOrder.symbolValue, selectedOrder.askSpread) ||
+          newTp >= selectedOrder.currentPrice)
       ) {
         toast.error(
-          "Make sure that the sl is greater than current value and tp is less than current value sell"
+          "To Sell SL should be greater than the ask value and TP should be less than the current value"
         );
       } else {
         const orderRef = doc(db, "orders", orderId);
@@ -77,7 +79,7 @@ const EditOrderModal = ({ onClose, show, selectedOrder }) => {
                 id="flexRadioDefault1"
               /> */}
               <label className="form-check-label" for="flexRadioDefault1">
-                Stop loss:
+                Stop Loss:
               </label>
             </div>
 
@@ -134,7 +136,9 @@ const EditOrderModal = ({ onClose, show, selectedOrder }) => {
           </div>
           <div className="fs-4">
             Current market Price:
-            <span className="ms-2  text-success">{currentPrice?.price}</span>
+            <span className="ms-2  text-success">
+              {parseFloat(selectedOrder.currentPrice).toFixed(6)}
+            </span>
           </div>
           <div className="w-100 text-center my-2">
             <button

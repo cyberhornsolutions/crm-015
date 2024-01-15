@@ -672,8 +672,6 @@ export default function HomeRu() {
 
     const form = document.getElementById("newOrderForm");
 
-    // console.log({ form, orderData });
-    // Create a formatted date string
     const formattedDate = new Date().toLocaleDateString("en-US");
     if (!userProfile?.allowTrading) {
       toastify("Trading is disabled for you.");
@@ -695,16 +693,14 @@ export default function HomeRu() {
       toast.error("Make sure to fill both SL & TP values");
     } else if (
       type == "Buy" &&
-      orderData.sl &&
-      (orderData.sl > bidValue || orderData.tp < orderData.symbolValue)
+      (orderData.sl >= bidValue || orderData.tp <= orderData.symbolValue)
     ) {
       toast.error(
         "To Buy SL should be less than the bid value and TP should be greater than the current value"
       );
     } else if (
       type == "Sell" &&
-      orderData.sl &&
-      (orderData.sl < askValue || orderData.tp > orderData.symbolValue)
+      (orderData.sl <= askValue || orderData.tp >= orderData.symbolValue)
     ) {
       toast.error(
         "To Sell SL should be greater than the ask value and TP should be less than the current value"
@@ -858,7 +854,7 @@ export default function HomeRu() {
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance);
     if (userProfit) balance += parseFloat(userProfit);
-    if (allowBonus) balance += parseFloat(userProfile?.bonus);
+    if (allowBonus) balance += allBonus;
     return balance;
   };
 
@@ -894,7 +890,7 @@ export default function HomeRu() {
 
   const calculateEquity = () => {
     let equity = freeMargin + pledge;
-    if (allowBonus) equity += userProfile?.bonus;
+    if (allowBonus) equity -= allBonus;
     return equity;
   };
 
