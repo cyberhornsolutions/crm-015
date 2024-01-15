@@ -853,13 +853,19 @@ export default function HomeRu() {
     return totalProfit;
   };
   const userProfit = calculateProfit();
+  const allowBonus = userProfile?.settings?.allowBonus;
 
-  const balance =
-    parseFloat(userProfile?.totalBalance) + parseFloat(userProfit) || 0.0;
-  const equity = balance - allBonus || 0.0;
+  const calculateTotalBalance = () => {
+    let balance = parseFloat(userProfile?.totalBalance);
+    if (userProfile) balance += parseFloat(userProfit);
+    if (allowBonus) balance += parseFloat(userProfile?.bonus);
+    return balance;
+  };
+
+  const totalBalance = calculateTotalBalance();
 
   const calculateFreeMargin = () => {
-    let freeMarginOpened = balance;
+    let freeMarginOpened = totalBalance;
     pendingOrders.forEach((el) => {
       const orderPrice =
         el.type === "Buy"
@@ -886,6 +892,14 @@ export default function HomeRu() {
 
   const pledge = calculatePledge();
 
+  const calculateEquity = () => {
+    let equity = freeMargin + pledge;
+    if (allowBonus) equity += userProfile?.bonus;
+    return equity;
+  };
+
+  const equity = calculateEquity();
+
   return (
     <>
       {/* <div>
@@ -909,7 +923,7 @@ export default function HomeRu() {
                 type="number"
                 className="balance-nums"
                 readOnly={true}
-                value={balance < 0 ? 0.0 : balance.toFixed(6)}
+                value={totalBalance < 0 ? 0.0 : totalBalance.toFixed(6)}
               />
             </div>
             <div className="balance-item">
