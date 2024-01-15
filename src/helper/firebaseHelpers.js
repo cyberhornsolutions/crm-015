@@ -191,9 +191,12 @@ export const getAllSymbols = (setState, setLoading) => {
               ? [
                   s,
                   ...s.duplicates.map((m) => ({
+                    symbolId: s.id,
                     symbol: m,
                     price: s.price,
                     duplicate: s.symbol,
+                    bidSpread: s.bidSpread,
+                    askSpread: s.askSpread,
                   })),
                 ]
               : s;

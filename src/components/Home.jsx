@@ -106,7 +106,7 @@ export default function HomeRu() {
   const [selectedOrder, setSelectedOrder] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [enableOpenPrice, setEnableOpenPrice] = useState(false);
-  const [openPriceValue, setOpenPriceValue] = useState();
+  const [openPriceValue, setOpenPriceValue] = useState(null);
   const [isTradingModal, setIsTradingModal] = useState(false);
   const [bQuotes, setBQuotes] = useState([]);
   const [userProfile, setUserProfile] = useState({
@@ -423,8 +423,8 @@ export default function HomeRu() {
             onDoubleClick={() => handleEditModal(row)}
           >
             {row.type === "Buy"
-              ? getBidValue(row.currentPrice)
-              : getAskValue(row.currentPrice)}
+              ? getBidValue(row.currentPrice, row.bidSpread)
+              : getAskValue(row.currentPrice, row.askSpread)}
           </div>
         ) : (
           ""
@@ -492,10 +492,8 @@ export default function HomeRu() {
       name: "Bid",
       selector: (row) => {
         if (!row) return;
-        const currentPrice = dbSymbols.find(
-          (symbol) => symbol.symbol === row
-        )?.price;
-        return currentPrice ? getBidValue(currentPrice) : 0.0;
+        const symbol = dbSymbols.find((symbol) => symbol.symbol === row);
+        return symbol ? getBidValue(symbol.price, symbol.bidSpread) : "";
       },
       sortable: true,
       compact: true,
@@ -504,10 +502,8 @@ export default function HomeRu() {
       name: "Ask",
       selector: (row) => {
         if (!row) return;
-        const currentPrice = dbSymbols.find(
-          (symbol) => symbol.symbol === row
-        )?.price;
-        return currentPrice ? getAskValue(currentPrice) : "";
+        const symbol = dbSymbols.find((symbol) => symbol.symbol === row);
+        return symbol ? getAskValue(symbol.price, symbol.askSpread) : "";
       },
       sortable: true,
       compact: true,
@@ -670,6 +666,10 @@ export default function HomeRu() {
 
   const placeOrder = async (e, type) => {
     e.preventDefault();
+    const symbol = dbSymbols.find((el) => el.symbol == orderData?.symbol.value);
+    const bidValue = getBidValue(orderData.symbolValue, symbol?.bidSpread);
+    const askValue = getAskValue(orderData.symbolValue, symbol?.askSpread);
+
     const form = document.getElementById("newOrderForm");
 
     // console.log({ form, orderData });
@@ -696,8 +696,7 @@ export default function HomeRu() {
     } else if (
       type == "Buy" &&
       orderData.sl &&
-      (orderData.sl > getBidValue(orderData.symbolValue) ||
-        orderData.tp < orderData.symbolValue)
+      (orderData.sl > bidValue || orderData.tp < orderData.symbolValue)
     ) {
       toast.error(
         "To Buy SL should be less than the bid value and TP should be greater than the current value"
@@ -705,8 +704,7 @@ export default function HomeRu() {
     } else if (
       type == "Sell" &&
       orderData.sl &&
-      (orderData.sl < getAskValue(orderData.symbolValue) ||
-        orderData.tp > orderData.symbolValue)
+      (orderData.sl < askValue || orderData.tp > orderData.symbolValue)
     ) {
       toast.error(
         "To Sell SL should be greater than the ask value and TP should be less than the current value"
@@ -717,22 +715,24 @@ export default function HomeRu() {
 
       const ordersCollectionRef = collection(db, "orders");
 
+      const payload = {
+        ...orderData,
+        userId,
+        type,
+        status: "Pending",
+        profit: 0,
+        symbol: orderData?.symbol.value,
+        volume: orderData.volume,
+        sum: calculatedSum,
+        enableOpenPrice,
+        createdAt: formattedDate,
+        createdTime: serverTimestamp(),
+      };
+
+      if (enableOpenPrice) payload.openPriceValue = openPriceValue;
+
       try {
-        // Write the order data to Firestore as a new document
-        await addDoc(ordersCollectionRef, {
-          ...orderData,
-          userId,
-          type,
-          status: "Pending",
-          profit: 0,
-          symbol: orderData?.symbol.value,
-          volume: orderData.volume,
-          sum: calculatedSum,
-          enableOpenPrice,
-          openPriceValue,
-          createdAt: formattedDate,
-          createdTime: serverTimestamp(),
-        });
+        await addDoc(ordersCollectionRef, payload);
         toastify("Order added to Database", "success");
         setOrderData({
           symbol: null,
@@ -823,16 +823,16 @@ export default function HomeRu() {
   const pendingOrders = orders
     .filter((order) => order.status === "Pending")
     .map((order) => {
-      const currentPrice = dbSymbols.find(
-        (symbol) => symbol.symbol === order.symbol
-      )?.price;
+      const symbol = dbSymbols.find((s) => s.symbol === order.symbol);
       let enableOpenPrice = false;
-      if (order.enableOpenPrice && order.openPriceValue !== currentPrice) {
+      if (order.enableOpenPrice && order.openPriceValue !== symbol.price) {
         enableOpenPrice = true;
       }
       return {
         ...order,
-        currentPrice,
+        currentPrice: symbol.price,
+        bidSpread: symbol.bidSpread,
+        askSpread: symbol.askSpread,
         enableOpenPrice,
       };
     });
@@ -863,8 +863,8 @@ export default function HomeRu() {
     pendingOrders.forEach((el) => {
       const orderPrice =
         el.type === "Buy"
-          ? getBidValue(el.currentPrice)
-          : getAskValue(el.currentPrice);
+          ? getBidValue(el.currentPrice, el.bidSpread)
+          : getAskValue(el.currentPrice, el.askSpread);
       const dealSum = parseFloat(el.volume) * orderPrice;
       freeMarginOpened -= parseFloat(dealSum);
     });
@@ -898,6 +898,7 @@ export default function HomeRu() {
             id="logo-img"
             src={logoIcon}
             style={{ width: "45%", "background-color": "var(--main-bgc)" }}
+            alt="logo"
           />
         </div>
         <div id="header-info">
@@ -979,12 +980,14 @@ export default function HomeRu() {
                   id="lang"
                   src={enFlagIcon}
                   onClick={() => changeLanguage("ru")}
+                  alt="en-flag"
                 />
               ) : (
                 <img
                   id="lang"
                   src={ruFlagIcon}
                   onClick={() => changeLanguage("en")}
+                  alt="ru-flag"
                 />
               )}
             </div>
@@ -1483,7 +1486,11 @@ export default function HomeRu() {
           {tab === "account" && (
             <div id="account">
               <div id="account-profile">
-                <img id="acc-img-placeholder" src={accPlaceholder} />
+                <img
+                  id="acc-img-placeholder"
+                  src={accPlaceholder}
+                  alt="avatar"
+                />
                 <h4 style={{ margin: "0", "margin-bottom": "15px" }}>
                   Test Lead #0001
                 </h4>
