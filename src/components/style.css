@@ -7,17 +7,27 @@
   --seco-grayc: rgb(175, 175, 175);
 }
 
+.dark{
+	--main-bgc: whitesmoke;
+  --main-elc: #e2e8f0;
+}
+
 * {
   margin: 0;
   padding: 0;
   color: white;
+  background-color: var(--main-elc);
   /* font-family: sans-serif; */
 }
 
 body {
   position: relative;
   height: 100vh;
-  background-color: var(--main-bgc) !important;
+  background-color: var(--main-bgc);
+}
+
+#root {
+  height: 100%;
 }
 
 #tradingview-widget-container {
@@ -292,9 +302,6 @@ body {
   --bs-form-invalid-color: #ea868f;
   --bs-form-invalid-border-color: #ea868f;
 }
-input {
-  text-align: left !important;
-}
 
 .greenBtn {
   background-color: rgba(96, 185, 47, 255);
@@ -315,10 +322,6 @@ input {
   align-items: center;
   font-size: auto;
   padding: 3px 35px !important;
-}
-
-.tradingWidget .rdt_Table > div {
-  background-color: #1e222d;
 }
 
 .disabled {

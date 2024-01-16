@@ -816,6 +816,11 @@ export default function HomeRu() {
   //   }
   // };
 
+  const toggleDark = () => {
+    const root = document.getElementById("root");
+    root.classList.toggle("dark");
+  };
+
   const pendingOrders = orders
     .filter((order) => order.status === "Pending")
     .map((order) => {
@@ -1030,16 +1035,15 @@ export default function HomeRu() {
               </button>
               <Form.Check
                 type="switch"
-                checked={false}
-                // onChange={(e) =>
-                //   toggleActiveManager({ ...row, isActive: e.target.checked })
-                // }
+                // checked={false}
+                defaultChecked={true}
+                onChange={(e) => toggleDark()}
               />
             </div>
           </div>
         </div>
       </div>
-      <div id="body">
+      <div className="d-flex h-100">
         <div id="sidebar">
           <div id="side-main-menu">
             <div id="side-trade" onClick={() => setTab("trade")}>
@@ -1140,9 +1144,10 @@ export default function HomeRu() {
                             assetsTab === "commoditiesTab" && "d-none"
                           }
                         >
-                          <Form.Control
-                            type="text"
+                          <input
+                            type="search"
                             placeholder="Search..."
+                            className="w-100"
                             value={quoteSearch}
                             onChange={(e) => setQuoteSearch(e.target.value)}
                           />
