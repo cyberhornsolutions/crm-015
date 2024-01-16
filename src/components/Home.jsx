@@ -1007,8 +1007,11 @@ export default function HomeRu() {
                 value={userProfit.toFixed(6)}
               />
             </div>
-            <div id="balance-item-lang" className="balance-item">
-              <button type="button" className="lang-flag border-0 mb-2">
+            <div
+              id="balance-item-lang"
+              className="balance-item d-flex flex-column gap-1 align-items-center justify-content-center"
+            >
+              <button type="button" className="lang-flag border-0">
                 {selectedLanguage === "en" ? (
                   <img
                     width={40}
