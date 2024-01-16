@@ -64,6 +64,7 @@ import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
 import { setOrdersState } from "../redux/slicer/orderSlicer.js";
 import AddTradingSymbolModal from "./AddTradingSymbolModal.jsx";
 import {
+  calculateProfit,
   convertTimestamptToDate,
   fillArrayWithEmptyRows,
   getAskValue,
@@ -434,19 +435,28 @@ export default function HomeRu() {
     },
     {
       name: t("profit"),
-      selector: (row) =>
-        row ? (
+      selector: (row) => {
+        if (!row) return;
+        const currentPrice =
+          row.type === "Buy"
+            ? getBidValue(row?.currentPrice, row.bidSpread)
+            : getAskValue(row?.currentPrice, row.askSpread);
+        const profit = calculateProfit(
+          row.type,
+          currentPrice,
+          row.symbolValue,
+          row.volume
+        );
+        return (
           <div
             className="order-column"
+            style={{ color: `${profit < 0 ? "red" : "green"}` }}
             onDoubleClick={() => handleEditModal(row)}
           >
-            <div>
-              <CurrentProfit orderData={row} />
-            </div>
+            {profit.toFixed(6)}
           </div>
-        ) : (
-          ""
-        ),
+        );
+      },
       sortable: true,
     },
     {
@@ -693,6 +703,7 @@ export default function HomeRu() {
       toast.error("Make sure to fill both SL & TP values");
     } else if (
       type == "Buy" &&
+      orderData.sl &&
       (orderData.sl >= bidValue || orderData.tp <= orderData.symbolValue)
     ) {
       toast.error(
@@ -700,6 +711,7 @@ export default function HomeRu() {
       );
     } else if (
       type == "Sell" &&
+      orderData.sl &&
       (orderData.sl <= askValue || orderData.tp >= orderData.symbolValue)
     ) {
       toast.error(
@@ -842,7 +854,7 @@ export default function HomeRu() {
   const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
   const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
 
-  const calculateProfit = () => {
+  const calculateTotalProfit = () => {
     let totalProfit = 0.0;
     orders?.map((el) => {
       if (
@@ -854,7 +866,7 @@ export default function HomeRu() {
     });
     return totalProfit;
   };
-  const userProfit = calculateProfit();
+  const userProfit = calculateTotalProfit();
   const allowBonus = userProfile?.settings?.allowBonus;
 
   const calculateTotalBalance = () => {
