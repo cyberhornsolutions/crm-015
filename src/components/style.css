@@ -1,5 +1,6 @@
 :root {
   --main-textc: rgb(166, 166, 166);
+  --main-input-textc: whitesmoke;
   --main-numbersc: rgba(0, 255, 110, 0.952);
   --main-bgc: #11131a;
   --main-elc: #1e222d;
@@ -7,15 +8,16 @@
   --seco-grayc: rgb(175, 175, 175);
 }
 
-.dark{
-	--main-bgc: whitesmoke;
+.light {
+  --main-bgc: whitesmoke;
   --main-elc: #e2e8f0;
+  --main-input-textc: #11131a;
 }
 
 * {
   margin: 0;
   padding: 0;
-  color: white;
+  color: var(--main-input-textc);
   background-color: var(--main-elc);
   /* font-family: sans-serif; */
 }

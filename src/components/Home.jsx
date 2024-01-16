@@ -816,9 +816,9 @@ export default function HomeRu() {
   //   }
   // };
 
-  const toggleDark = () => {
+  const toggleTheme = () => {
     const root = document.getElementById("root");
-    root.classList.toggle("dark");
+    root.classList.toggle("light");
   };
 
   const pendingOrders = orders
@@ -1037,7 +1037,7 @@ export default function HomeRu() {
                 type="switch"
                 // checked={false}
                 defaultChecked={true}
-                onChange={(e) => toggleDark()}
+                onChange={(e) => toggleTheme()}
               />
             </div>
           </div>
