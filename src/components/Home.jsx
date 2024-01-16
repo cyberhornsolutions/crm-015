@@ -820,6 +820,7 @@ export default function HomeRu() {
     .filter((order) => order.status === "Pending")
     .map((order) => {
       const symbol = dbSymbols.find((s) => s.symbol === order.symbol);
+      if (!symbol) return order;
       let enableOpenPrice = false;
       if (order.enableOpenPrice && order.openPriceValue !== symbol.price) {
         enableOpenPrice = true;
@@ -849,7 +850,7 @@ export default function HomeRu() {
     return totalProfit;
   };
   const userProfit = calculateProfit();
-    const allowBonus = userProfile?.settings?.allowBonus;
+  const allowBonus = userProfile?.settings?.allowBonus;
 
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance);
@@ -859,7 +860,7 @@ export default function HomeRu() {
   };
 
   const totalBalance = calculateTotalBalance();
-  
+
   const calculateFreeMargin = () => {
     let freeMarginOpened = totalBalance;
     pendingOrders.forEach((el) => {
@@ -874,7 +875,7 @@ export default function HomeRu() {
   };
 
   const freeMargin = calculateFreeMargin();
-  
+
   const calculatePledge = () => {
     let totalPledge = 0.0;
     pendingOrders.forEach((el) => {
@@ -887,7 +888,7 @@ export default function HomeRu() {
   };
 
   const pledge = calculatePledge();
-  
+
   const calculateEquity = () => {
     let equity = freeMargin + pledge;
     if (allowBonus) equity -= allBonus;
@@ -895,7 +896,7 @@ export default function HomeRu() {
   };
 
   const equity = calculateEquity();
-  
+
   return (
     <>
       {/* <div>
@@ -1006,26 +1007,31 @@ export default function HomeRu() {
                 value={userProfit.toFixed(6)}
               />
             </div>
-            <div
-              id="balance-item-lang"
-              className="balance-item"
-              style={{ border: "none" }}
-            >
-              {selectedLanguage === "en" ? (
-                <img
-                  id="lang"
-                  src={enFlagIcon}
-                  onClick={() => changeLanguage("ru")}
-                  alt="en-flag"
-                />
-              ) : (
-                <img
-                  id="lang"
-                  src={ruFlagIcon}
-                  onClick={() => changeLanguage("en")}
-                  alt="ru-flag"
-                />
-              )}
+            <div id="balance-item-lang" className="balance-item">
+              <button type="button" className="lang-flag border-0 mb-2">
+                {selectedLanguage === "en" ? (
+                  <img
+                    width={40}
+                    src={enFlagIcon}
+                    onClick={() => changeLanguage("ru")}
+                    alt="en-flag"
+                  />
+                ) : (
+                  <img
+                    width={40}
+                    src={ruFlagIcon}
+                    onClick={() => changeLanguage("en")}
+                    alt="ru-flag"
+                  />
+                )}
+              </button>
+              <Form.Check
+                type="switch"
+                checked={false}
+                // onChange={(e) =>
+                //   toggleActiveManager({ ...row, isActive: e.target.checked })
+                // }
+              />
             </div>
           </div>
         </div>
