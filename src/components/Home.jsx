@@ -503,7 +503,9 @@ export default function HomeRu() {
       selector: (row) => {
         if (!row) return;
         const symbol = dbSymbols.find((symbol) => symbol.symbol === row);
-        return symbol ? getBidValue(symbol.price, symbol.bidSpread) : "";
+        return symbol
+          ? getBidValue(symbol.price, symbol?.settings?.bidSpread)
+          : "";
       },
       sortable: true,
       compact: true,
@@ -513,7 +515,9 @@ export default function HomeRu() {
       selector: (row) => {
         if (!row) return;
         const symbol = dbSymbols.find((symbol) => symbol.symbol === row);
-        return symbol ? getAskValue(symbol.price, symbol.askSpread) : "";
+        return symbol
+          ? getAskValue(symbol.price, symbol?.settings?.askSpread)
+          : "";
       },
       sortable: true,
       compact: true,
@@ -677,8 +681,14 @@ export default function HomeRu() {
   const placeOrder = async (e, type) => {
     e.preventDefault();
     const symbol = dbSymbols.find((el) => el.symbol == orderData?.symbol.value);
-    const bidValue = getBidValue(orderData.symbolValue, symbol?.bidSpread);
-    const askValue = getAskValue(orderData.symbolValue, symbol?.askSpread);
+    const bidValue = getBidValue(
+      orderData.symbolValue,
+      symbol?.settings?.bidSpread
+    );
+    const askValue = getAskValue(
+      orderData.symbolValue,
+      symbol?.settings?.askSpread
+    );
 
     const form = document.getElementById("newOrderForm");
 
@@ -845,8 +855,8 @@ export default function HomeRu() {
       return {
         ...order,
         currentPrice: symbol.price,
-        bidSpread: symbol.bidSpread,
-        askSpread: symbol.askSpread,
+        bidSpread: symbol?.settings?.bidSpread,
+        askSpread: symbol?.settings?.askSpread,
         enableOpenPrice,
       };
     });
