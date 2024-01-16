@@ -849,7 +849,7 @@ export default function HomeRu() {
     return totalProfit;
   };
   const userProfit = calculateProfit();
-  const allowBonus = userProfile?.settings?.allowBonus;
+    const allowBonus = userProfile?.settings?.allowBonus;
 
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance);
@@ -859,7 +859,7 @@ export default function HomeRu() {
   };
 
   const totalBalance = calculateTotalBalance();
-
+  
   const calculateFreeMargin = () => {
     let freeMarginOpened = totalBalance;
     pendingOrders.forEach((el) => {
@@ -874,7 +874,7 @@ export default function HomeRu() {
   };
 
   const freeMargin = calculateFreeMargin();
-
+  
   const calculatePledge = () => {
     let totalPledge = 0.0;
     pendingOrders.forEach((el) => {
@@ -887,7 +887,7 @@ export default function HomeRu() {
   };
 
   const pledge = calculatePledge();
-
+  
   const calculateEquity = () => {
     let equity = freeMargin + pledge;
     if (allowBonus) equity -= allBonus;
@@ -895,7 +895,7 @@ export default function HomeRu() {
   };
 
   const equity = calculateEquity();
-
+  
   return (
     <>
       {/* <div>
@@ -917,9 +917,15 @@ export default function HomeRu() {
               <h2 className="balance-title">{t("balance")}:</h2>
               <input
                 type="number"
-                className="balance-nums"
+                className={`balance-nums ${
+                  totalBalance < 0
+                    ? "text-danger"
+                    : totalBalance == 0
+                    ? "text-muted"
+                    : ""
+                }`}
                 readOnly={true}
-                value={totalBalance < 0 ? 0.0 : totalBalance.toFixed(6)}
+                value={totalBalance.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -931,7 +937,13 @@ export default function HomeRu() {
               </h2>
               <input
                 type="number"
-                className="balance-nums"
+                className={`balance-nums ${
+                  freeMargin < 0
+                    ? "text-danger"
+                    : freeMargin == 0
+                    ? "text-muted"
+                    : ""
+                }`}
                 readOnly={true}
                 value={freeMargin.toFixed(6)}
               />
@@ -942,7 +954,9 @@ export default function HomeRu() {
               </h2>
               <input
                 type="number"
-                className="balance-nums"
+                className={`balance-nums ${
+                  equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
+                }`}
                 readOnly={true}
                 value={equity.toFixed(6)}
               />
@@ -953,7 +967,13 @@ export default function HomeRu() {
               </h2>
               <input
                 type="number"
-                className="balance-nums"
+                className={`balance-nums ${
+                  allBonus < 0
+                    ? "text-danger"
+                    : allBonus == 0
+                    ? "text-muted"
+                    : ""
+                }`}
                 readOnly={true}
                 value={allBonus.toFixed(6)}
               />
@@ -964,7 +984,9 @@ export default function HomeRu() {
               </h2>
               <input
                 type="number"
-                className="balance-nums"
+                className={`balance-nums ${
+                  pledge < 0 ? "text-danger" : pledge == 0 ? "text-muted" : ""
+                }`}
                 readOnly={true}
                 value={pledge.toFixed(6)}
               />
@@ -974,7 +996,11 @@ export default function HomeRu() {
               <input
                 type="number"
                 className={`balance-nums ${
-                  userProfit < 0 ? "text-danger" : ""
+                  userProfit < 0
+                    ? "text-danger"
+                    : userProfit == 0
+                    ? "text-muted"
+                    : ""
                 }`}
                 readOnly={true}
                 value={userProfit.toFixed(6)}
