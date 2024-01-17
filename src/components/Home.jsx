@@ -486,39 +486,45 @@ export default function HomeRu() {
     },
   ];
   const [quoteSearch, setQuoteSearch] = useState("");
-  const filteredQuotes = quoteSearch
-    ? userProfile?.quotes?.filter((quote) =>
-        quote.toUpperCase().includes(quoteSearch.toUpperCase())
+
+  const userQuotes = userProfile?.quotes || [];
+  const userQuotesSymbols = userQuotes.map((q) =>
+    dbSymbols.find(({ symbol }) => symbol === q)
+  );
+  const filteredQuotesSymbols = quoteSearch
+    ? userQuotesSymbols.filter(({ symbol }) =>
+        symbol.toUpperCase().includes(quoteSearch.toUpperCase())
       )
-    : userProfile?.quotes;
+    : userQuotesSymbols;
+
+  const crypto = [],
+    currencies = [],
+    stocks = [],
+    commodities = [];
+  filteredQuotesSymbols.forEach((s) => {
+    if (s?.settings?.group === "crypto" || !s.settings) crypto.push(s);
+    else if (s?.settings?.group === "currencies") currencies.push(s);
+    else if (s?.settings?.group === "stocks") stocks.push(s);
+    else if (s?.settings?.group === "commodities") commodities.push(s);
+  });
 
   const assetsColumns = [
     {
       name: t("symbol"),
-      selector: (row) => row,
+      selector: (row) => row.symbol,
       sortable: true,
     },
     {
       name: "Bid",
-      selector: (row) => {
-        if (!row) return;
-        const symbol = dbSymbols.find((symbol) => symbol.symbol === row);
-        return symbol
-          ? getBidValue(symbol.price, symbol?.settings?.bidSpread)
-          : "";
-      },
+      selector: (row) =>
+        row && getBidValue(row.price, row?.settings?.bidSpread),
       sortable: true,
       compact: true,
     },
     {
       name: "Ask",
-      selector: (row) => {
-        if (!row) return;
-        const symbol = dbSymbols.find((symbol) => symbol.symbol === row);
-        return symbol
-          ? getAskValue(symbol.price, symbol?.settings?.askSpread)
-          : "";
-      },
+      selector: (row) =>
+        row && getAskValue(row.price, row?.settings?.askSpread),
       sortable: true,
       compact: true,
     },
@@ -529,7 +535,7 @@ export default function HomeRu() {
           <FontAwesomeIcon
             id="assetDeleteIcon"
             icon={faClose}
-            onClick={() => handleDeleteAsset(row)}
+            onClick={() => handleDeleteAsset(row.symbol)}
           />
         ),
       compact: true,
@@ -1175,7 +1181,7 @@ export default function HomeRu() {
                           />
                           <DataTable
                             columns={assetsColumns}
-                            data={fillArrayWithEmptyRows(filteredQuotes, 10)}
+                            data={fillArrayWithEmptyRows(crypto, 10)}
                             highlightOnHover
                             pointerOnHover
                             customStyles={{
@@ -1212,7 +1218,7 @@ export default function HomeRu() {
                         <Tab eventKey="currenciesTab" title="Currencies">
                           <DataTable
                             columns={assetsColumns}
-                            data={fillArrayWithEmptyRows([], 10)}
+                            data={fillArrayWithEmptyRows(currencies, 10)}
                             highlightOnHover
                             pointerOnHover
                           />
@@ -1220,7 +1226,7 @@ export default function HomeRu() {
                         <Tab eventKey="stocksTab" title="Stocks">
                           <DataTable
                             columns={assetsColumns}
-                            data={fillArrayWithEmptyRows([], 10)}
+                            data={fillArrayWithEmptyRows(stocks, 10)}
                             highlightOnHover
                             pointerOnHover
                           />
@@ -1228,7 +1234,7 @@ export default function HomeRu() {
                         <Tab eventKey="commoditiesTab" title="Commodities">
                           <DataTable
                             columns={assetsColumns}
-                            data={fillArrayWithEmptyRows([], 10)}
+                            data={fillArrayWithEmptyRows(commodities, 10)}
                             highlightOnHover
                             pointerOnHover
                           />
@@ -2187,7 +2193,7 @@ export default function HomeRu() {
           show={isTradingModal}
           symbols={dbSymbols}
           handleCloseModal={handleCloseModal}
-          userQuotes={userProfile?.quotes || []}
+          userQuotes={userQuotes}
           userId={currentUserId}
         />
       )}
