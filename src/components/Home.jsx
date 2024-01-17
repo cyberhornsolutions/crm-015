@@ -1216,6 +1216,13 @@ export default function HomeRu() {
                           />
                         </Tab>
                         <Tab eventKey="currenciesTab" title="Currencies">
+                          <input
+                            type="search"
+                            placeholder="Search..."
+                            className="w-100"
+                            value={quoteSearch}
+                            onChange={(e) => setQuoteSearch(e.target.value)}
+                          />
                           <DataTable
                             columns={assetsColumns}
                             data={fillArrayWithEmptyRows(currencies, 10)}
@@ -1224,6 +1231,13 @@ export default function HomeRu() {
                           />
                         </Tab>
                         <Tab eventKey="stocksTab" title="Stocks">
+                          <input
+                            type="search"
+                            placeholder="Search..."
+                            className="w-100"
+                            value={quoteSearch}
+                            onChange={(e) => setQuoteSearch(e.target.value)}
+                          />
                           <DataTable
                             columns={assetsColumns}
                             data={fillArrayWithEmptyRows(stocks, 10)}
@@ -1232,6 +1246,13 @@ export default function HomeRu() {
                           />
                         </Tab>
                         <Tab eventKey="commoditiesTab" title="Commodities">
+                          <input
+                            type="search"
+                            placeholder="Search..."
+                            className="w-100"
+                            value={quoteSearch}
+                            onChange={(e) => setQuoteSearch(e.target.value)}
+                          />
                           <DataTable
                             columns={assetsColumns}
                             data={fillArrayWithEmptyRows(commodities, 10)}
