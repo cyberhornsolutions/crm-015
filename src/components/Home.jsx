@@ -712,6 +712,10 @@ export default function HomeRu() {
         title: "Error",
         message: "Insufficient Balance",
       });
+    } else if (calculatedSum > symbol?.settings?.contractSize) {
+      toast.error(
+        `Cannot open the deal greater than ${symbol?.settings?.contractSize}$ for this symbol`
+      );
     } else if (
       (orderData.sl && !orderData.tp) ||
       (!orderData.sl && orderData.tp)
