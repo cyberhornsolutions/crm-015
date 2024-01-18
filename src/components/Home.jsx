@@ -544,14 +544,14 @@ export default function HomeRu() {
   ];
   const conditionalRowStyles = [
     {
-      when: (row) => row === orderData?.symbol?.value,
+      when: (row) => row.symbol === orderData?.symbol?.value,
       style: {
         backgroundColor: "rgba(0, 255, 110, 0.952)",
         color: "#000",
       },
     },
     {
-      when: (row) => row !== orderData?.symbol?.value,
+      when: (row) => row.symbol !== orderData?.symbol?.value,
       style: {
         backgroundColor: "inherit",
         color: "#fff",
@@ -878,7 +878,7 @@ export default function HomeRu() {
 
   const calculateTotalProfit = () => {
     let totalProfit = 0.0;
-    orders?.map((el) => {
+    orders?.forEach((el) => {
       if (
         el.status.toLocaleLowerCase() == "success" ||
         el.status.toLocaleLowerCase() == "closed"
@@ -1215,7 +1215,10 @@ export default function HomeRu() {
                               openOrderPanel();
                               let newOr = {
                                 ...orderData,
-                                symbol: { value: row, label: row },
+                                symbol: {
+                                  value: row.symbol,
+                                  label: row.symbol,
+                                },
                               };
                               setOrderData(newOr);
                             }}
