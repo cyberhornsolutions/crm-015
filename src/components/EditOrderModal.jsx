@@ -10,6 +10,11 @@ const EditOrderModal = ({ onClose, show, selectedOrder }) => {
   const [newSl, setNewSl] = useState(selectedOrder?.sl);
   const [newTp, setNewTp] = useState(selectedOrder?.tp);
 
+  const closedPrice =
+    selectedOrder.type == "Buy"
+      ? getBidValue(selectedOrder.currentPrice, selectedOrder.bidSpread)
+      : getAskValue(selectedOrder.currentPrice, selectedOrder.askSpread);
+
   const updateOrder = async () => {
     try {
       const orderId = selectedOrder?.id;
@@ -17,38 +22,32 @@ const EditOrderModal = ({ onClose, show, selectedOrder }) => {
         toast.error("Make sure to fill both SL & TP values");
       } else if (
         selectedOrder.type == "Buy" &&
-        (newSl >=
-          getBidValue(selectedOrder.currentPrice, selectedOrder.bidSpread) ||
-          newTp <= selectedOrder.currentPrice)
+        (newSl >= closedPrice || newTp <= selectedOrder.currentPrice)
       ) {
         toast.error(
           "To Buy SL should be less than the bid value and TP should be greater than the current value"
         );
       } else if (
         selectedOrder.type == "Sell" &&
-        (newSl <=
-          getAskValue(selectedOrder.symbolValue, selectedOrder.askSpread) ||
-          newTp >= selectedOrder.currentPrice)
+        (newSl <= closedPrice || newTp >= selectedOrder.currentPrice)
       ) {
         toast.error(
           "To Sell SL should be greater than the ask value and TP should be less than the current value"
         );
       } else {
         const orderRef = doc(db, "orders", orderId);
-
         const docSnapshot = await getDoc(orderRef);
         if (docSnapshot.exists()) {
-          // Update the order status
           await updateDoc(orderRef, { sl: newSl, tp: newTp });
           toast.success("Order updated successfully");
-          onClose(); // Close the order
-          return "Order  updated successfully";
+          onClose();
         } else {
-          throw new Error("Order does not exist");
+          toast.error("Order does not exist");
         }
       }
     } catch (error) {
-      throw error;
+      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -136,9 +135,7 @@ const EditOrderModal = ({ onClose, show, selectedOrder }) => {
           </div>
           <div className="fs-4">
             Current market Price:
-            <span className="ms-2  text-success">
-              {parseFloat(selectedOrder.currentPrice).toFixed(6)}
-            </span>
+            <span className="ms-2  text-success">{closedPrice}</span>
           </div>
           <div className="w-100 text-center my-2">
             <button
