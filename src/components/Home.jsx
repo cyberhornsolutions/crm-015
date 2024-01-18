@@ -293,7 +293,7 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {convertTimestamptToDate(row.createdTime)}
+            {row.createdTime}
           </div>
         ),
       sortable: true,
@@ -864,6 +864,7 @@ export default function HomeRu() {
       }
       return {
         ...order,
+        createdTime: convertTimestamptToDate(order.createdTime),
         currentPrice: symbol.price,
         bidSpread: symbol?.settings?.bidSpread,
         askSpread: symbol?.settings?.askSpread,
