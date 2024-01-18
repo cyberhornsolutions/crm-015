@@ -397,7 +397,7 @@ export default function HomeRu() {
         let spread = row.sum / 100; // 1% of sum
         if (!Number.isInteger(spread)) spread = spread.toFixed(4);
         const swap = 0.0;
-        const fee = spread;
+        const fee = row.fee ? spread * row.fee : spread;
         let pledge = row.sum - spread - swap;
         if (!Number.isInteger(pledge)) pledge = pledge.toFixed(4);
         return row ? (
@@ -405,7 +405,7 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {`${pledge} / ${spread} / ${swap} / ${+fee}`}
+            {`${pledge} / ${spread} / ${swap} / ${fee}`}
           </div>
         ) : (
           ""
@@ -867,6 +867,7 @@ export default function HomeRu() {
         currentPrice: symbol.price,
         bidSpread: symbol?.settings?.bidSpread,
         askSpread: symbol?.settings?.askSpread,
+        fee: symbol?.settings?.fee,
         enableOpenPrice,
       };
     });
