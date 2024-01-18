@@ -1,4 +1,3 @@
-import CurrentProfit from "../components/CurrentProfit";
 import { convertTimestamptToDate } from "./helpers";
 
 //Reports table columns
@@ -25,7 +24,7 @@ export const generalColumns = [
   { name: "Swap", selector: (row) => <p></p> },
   {
     name: "Profit",
-    selector: (row) => (row ? <CurrentProfit orderData={row} /> : ""),
+    selector: (row) => row && parseFloat(row.profit).toFixed(6),
   },
   {
     name: "Status",
