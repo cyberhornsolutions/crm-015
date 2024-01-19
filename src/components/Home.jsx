@@ -862,14 +862,18 @@ export default function HomeRu() {
       if (order.enableOpenPrice && order.openPriceValue !== symbol.price) {
         enableOpenPrice = true;
       }
+      const { bidSpread, askSpread, fee, swapShort, swapLong } =
+        symbol.settings;
+      const swap = order.type === "Buy" ? swapShort : swapLong;
       return {
         ...order,
         createdTime: convertTimestamptToDate(order.createdTime),
         currentPrice: symbol.price,
-        bidSpread: symbol?.settings?.bidSpread,
-        askSpread: symbol?.settings?.askSpread,
-        fee: symbol?.settings?.fee,
         enableOpenPrice,
+        bidSpread,
+        askSpread,
+        fee,
+        swap,
       };
     });
 

@@ -195,8 +195,7 @@ export const getAllSymbols = (setState, setLoading) => {
                     symbol: m,
                     price: s.price,
                     duplicate: s.symbol,
-                    bidSpread: s.bidSpread,
-                    askSpread: s.askSpread,
+                    settings: s.settings,
                   })),
                 ]
               : s;
