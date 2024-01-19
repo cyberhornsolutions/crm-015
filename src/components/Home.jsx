@@ -699,9 +699,12 @@ export default function HomeRu() {
 
     const form = document.getElementById("newOrderForm");
 
+    const maxDeals = userProfile?.settings?.maxDeals;
     const formattedDate = new Date().toLocaleDateString("en-US");
     if (!userProfile?.allowTrading) {
       toastify("Trading is disabled for you.");
+    } else if (pendingOrders.length >= maxDeals) {
+      toastify(`You can open maximum ${maxDeals} deals`);
     } else if (!orderData?.symbol) {
       toastify("Symbol is missing.");
     } else if (!orderData?.volume) {
