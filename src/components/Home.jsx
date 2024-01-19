@@ -700,7 +700,7 @@ export default function HomeRu() {
     setOrderData({ ...orderData, symbolValue: price?.price });
   };
 
-  const calculateSum = () => {
+  const calculateTotalSum = () => {
     let sum = 0.0;
     if (orderData.symbol) {
       const { price } = dbSymbols?.find(
@@ -714,9 +714,12 @@ export default function HomeRu() {
         }
       }
     }
-    return sum;
+    const leverage = userProfile?.settings?.leverage ?? 1;
+    const maintenanceMargin = userProfile?.settings?.maintenanceMargin ?? 0;
+    const margin = sum * leverage * (maintenanceMargin / 100);
+    return sum + margin;
   };
-  const calculatedSum = calculateSum();
+  const calculatedSum = calculateTotalSum();
 
   const placeOrder = async (e, type) => {
     e.preventDefault();
@@ -733,6 +736,7 @@ export default function HomeRu() {
     const form = document.getElementById("newOrderForm");
 
     const maxDeals = userProfile?.settings?.maxDeals;
+    const leverage = userProfile?.settings?.leverage ?? 1;
     const formattedDate = new Date().toLocaleDateString("en-US");
     if (!userProfile?.allowTrading) {
       toastify("Trading is disabled for you.");
@@ -743,11 +747,10 @@ export default function HomeRu() {
     } else if (!orderData?.volume) {
       toastify("Volume should be greater than 0.");
     } else if (calculatedSum > freeMargin) {
-      // toastify("You have insufficient balance to buy this coin!");
       setMessageModal({
         show: true,
         title: "Error",
-        message: "Insufficient Balance",
+        message: "Not enough money to cover the Maintenance margin",
       });
     } else if (calculatedSum > symbol?.settings?.contractSize) {
       toast.error(
@@ -787,7 +790,7 @@ export default function HomeRu() {
         status: "Pending",
         profit: 0,
         symbol: orderData?.symbol.value,
-        volume: orderData.volume,
+        volume: orderData.volume * parseFloat(leverage),
         sum: calculatedSum,
         enableOpenPrice,
         createdAt: formattedDate,
@@ -1450,18 +1453,10 @@ export default function HomeRu() {
                           id="symbol-amount"
                           name="volume"
                           onChange={(e) => {
-                            let { value } = e.target;
-                            let volume, sum;
-                            if (!value || value < 0) {
-                              volume = "";
-                              sum = 0;
-                            } else {
-                              volume = value;
-                              sum = value * orderData.symbolValue;
-                            }
+                            const { value } = e.target;
                             setOrderData((p) => ({
                               ...p,
-                              volume,
+                              volume: !value ? "" : parseFloat(value),
                             }));
                           }}
                           value={orderData.volume}
