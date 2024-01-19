@@ -270,6 +270,39 @@ export default function HomeRu() {
     }
   };
 
+  const customStylesAssetsTable = {
+    rows: {
+      style: {
+        userSelect: "none",
+        "*": {
+          backgroundColor: "unset",
+          color: "unset",
+        },
+      },
+    },
+  };
+
+  const handleRowDoubleClick = (row) => {
+    if (!row) return;
+    const newDealButton = document.getElementById("newDealButton");
+    let a = document.getElementById("newOrder");
+
+    a.style.display = "none";
+    newDealButton.classList.remove("active");
+    newDealButton.removeAttribute("style");
+
+    // setTab("trade");
+    openOrderPanel();
+    let newOr = {
+      ...orderData,
+      symbol: {
+        value: row.symbol,
+        label: row.symbol,
+      },
+    };
+    setOrderData(newOr);
+  };
+
   const columns = [
     {
       name: "ID",
@@ -545,14 +578,14 @@ export default function HomeRu() {
   ];
   const conditionalRowStyles = [
     {
-      when: (row) => row.symbol === orderData?.symbol?.value,
+      when: (row) => row && row.symbol === orderData?.symbol?.value,
       style: {
         backgroundColor: "rgba(0, 255, 110, 0.952)",
         color: "#000",
       },
     },
     {
-      when: (row) => row.symbol !== orderData?.symbol?.value,
+      when: (row) => !row || row.symbol !== orderData?.symbol?.value,
       style: {
         backgroundColor: "inherit",
         color: "#fff",
@@ -1207,38 +1240,9 @@ export default function HomeRu() {
                             data={fillArrayWithEmptyRows(crypto, 10)}
                             highlightOnHover
                             pointerOnHover
-                            customStyles={{
-                              rows: {
-                                style: {
-                                  userSelect: "none",
-                                  "*": {
-                                    backgroundColor: "unset",
-                                    color: "unset",
-                                  },
-                                },
-                              },
-                            }}
+                            customStyles={customStylesAssetsTable}
                             conditionalRowStyles={conditionalRowStyles}
-                            onRowDoubleClicked={(row) => {
-                              const newDealButton =
-                                document.getElementById("newDealButton");
-                              let a = document.getElementById("newOrder");
-
-                              a.style.display = "none";
-                              newDealButton.classList.remove("active");
-                              newDealButton.removeAttribute("style");
-
-                              // setTab("trade");
-                              openOrderPanel();
-                              let newOr = {
-                                ...orderData,
-                                symbol: {
-                                  value: row.symbol,
-                                  label: row.symbol,
-                                },
-                              };
-                              setOrderData(newOr);
-                            }}
+                            onRowDoubleClicked={handleRowDoubleClick}
                           />
                         </Tab>
                         <Tab eventKey="currenciesTab" title="Currencies">
@@ -1254,6 +1258,9 @@ export default function HomeRu() {
                             data={fillArrayWithEmptyRows(currencies, 10)}
                             highlightOnHover
                             pointerOnHover
+                            customStyles={customStylesAssetsTable}
+                            conditionalRowStyles={conditionalRowStyles}
+                            onRowDoubleClicked={handleRowDoubleClick}
                           />
                         </Tab>
                         <Tab eventKey="stocksTab" title="Stocks">
@@ -1262,6 +1269,8 @@ export default function HomeRu() {
                             placeholder="Search..."
                             className="w-100"
                             value={quoteSearch}
+                            customStyles={customStylesAssetsTable}
+                            conditionalRowStyles={conditionalRowStyles}
                             onChange={(e) => setQuoteSearch(e.target.value)}
                           />
                           <DataTable
@@ -1269,6 +1278,9 @@ export default function HomeRu() {
                             data={fillArrayWithEmptyRows(stocks, 10)}
                             highlightOnHover
                             pointerOnHover
+                            customStyles={customStylesAssetsTable}
+                            conditionalRowStyles={conditionalRowStyles}
+                            onRowDoubleClicked={handleRowDoubleClick}
                           />
                         </Tab>
                         <Tab eventKey="commoditiesTab" title="Commodities">
@@ -1284,6 +1296,9 @@ export default function HomeRu() {
                             data={fillArrayWithEmptyRows(commodities, 10)}
                             highlightOnHover
                             pointerOnHover
+                            customStyles={customStylesAssetsTable}
+                            conditionalRowStyles={conditionalRowStyles}
+                            onRowDoubleClicked={handleRowDoubleClick}
                           />
                         </Tab>
                         {assetsTab === "commoditiesTab" && (
