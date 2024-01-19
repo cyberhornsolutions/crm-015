@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { Tabs, Tab } from "react-bootstrap";
+import moment from "moment";
 
 import {
   doc,
@@ -396,7 +397,7 @@ export default function HomeRu() {
       selector: (row) => {
         let spread = row.sum / 100; // 1% of sum
         if (!Number.isInteger(spread)) spread = spread.toFixed(4);
-        const swap = 0.0;
+        const swap = row.swap;
         const fee = row.fee ? spread * row.fee : spread;
         let pledge = row.sum - spread - swap;
         if (!Number.isInteger(pledge)) pledge = pledge.toFixed(4);
@@ -865,6 +866,15 @@ export default function HomeRu() {
       const { bidSpread, askSpread, fee, swapShort, swapLong } =
         symbol.settings;
       const swap = order.type === "Buy" ? swapShort : swapLong;
+      let swapValue = 0;
+      if (order.createdTime) {
+        const jsDate = new Date(order.createdTime.seconds * 1000).setHours(
+          0,
+          0,
+          0
+        );
+        swapValue = (order.sum / 100) * (swap * moment().diff(jsDate, "d"));
+      }
       return {
         ...order,
         createdTime: convertTimestamptToDate(order.createdTime),
@@ -873,7 +883,7 @@ export default function HomeRu() {
         bidSpread,
         askSpread,
         fee,
-        swap,
+        swap: swapValue,
       };
     });
 
@@ -923,7 +933,7 @@ export default function HomeRu() {
     let totalPledge = 0.0;
     pendingOrders.forEach((el) => {
       const spread = el.sum / 100; // 1% of sum
-      const swap = 0.0;
+      const swap = el.swap;
       const pledge = el.sum - spread - swap;
       totalPledge += pledge;
     });
