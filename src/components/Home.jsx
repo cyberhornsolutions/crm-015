@@ -929,10 +929,7 @@ export default function HomeRu() {
   const calculateTotalProfit = () => {
     let totalProfit = 0.0;
     orders?.forEach((el) => {
-      if (
-        el.status.toLocaleLowerCase() == "success" ||
-        el.status.toLocaleLowerCase() == "closed"
-      ) {
+      if (el.status != "pending") {
         totalProfit = totalProfit + parseFloat(el.profit);
       }
     });
