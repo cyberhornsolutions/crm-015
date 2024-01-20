@@ -428,21 +428,21 @@ export default function HomeRu() {
     {
       name: "Additional parameters",
       selector: (row) => {
+        if (!row) return;
         let spread = row.sum / 100; // 1% of sum
         if (!Number.isInteger(spread)) spread = spread.toFixed(4);
-        const swap = row.swap;
+        let swap = row.swap;
+        if (!Number.isInteger(swap)) swap = swap.toFixed(4);
         const fee = row.fee ? spread * row.fee : spread;
         let pledge = row.sum - spread - swap;
         if (!Number.isInteger(pledge)) pledge = pledge.toFixed(4);
-        return row ? (
+        return (
           <div
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
             {`${pledge} / ${spread} / ${swap} / ${fee}`}
           </div>
-        ) : (
-          ""
         );
       },
       grow: 2.5,
@@ -702,19 +702,19 @@ export default function HomeRu() {
 
   const calculateTotalSum = () => {
     let sum = 0.0;
+    const leverage = userProfile?.settings?.leverage ?? 1;
     if (orderData.symbol) {
       const { price } = dbSymbols?.find(
         (el) => el.symbol == orderData.symbol.value
       );
       if (orderData.volume) {
         if (enableOpenPrice) {
-          sum = orderData.volume * openPriceValue;
+          sum = orderData.volume * leverage * openPriceValue;
         } else {
-          sum = orderData.volume * price;
+          sum = orderData.volume * leverage * price;
         }
       }
     }
-    const leverage = userProfile?.settings?.leverage ?? 1;
     const maintenanceMargin = userProfile?.settings?.maintenanceMargin ?? 0;
     const margin = sum * leverage * (maintenanceMargin / 100);
     return sum + margin;
