@@ -433,7 +433,9 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {`${row.pledge} / ${row.spread} / ${row.swap} / ${row.fee}`}
+            {`${row.pledge?.toFixed(4)} / ${row.spread?.toFixed(
+              4
+            )} / ${row.swap?.toFixed(4)} / ${row.fee?.toFixed(4)}`}
           </div>
         ),
       grow: 2.5,
