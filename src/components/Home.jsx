@@ -700,18 +700,15 @@ export default function HomeRu() {
     setOrderData({ ...orderData, symbolValue: price?.price });
   };
 
-  const calculateTotalSum = () => {
+    const calculateTotalSum = () => {
     let sum = 0.0;
     const leverage = userProfile?.settings?.leverage ?? 1;
     if (orderData.symbol) {
-      const { price } = dbSymbols?.find(
-        (el) => el.symbol == orderData.symbol.value
-      );
       if (orderData.volume) {
         if (enableOpenPrice) {
           sum = orderData.volume * leverage * openPriceValue;
         } else {
-          sum = orderData.volume * leverage * price;
+          sum = orderData.volume * leverage * orderData.symbolValue;
         }
       }
     }
@@ -952,14 +949,8 @@ export default function HomeRu() {
 
   const calculateFreeMargin = () => {
     let freeMarginOpened = totalBalance;
-    pendingOrders.forEach((el) => {
-      const orderPrice =
-        el.type === "Buy"
-          ? getBidValue(el.currentPrice, el.bidSpread)
-          : getAskValue(el.currentPrice, el.askSpread);
-      const dealSum = parseFloat(el.volume) * orderPrice;
-      freeMarginOpened -= parseFloat(dealSum);
-    });
+    const dealSum = pendingOrders.reduce((p, v) => p + v.sum, 0);
+    freeMarginOpened -= parseFloat(dealSum);
     return freeMarginOpened < 0 ? 0.0 : freeMarginOpened;
   };
 
