@@ -427,24 +427,15 @@ export default function HomeRu() {
     },
     {
       name: "Additional parameters",
-      selector: (row) => {
-        if (!row) return;
-        let spread = row.sum / 100; // 1% of sum
-        if (!Number.isInteger(spread)) spread = spread.toFixed(4);
-        let swap = row.swap;
-        if (!Number.isInteger(swap)) swap = swap.toFixed(4);
-        const fee = row.fee ? spread * row.fee : spread;
-        let pledge = row.sum - spread - swap;
-        if (!Number.isInteger(pledge)) pledge = pledge.toFixed(4);
-        return (
+      selector: (row) =>
+        row && (
           <div
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {`${pledge} / ${spread} / ${swap} / ${fee}`}
+            {`${row.pledge} / ${row.spread} / ${row.swap} / ${row.fee}`}
           </div>
-        );
-      },
+        ),
       grow: 2.5,
       compact: true,
       sortable: true,
@@ -457,9 +448,7 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {row.type === "Buy"
-              ? getBidValue(row.currentPrice, row.bidSpread)
-              : getAskValue(row.currentPrice, row.askSpread)}
+            {row.currentPrice}
           </div>
         ) : (
           ""
@@ -471,13 +460,9 @@ export default function HomeRu() {
       name: t("profit"),
       selector: (row) => {
         if (!row) return;
-        const currentPrice =
-          row.type === "Buy"
-            ? getBidValue(row?.currentPrice, row.bidSpread)
-            : getAskValue(row?.currentPrice, row.askSpread);
         const profit = calculateProfit(
           row.type,
-          currentPrice,
+          row.currentPrice,
           row.symbolValue,
           row.volume
         );
@@ -487,7 +472,7 @@ export default function HomeRu() {
             style={{ color: `${profit < 0 ? "red" : "green"}` }}
             onDoubleClick={() => handleEditModal(row)}
           >
-            {profit.toFixed(6)}
+            {profit?.toFixed(6)}
           </div>
         );
       },
@@ -700,7 +685,7 @@ export default function HomeRu() {
     setOrderData({ ...orderData, symbolValue: price?.price });
   };
 
-    const calculateTotalSum = () => {
+  const calculateTotalSum = () => {
     let sum = 0.0;
     const leverage = userProfile?.settings?.leverage ?? 1;
     if (orderData.symbol) {
@@ -910,16 +895,31 @@ export default function HomeRu() {
           0
         );
         swapValue = (order.sum / 100) * (swap * moment().diff(jsDate, "d"));
+        if (swapValue != 0) swapValue = parseFloat(swapValue).toFixed(4);
       }
+
+      const currentPrice =
+        order.type === "Buy"
+          ? getBidValue(symbol.price, bidSpread)
+          : getAskValue(symbol.price, askSpread);
+
+      let spread = order.sum / 100; // 1% of sum
+      if (!Number.isInteger(spread)) spread = parseFloat(spread).toFixed(4);
+      let feeValue = spread * fee;
+      if (!Number.isInteger(feeValue))
+        feeValue = parseFloat(feeValue).toFixed(4);
+      let pledge = order.sum - spread - swapValue;
+      if (!Number.isInteger(pledge)) pledge = parseFloat(pledge).toFixed(4);
+
       return {
         ...order,
         createdTime: convertTimestamptToDate(order.createdTime),
-        currentPrice: symbol.price,
+        currentPrice,
         enableOpenPrice,
-        bidSpread,
-        askSpread,
-        fee,
+        pledge,
+        spread,
         swap: swapValue,
+        fee: feeValue,
       };
     });
 
@@ -956,18 +956,7 @@ export default function HomeRu() {
 
   const freeMargin = calculateFreeMargin();
 
-  const calculatePledge = () => {
-    let totalPledge = 0.0;
-    pendingOrders.forEach((el) => {
-      const spread = el.sum / 100; // 1% of sum
-      const swap = el.swap;
-      const pledge = el.sum - spread - swap;
-      totalPledge += pledge;
-    });
-    return +totalPledge;
-  };
-
-  const pledge = calculatePledge();
+  const pledge = parseFloat(pendingOrders.reduce((p, v) => p + v.pledge, 0));
 
   const calculateEquity = () => {
     let equity = freeMargin + pledge;
@@ -1006,7 +995,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={totalBalance.toFixed(6)}
+                value={totalBalance?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1026,7 +1015,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={freeMargin.toFixed(6)}
+                value={freeMargin?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1039,7 +1028,7 @@ export default function HomeRu() {
                   equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={equity.toFixed(6)}
+                value={equity?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1056,7 +1045,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={allBonus.toFixed(6)}
+                value={allBonus?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1069,7 +1058,7 @@ export default function HomeRu() {
                   pledge < 0 ? "text-danger" : pledge == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={pledge.toFixed(6)}
+                value={pledge?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1084,7 +1073,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={userProfit.toFixed(6)}
+                value={userProfit?.toFixed(6)}
               />
             </div>
             <div
@@ -1453,7 +1442,7 @@ export default function HomeRu() {
                           value={orderData.volume}
                         />
                         <label className="mt-1">
-                          Total: {calculatedSum.toFixed(6)} USDT
+                          Total: {calculatedSum?.toFixed(6)} USDT
                         </label>
                         <label htmlFor="symbol-current-value">Open Price</label>
                         <div className="d-flex align-items-center gap-3">
