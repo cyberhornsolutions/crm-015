@@ -909,7 +909,7 @@ export default function HomeRu() {
       if (!Number.isInteger(spread)) spread = parseFloat(spread);
       let feeValue = spread * fee;
       if (!Number.isInteger(feeValue)) feeValue = parseFloat(feeValue);
-      let pledge = order.sum - spread - swapValue;
+      let pledge = order.sum;
       if (!Number.isInteger(pledge)) pledge = parseFloat(pledge);
 
       return {
@@ -939,15 +939,15 @@ export default function HomeRu() {
   const userProfit = calculateTotalProfit();
   const allowBonus = userProfile?.settings?.allowBonus;
 
+  const ordersFee = pendingOrders.reduce(
+    (p, v) => p + v.spread + v.swap + v.fee,
+    0
+  );
+
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance);
     if (userProfit) balance += parseFloat(userProfit);
     if (allowBonus) balance += allBonus;
-    const ordersFee = pendingOrders.reduce(
-      (p, v) => p + v.spread + v.swap + v.fee,
-      0
-    );
-    balance -= ordersFee;
     return balance;
   };
 
@@ -965,7 +965,7 @@ export default function HomeRu() {
   const pledge = parseFloat(pendingOrders.reduce((p, v) => p + v.pledge, 0));
 
   const calculateEquity = () => {
-    let equity = freeMargin + pledge;
+    let equity = freeMargin + pledge - ordersFee;
     if (allowBonus) equity -= allBonus;
     return equity;
   };
@@ -1001,7 +1001,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={totalBalance?.toFixed(6)}
+                value={(totalBalance - ordersFee).toFixed(6)}
               />
             </div>
             <div className="balance-item">
