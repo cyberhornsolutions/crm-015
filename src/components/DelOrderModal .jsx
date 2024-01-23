@@ -10,7 +10,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import { calculateProfit, getAskValue, getBidValue } from "../helper/helpers";
 import { toast } from "react-toastify";
 
 const DelOrderModal = ({ onClose, show, selectedOrder }) => {
@@ -18,27 +17,17 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
   const [volume, setVolume] = useState(selectedOrder.volume);
   const [isLoading, setIsLoading] = useState(false);
 
-  const closedPrice =
-    selectedOrder.type === "Buy"
-      ? getBidValue(selectedOrder?.currentPrice, selectedOrder.bidSpread)
-      : getAskValue(selectedOrder?.currentPrice, selectedOrder.askSpread);
+  const closedPrice = selectedOrder?.currentPrice;
 
   const updateOrderStatus = async (orderId, newStatus, newVolume) => {
     const orderRef = doc(db, "orders", orderId);
     const docSnapshot = await getDoc(orderRef);
 
-    const profit = calculateProfit(
-      selectedOrder.type,
-      closedPrice,
-      selectedOrder?.symbolValue,
-      selectedOrder?.volume
-    );
-
     const newData = {
       status: newStatus,
       closedDate: serverTimestamp(),
       closedPrice,
-      profit,
+      profit: selectedOrder.profit,
     };
 
     if (newVolume) {

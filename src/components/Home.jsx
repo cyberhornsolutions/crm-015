@@ -458,24 +458,16 @@ export default function HomeRu() {
     },
     {
       name: t("profit"),
-      selector: (row) => {
-        if (!row) return;
-        const profit = calculateProfit(
-          row.type,
-          row.currentPrice,
-          row.symbolValue,
-          row.volume
-        );
-        return (
+      selector: (row) =>
+        row && (
           <div
             className="order-column"
-            style={{ color: `${profit < 0 ? "red" : "green"}` }}
+            style={{ color: `${row.profit < 0 ? "red" : "green"}` }}
             onDoubleClick={() => handleEditModal(row)}
           >
-            {profit?.toFixed(6)}
+            {row.profit?.toFixed(6)}
           </div>
-        );
-      },
+        ),
       sortable: true,
     },
     {
@@ -912,6 +904,14 @@ export default function HomeRu() {
       let pledge = order.sum;
       if (!Number.isInteger(pledge)) pledge = parseFloat(pledge);
 
+      let profit = calculateProfit(
+        order.type,
+        currentPrice,
+        order.symbolValue,
+        order.volume
+      );
+      profit = profit - swapValue - feeValue;
+
       return {
         ...order,
         createdTime: convertTimestamptToDate(order.createdTime),
@@ -921,6 +921,7 @@ export default function HomeRu() {
         spread,
         swap: swapValue,
         fee: feeValue,
+        profit,
       };
     });
 
