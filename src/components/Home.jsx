@@ -898,8 +898,6 @@ export default function HomeRu() {
           : getAskValue(symbol.price, askSpread);
 
       let spread = order.sum / 100; // 1% of sum
-      console.log("spread = ", spread);
-      console.log("spread * fee = ", spread * fee);
       if (!Number.isInteger(spread)) spread = parseFloat(spread);
       let feeValue = spread * fee;
       if (!Number.isInteger(feeValue)) feeValue = parseFloat(feeValue);
@@ -930,16 +928,7 @@ export default function HomeRu() {
   const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
   const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
 
-  const calculateTotalProfit = () => {
-    let totalProfit = 0.0;
-    orders?.forEach((el) => {
-      if (el.status != "pending") {
-        totalProfit = totalProfit + parseFloat(el.profit);
-      }
-    });
-    return totalProfit;
-  };
-  const userProfit = calculateTotalProfit();
+  const userProfit = pendingOrders.reduce((p, v) => p + v.profit, 0);
   const allowBonus = userProfile?.settings?.allowBonus;
 
   const ordersFee = pendingOrders.reduce(
