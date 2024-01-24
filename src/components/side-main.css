@@ -608,9 +608,6 @@ acc-info-personal h3 {
   height: 40px;
   width: 130px;
 }
-.report-modal {
-  width: 800px !important;
-}
 .order-modal-overlay {
   position: fixed;
   top: 0;

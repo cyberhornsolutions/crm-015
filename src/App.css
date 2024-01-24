@@ -17,3 +17,7 @@
   min-height: 45vh;
   max-height: 45vh !important;
 }
+
+.reports-modal .tab-content > div > div > div > div {
+  background-color: unset;
+}
