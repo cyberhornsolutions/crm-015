@@ -55,7 +55,6 @@ import {
   fetchAllOrdersByUserId,
   getAllSymbols,
   addQuotesToUser,
-  getAllBonus,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import MyBarChart from "./BarChart.js";
@@ -104,7 +103,6 @@ export default function HomeRu() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState("");
-  const [allBonus, setAllBonus] = useState(0.0);
   const [selectedOrder, setSelectedOrder] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [enableOpenPrice, setEnableOpenPrice] = useState(false);
@@ -239,11 +237,8 @@ export default function HomeRu() {
       auth.currentUser.uid,
       setOrders
     );
-    const unsubAllBonus = getAllBonus(auth.currentUser.uid, setAllBonus);
-
     return () => {
       unsubUserData();
-      unsubAllBonus();
       if (unsubOrderData) unsubOrderData();
     };
   }, [currentUserId]);
@@ -925,6 +920,7 @@ export default function HomeRu() {
 
   const userProfit = pendingOrders.reduce((p, v) => p + v.profit, 0);
   const allowBonus = userProfile?.settings?.allowBonus;
+  const bonus = userProfile?.bonus;
 
   const ordersFee = pendingOrders.reduce(
     (p, v) => p + v.spread + v.swap + v.fee,
@@ -934,7 +930,6 @@ export default function HomeRu() {
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance);
     if (userProfit) balance += parseFloat(userProfit);
-    if (allowBonus) balance += allBonus;
     return balance;
   };
 
@@ -953,7 +948,7 @@ export default function HomeRu() {
 
   const calculateEquity = () => {
     let equity = freeMargin + pledge - ordersFee;
-    if (allowBonus) equity -= allBonus;
+    if (allowBonus) equity -= bonus;
     return equity;
   };
 
@@ -1022,23 +1017,6 @@ export default function HomeRu() {
                 }`}
                 readOnly={true}
                 value={equity?.toFixed(6)}
-              />
-            </div>
-            <div className="balance-item">
-              <h2 className="balance-title" id="">
-                Bonus:
-              </h2>
-              <input
-                type="number"
-                className={`balance-nums ${
-                  allBonus < 0
-                    ? "text-danger"
-                    : allBonus == 0
-                    ? "text-muted"
-                    : ""
-                }`}
-                readOnly={true}
-                value={allBonus?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
