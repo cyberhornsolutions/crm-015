@@ -29,7 +29,7 @@ function ReportTabs({ userId, onClose }) {
   };
 
   useEffect(() => {
-    return getDepositsByUser(userId, setDeposits);
+    if (!deposits.length) getDepositsByUser(userId, setDeposits);
   }, []);
   const today = moment();
 
@@ -68,32 +68,28 @@ function ReportTabs({ userId, onClose }) {
   } else if (showRecord === "today") {
     const todayStart = today.startOf("day"); // Start of today
     const dataCreatedToday = deposits.filter((dep) => {
-      return convertTimestamptToDate(dep.createdAt).isSame(todayStart, "day");
+      return moment(dep.createdAt).isSame(todayStart, "day");
     });
     filteredDeposits = dataCreatedToday;
   } else if (showRecord === "lastWeek") {
     const sevenDaysAgo = moment().subtract(7, "days");
     const dataCreatedToday = deposits.filter((dep) => {
-      return convertTimestamptToDate(dep.createdAt).isSameOrAfter(sevenDaysAgo);
+      return moment(dep.createdAt).isSameOrAfter(sevenDaysAgo);
     });
     filteredDeposits = dataCreatedToday;
   } else if (showRecord === "lastMonth") {
     const lastMonth = moment().subtract(30, "days");
     const dataCreatedToday = deposits.filter((dep) => {
-      return convertTimestamptToDate(dep.createdAt).isSameOrAfter(lastMonth);
+      return moment(dep.createdAt).isSameOrAfter(lastMonth);
     });
     filteredDeposits = dataCreatedToday;
   } else if (showRecord === "last3Month") {
     const last90Days = moment().subtract(90, "days");
     const dataCreatedToday = deposits.filter((dep) => {
-      return convertTimestamptToDate(dep.createdAt).isSameOrAfter(last90Days);
+      return moment(dep.createdAt).isSameOrAfter(last90Days);
     });
     filteredDeposits = dataCreatedToday;
   }
-
-  const closedOrders = filteredOrders.filter(
-    (order) => order.status != "Pending"
-  );
 
   return (
     <Tabs

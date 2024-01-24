@@ -64,7 +64,7 @@ export const tradOptColumns = [
 export const depositColumns = [
   {
     name: "Date",
-    selector: (row) => row && convertTimestamptToDate(row.createdAt),
+    selector: (row) => row.createdAt && row.createdAt,
   },
   { name: "Sum", selector: (row) => row.sum },
   { name: "Type", selector: (row) => row.type },

@@ -236,7 +236,12 @@ export const getDepositsByUser = (userId, setState) => {
       (snapshot) => {
         const depositsData = [];
         snapshot.forEach((doc) => {
-          depositsData.push({ id: doc.id, ...doc.data() });
+          const docData = doc.data();
+          depositsData.push({
+            id: doc.id,
+            ...docData,
+            createdAt: convertTimestamptToDate(docData.createdAt),
+          });
         });
         setState(depositsData);
       },
