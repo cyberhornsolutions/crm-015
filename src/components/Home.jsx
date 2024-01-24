@@ -220,7 +220,9 @@ export default function HomeRu() {
   const setOrders = useCallback((data) => {
     const mappedOrders = data.map((order) => ({
       ...order,
-      sltp: `${order?.sl || ""} / ${order?.tp || ""}`,
+      sltp: `${+parseFloat(order?.sl)?.toFixed(6) || ""} / ${
+        +parseFloat(order?.tp)?.toFixed(6) || ""
+      }`,
     }));
     dispatch(setOrdersState(mappedOrders));
   });
@@ -407,17 +409,7 @@ export default function HomeRu() {
     },
     {
       name: "SL / TP",
-      selector: (row) =>
-        row ? (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {row.sltp}
-          </div>
-        ) : (
-          ""
-        ),
+      selector: (row) => row && row.sltp,
       sortable: true,
     },
     {
@@ -428,14 +420,22 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {`${row.pledge?.toFixed(4)} / ${row.spread?.toFixed(
+            {`Spread: ${+parseFloat(row.spread)?.toFixed(
               4
-            )} / ${row.swap?.toFixed(4)} / ${row.fee?.toFixed(4)}`}
+            )} / Swap: ${+parseFloat(row.swap)?.toFixed(
+              4
+            )} / Fee: ${+parseFloat(row.fee)?.toFixed(4)}`}
           </div>
         ),
       grow: 2.5,
       compact: true,
       sortable: true,
+    },
+    {
+      name: "Pledge",
+      selector: (row) => row && +parseFloat(row.pledge)?.toFixed(4),
+      sortable: true,
+      compact: true,
     },
     {
       name: "Current Price",
