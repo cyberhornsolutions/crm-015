@@ -12,6 +12,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { convertTimestamptToDate } from "./helpers";
 
 export const fetchAllOrdersByUserId = (userId, setState) => {
   if (!userId) return;
@@ -25,7 +26,12 @@ export const fetchAllOrdersByUserId = (userId, setState) => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const orders = [];
       querySnapshot.forEach((doc) => {
-        orders.push({ id: doc.id, ...doc.data() });
+        const docData = doc.data();
+        orders.push({
+          id: doc.id,
+          ...docData,
+          createdTime: convertTimestamptToDate(docData.createdTime),
+        });
       });
       setState(orders);
     });

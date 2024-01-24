@@ -17,7 +17,9 @@ import {
 } from "../helper/helpers";
 
 function ReportTabs({ userId, onClose }) {
-  const orders = useSelector((state) => state.orders);
+  const orders = useSelector((state) =>
+    state.orders.filter(({ status }) => status != "Pending")
+  );
   const [key, setKey] = useState("tradeOperations");
   const [deposits, setDeposits] = useState([]);
   const [showRecord, setShowRecord] = useState("all");
@@ -37,34 +39,25 @@ function ReportTabs({ userId, onClose }) {
   } else if (showRecord === "today") {
     const todayStart = today.startOf("day"); // Start of today
     const dataCreatedToday = orders.filter((order) => {
-      return convertTimestamptToDate(order.createdTime).isSame(
-        todayStart,
-        "day"
-      );
+      return moment(order.createdAt).isSame(todayStart, "day");
     });
     filteredOrders = dataCreatedToday;
   } else if (showRecord === "lastWeek") {
-    const sevenDaysAgo = moment().subtract(7, "days");
+    const sevenDaysAgo = today.subtract(7, "days");
     const dataCreatedToday = orders.filter((order) => {
-      return convertTimestamptToDate(order.createdTime).isSameOrAfter(
-        sevenDaysAgo
-      );
+      return moment(order.createdAt).isSameOrAfter(sevenDaysAgo);
     });
     filteredOrders = dataCreatedToday;
   } else if (showRecord === "lastMonth") {
-    const lastMonth = moment().subtract(30, "days");
+    const lastMonth = today.subtract(30, "days");
     const dataCreatedToday = orders.filter((order) => {
-      return convertTimestamptToDate(order.createdTime).isSameOrAfter(
-        lastMonth
-      );
+      return moment(order.createdAt).isSameOrAfter(lastMonth);
     });
     filteredOrders = dataCreatedToday;
   } else if (showRecord === "last3Month") {
-    const last90Days = moment().subtract(90, "days");
+    const last90Days = today.subtract(90, "days");
     const dataCreatedToday = orders.filter((order) => {
-      return convertTimestamptToDate(order.createdTime).isSameOrAfter(
-        last90Days
-      );
+      return moment(order.createdAt).isSameOrAfter(last90Days);
     });
     filteredOrders = dataCreatedToday;
   }
@@ -116,7 +109,7 @@ function ReportTabs({ userId, onClose }) {
       >
         <DataTable
           columns={generalColumns}
-          data={fillArrayWithEmptyRows(closedOrders)}
+          data={fillArrayWithEmptyRows(filteredOrders, 5)}
           customStyles={customStyle}
           pagination
           theme="dark"
@@ -156,11 +149,7 @@ function ReportTabs({ userId, onClose }) {
       <Tab eventKey="balanceOperations" title="Balance operations">
         <DataTable
           columns={depositColumns}
-          data={filteredDeposits.concat(
-            filteredDeposits.length < 5
-              ? new Array(5 - filteredDeposits.length).fill("")
-              : []
-          )}
+          data={fillArrayWithEmptyRows(filteredDeposits, 5)}
           customStyles={customStyle}
           pagination
           theme="dark"

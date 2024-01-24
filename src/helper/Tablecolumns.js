@@ -5,7 +5,7 @@ export const generalColumns = [
   { name: "Number", selector: (row) => row.id },
   {
     name: "Open date",
-    selector: (row) => row && convertTimestamptToDate(row.createdTime),
+    selector: (row) => row.createdTime && row.createdTime,
     grow: 1.5,
   },
   { name: "Type", selector: (row) => row.type },

@@ -883,11 +883,7 @@ export default function HomeRu() {
       const swap = order.type === "Buy" ? swapShort : swapLong;
       let swapValue = 0;
       if (order.createdTime) {
-        const jsDate = new Date(order.createdTime.seconds * 1000).setHours(
-          0,
-          0,
-          0
-        );
+        const jsDate = new Date(order.createdTime).setHours(0, 0, 0);
         swapValue = (order.sum / 100) * (swap * moment().diff(jsDate, "d"));
         if (swapValue != 0) swapValue = parseFloat(swapValue);
       }
@@ -914,7 +910,6 @@ export default function HomeRu() {
 
       return {
         ...order,
-        createdTime: convertTimestamptToDate(order.createdTime),
         currentPrice,
         enableOpenPrice,
         pledge,
