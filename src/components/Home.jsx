@@ -713,6 +713,7 @@ export default function HomeRu() {
 
     const form = document.getElementById("newOrderForm");
 
+    const minDealSum = userProfile?.settings?.minDealSum;
     const maxDeals = userProfile?.settings?.maxDeals;
     const leverage = userProfile?.settings?.leverage ?? 1;
     const formattedDate = new Date().toLocaleDateString("en-US");
@@ -724,6 +725,8 @@ export default function HomeRu() {
       toastify("Symbol is missing.");
     } else if (!orderData?.volume) {
       toastify("Volume should be greater than 0.");
+    } else if (calculatedSum < minDealSum) {
+      toastify(`The minimum deal sum is ${minDealSum} USDT`);
     } else if (calculatedSum > freeMargin) {
       setMessageModal({
         show: true,
