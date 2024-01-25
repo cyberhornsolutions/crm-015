@@ -670,8 +670,16 @@ export default function HomeRu() {
     //   console.log("-------->", e);
 
     // });
-    const price = dbSymbols?.find((el) => el.symbol == orderData.symbol?.value);
-    setOrderData({ ...orderData, symbolValue: price?.price });
+    const symbol = dbSymbols?.find(
+      (el) => el.symbol == orderData.symbol?.value
+    );
+    if (!symbol) return;
+    const fee = (symbol.price / 100) * symbol?.settings?.fee;
+    setOrderData({
+      ...orderData,
+      symbolValue: symbol?.price,
+      fee,
+    });
   };
 
   const calculateTotalSum = () => {
@@ -953,6 +961,13 @@ export default function HomeRu() {
   };
 
   const equity = calculateEquity();
+
+  let potentialSL = 0,
+    potentialTP = 0;
+  if (orderData.symbolValue) {
+    if (orderData.sl) potentialSL = orderData.sl - orderData.fee;
+    if (orderData.tp) potentialTP = orderData.tp - orderData.fee;
+  }
 
   return (
     <>
@@ -1413,7 +1428,7 @@ export default function HomeRu() {
                           value={orderData.volume}
                         />
                         <label className="mt-1">
-                          Total: {calculatedSum?.toFixed(6)} USDT
+                          Total: {+calculatedSum?.toFixed(6)} USDT
                         </label>
                         <label htmlFor="symbol-current-value">Open Price</label>
                         <div className="d-flex align-items-center gap-3">
@@ -1453,6 +1468,9 @@ export default function HomeRu() {
                           }
                           value={orderData?.sl}
                         />
+                        <label className="mt-1">
+                          Potential: {+parseFloat(potentialSL)?.toFixed(6)}
+                        </label>
                         <label htmlFor="take-profit">TP</label>
                         <input
                           type="number"
@@ -1464,6 +1482,9 @@ export default function HomeRu() {
                           }
                           value={orderData?.tp}
                         />
+                        <label className="mt-1">
+                          Potential: {+parseFloat(potentialTP)?.toFixed(6)}
+                        </label>
                         <button
                           // className="newOrderButton"
                           // id="buyButton"
