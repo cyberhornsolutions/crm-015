@@ -683,17 +683,17 @@ export default function HomeRu() {
 
   const calculateTotalSum = () => {
     let sum = 0.0;
-    const leverage = userProfile?.settings?.leverage ?? 1;
+    const leverage = userProfile?.settings?.leverage || 1;
     if (orderData.symbol) {
       if (orderData.volume) {
         if (enableOpenPrice) {
-          sum = orderData.volume * leverage * openPriceValue;
+          sum = orderData.volume * openPriceValue;
         } else {
-          sum = orderData.volume * leverage * orderData.symbolValue;
+          sum = orderData.volume * orderData.symbolValue;
         }
       }
     }
-    const maintenanceMargin = userProfile?.settings?.maintenanceMargin ?? 0;
+    const maintenanceMargin = userProfile?.settings?.maintenanceMargin || 0;
     const margin = sum * leverage * (maintenanceMargin / 100);
     return sum + margin;
   };
