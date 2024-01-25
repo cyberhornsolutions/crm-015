@@ -674,11 +674,10 @@ export default function HomeRu() {
       (el) => el.symbol == orderData.symbol?.value
     );
     if (!symbol) return;
-    const fee = (symbol.price / 100) * symbol?.settings?.fee;
     setOrderData({
       ...orderData,
       symbolValue: symbol?.price,
-      fee,
+      fee: symbol?.settings?.fee,
     });
   };
 
@@ -838,12 +837,16 @@ export default function HomeRu() {
   };
 
   const refreshPrice = () => {
-    if (orderData?.symbol?.value != null && orderData.symbol != null) {
-      const latestPrice = dbSymbols.find(
+    if (orderData?.symbol?.value && orderData.symbol) {
+      const symbol = dbSymbols.find(
         (el) => el.symbol == orderData?.symbol.value
       );
-      let order = { ...orderData, symbolValue: latestPrice?.price };
-      setOrderData(order);
+      if (!symbol) return;
+      setOrderData({
+        ...orderData,
+        symbolValue: symbol?.price,
+        fee: symbol?.settings?.fee,
+      });
     }
   };
 
@@ -965,8 +968,9 @@ export default function HomeRu() {
   let potentialSL = 0,
     potentialTP = 0;
   if (orderData.symbolValue) {
-    if (orderData.sl) potentialSL = orderData.sl - orderData.fee;
-    if (orderData.tp) potentialTP = orderData.tp - orderData.fee;
+    const symbolFee = (orderData.symbolValue / 100) * orderData.fee;
+    if (orderData.sl) potentialSL = orderData.sl - symbolFee;
+    if (orderData.tp) potentialTP = orderData.tp - symbolFee;
   }
 
   return (
