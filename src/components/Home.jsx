@@ -768,7 +768,7 @@ export default function HomeRu() {
         createdTime: serverTimestamp(),
       };
 
-      if (enableOpenPrice) payload.openPriceValue = openPriceValue;
+      if (enableOpenPrice) payload.symbolValue = openPriceValue;
 
       try {
         await addDoc(ordersCollectionRef, payload);
