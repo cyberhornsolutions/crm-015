@@ -445,7 +445,7 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {+parseFloat(row.currentPrice)?.toFixed(6)} ok
+            {+parseFloat(row.currentPrice)?.toFixed(6)}
           </div>
         ) : (
           ""
@@ -954,7 +954,7 @@ export default function HomeRu() {
   };
 
   const totalBalance = calculateTotalBalance();
-	
+
   const calculateFreeMargin = () => {
     let freeMarginOpened = totalBalance;
     const dealSum = pendingOrders.reduce((p, v) => p + v.sum, 0);
