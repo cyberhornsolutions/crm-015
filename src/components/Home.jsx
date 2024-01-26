@@ -1005,7 +1005,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={(totalBalance - ordersFee).toFixed(6)}
+                value={+(totalBalance - ordersFee)?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1025,7 +1025,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={freeMargin?.toFixed(6)}
+                value={+freeMargin?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1038,7 +1038,7 @@ export default function HomeRu() {
                   equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={equity?.toFixed(6)}
+                value={+equity?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1051,7 +1051,7 @@ export default function HomeRu() {
                   pledge < 0 ? "text-danger" : pledge == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={pledge?.toFixed(6)}
+                value={+pledge?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1066,7 +1066,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={userProfit?.toFixed(6)}
+                value={+userProfit?.toFixed(6)}
               />
             </div>
             <div
