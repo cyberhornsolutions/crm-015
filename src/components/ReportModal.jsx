@@ -18,7 +18,7 @@ const ReportModal = ({ onClose, show, userId }) => {
   const [deposits, setDeposits] = useState([]);
   const [showRecord, setShowRecord] = useState("all");
 
-  const totalProfit = orders.reduce((p, v) => p + v.profit, 0);
+  const totalProfit = orders.reduce((p, v) => p + +v.profit, 0);
 
   const customStyle = {
     table: { style: { height: "70vh", backgroundColor: "#2f323d" } },
@@ -142,7 +142,8 @@ const ReportModal = ({ onClose, show, userId }) => {
             <div className="text-center">
               Total deals: {orders.length}
               <br />
-              Total profit: {totalProfit && totalProfit?.toFixed(6)}
+              Total profit:{" "}
+              {totalProfit && +parseFloat(totalProfit)?.toFixed(6)}
             </div>
             <button className=" greyBtn px-4 " onClick={onClose}>
               Close
