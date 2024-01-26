@@ -777,6 +777,7 @@ export default function HomeRu() {
         createdAt: formattedDate,
         createdTime: serverTimestamp(),
       };
+      delete payload.fee;
 
       if (enableOpenPrice) payload.symbolValue = openPriceValue;
 
