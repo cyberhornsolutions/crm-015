@@ -55,10 +55,12 @@ button {
 }
 
 label {
-  margin-top: 5%;
   font-weight: 500;
   font-size: 14px;
   color: var(--main-textc);
+}
+#newOrderForm label {
+  margin-top: 12px;
 }
 
 input {
@@ -630,6 +632,11 @@ acc-info-personal h3 {
   opacity: 1;
   transform: scale(1);
   transition: opacity 0.9s, transform 0.3s;
+}
+
+.columns-modal {
+  right: 2%;
+  bottom: 15%;
 }
 
 /* Hide the modal when it's closed */

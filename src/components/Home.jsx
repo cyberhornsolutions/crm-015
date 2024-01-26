@@ -22,6 +22,7 @@ import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { Tabs, Tab } from "react-bootstrap";
 import moment from "moment";
+import SelectColumnsModal from "./SelectColumnsModal.jsx";
 
 import {
   doc,
@@ -125,6 +126,21 @@ export default function HomeRu() {
     show: false,
     title: "",
     message: "",
+  });
+  const [showColumnsModal, setShowColumnsModal] = useState(false);
+  const [hideColumns, setHideColumns] = useState({
+    id: false,
+    date: false,
+    symbol: false,
+    type: false,
+    volume: false,
+    openPrice: false,
+    sltp: false,
+    additionalParameters: false,
+    pledge: false,
+    currentPrice: false,
+    profit: false,
+    action: false,
   });
 
   const { t, i18n } = useTranslation();
@@ -315,6 +331,7 @@ export default function HomeRu() {
           ""
         ),
       grow: 0.5,
+      omit: hideColumns.id,
     },
     {
       name: t("date"), // Translate the header using your t function
@@ -330,6 +347,7 @@ export default function HomeRu() {
       sortable: true,
       compact: true,
       grow: 1.5,
+      omit: hideColumns.date,
     },
     {
       name: t("symbol"),
@@ -345,6 +363,7 @@ export default function HomeRu() {
           ""
         ),
       sortable: true,
+      omit: hideColumns.symbol,
     },
     {
       name: t("type"),
@@ -376,6 +395,7 @@ export default function HomeRu() {
         ),
       sortable: true,
       compact: true,
+      omit: hideColumns.type,
     },
     {
       name: t("volume"),
@@ -391,6 +411,7 @@ export default function HomeRu() {
           ""
         ),
       sortable: true,
+      omit: hideColumns.volume,
     },
     {
       name: t("openPrice"),
@@ -406,11 +427,13 @@ export default function HomeRu() {
           ""
         ),
       sortable: true,
+      omit: hideColumns.openPrice,
     },
     {
       name: "SL / TP",
       selector: (row) => row && row.sltp,
       sortable: true,
+      omit: hideColumns.sltp,
     },
     {
       name: "Additional parameters",
@@ -430,12 +453,14 @@ export default function HomeRu() {
       grow: 2.5,
       compact: true,
       sortable: true,
+      omit: hideColumns.additionalParameters,
     },
     {
       name: "Pledge",
       selector: (row) => row && +parseFloat(row.pledge)?.toFixed(4),
       sortable: true,
       compact: true,
+      omit: hideColumns.pledge,
     },
     {
       name: "Current Price",
@@ -452,6 +477,7 @@ export default function HomeRu() {
         ),
       sortable: true,
       compact: true,
+      omit: hideColumns.currentPrice,
     },
     {
       name: t("profit"),
@@ -466,6 +492,7 @@ export default function HomeRu() {
           </div>
         ),
       sortable: true,
+      omit: hideColumns.profit,
     },
     {
       name: t("Action"),
@@ -491,6 +518,7 @@ export default function HomeRu() {
           ""
         ),
       sortable: true,
+      omit: hideColumns.action,
     },
   ];
   const [quoteSearch, setQuoteSearch] = useState("");
@@ -1564,7 +1592,14 @@ export default function HomeRu() {
                   </button>
                 </div>
                 <div id="orders">
-                  <Tabs activeKey={dealsTab} onSelect={(k) => setDealsTab(k)}>
+                  <Tabs
+                    activeKey={dealsTab}
+                    onSelect={(k) => setDealsTab(k)}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      setShowColumnsModal(true);
+                    }}
+                  >
                     <Tab eventKey="activeTab" title="Active">
                       <DataTable
                         columns={columns}
@@ -2234,6 +2269,14 @@ export default function HomeRu() {
           handleCloseModal={handleCloseModal}
           userQuotes={userQuotes}
           userId={currentUserId}
+        />
+      )}
+
+      {showColumnsModal && (
+        <SelectColumnsModal
+          setModal={setShowColumnsModal}
+          columns={hideColumns}
+          setColumns={setHideColumns}
         />
       )}
     </>
