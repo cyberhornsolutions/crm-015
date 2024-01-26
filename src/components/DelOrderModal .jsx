@@ -28,6 +28,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
       closedDate: serverTimestamp(),
       closedPrice,
       profit: selectedOrder.profit,
+      spread: selectedOrder.spread,
       swap: selectedOrder.swap,
       fee: selectedOrder.fee,
     };

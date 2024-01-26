@@ -445,7 +445,7 @@ export default function HomeRu() {
             className="order-column"
             onDoubleClick={() => handleEditModal(row)}
           >
-            {row.currentPrice}
+            {+parseFloat(row.currentPrice)?.toFixed(6)} ok
           </div>
         ) : (
           ""
@@ -879,6 +879,8 @@ export default function HomeRu() {
     root.classList.toggle("light");
   };
 
+  const closedOrders = orders.filter((order) => order.status !== "Pending");
+
   const pendingOrders = orders
     .filter((order) => order.status === "Pending")
     .map((order) => {
@@ -930,26 +932,29 @@ export default function HomeRu() {
       };
     });
 
-  const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
-  const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
-
-  const userProfit = pendingOrders.reduce((p, v) => p + v.profit, 0);
-  const allowBonus = userProfile?.settings?.allowBonus;
-  const bonus = userProfile?.bonus;
-
-  const ordersFee = pendingOrders.reduce(
+  const ordersFee = [...pendingOrders, ...closedOrders].reduce(
     (p, v) => p + v.spread + v.swap + v.fee,
     0
   );
 
+  const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
+  const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
+
+  const pendingOrdersProfit = pendingOrders.reduce((p, v) => p + +v.profit, 0);
+  const closedOrdersProfit = closedOrders.reduce((p, v) => p + +v.profit, 0);
+
+  const allowBonus = userProfile?.settings?.allowBonus;
+  const bonus = userProfile?.bonus;
+
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance);
-    if (userProfit) balance += parseFloat(userProfit);
+    if (closedOrdersProfit) balance += closedOrdersProfit;
+    if (pendingOrdersProfit) balance += pendingOrdersProfit;
     return balance;
   };
 
   const totalBalance = calculateTotalBalance();
-
+	
   const calculateFreeMargin = () => {
     let freeMarginOpened = totalBalance;
     const dealSum = pendingOrders.reduce((p, v) => p + v.sum, 0);
@@ -1060,14 +1065,14 @@ export default function HomeRu() {
               <input
                 type="number"
                 className={`balance-nums ${
-                  userProfit < 0
+                  pendingOrdersProfit < 0
                     ? "text-danger"
-                    : userProfit == 0
+                    : pendingOrdersProfit == 0
                     ? "text-muted"
                     : ""
                 }`}
                 readOnly={true}
-                value={+userProfit?.toFixed(6)}
+                value={+pendingOrdersProfit?.toFixed(6)}
               />
             </div>
             <div
