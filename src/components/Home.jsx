@@ -968,7 +968,7 @@ export default function HomeRu() {
   const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
   const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
 
-  const pendingOrdersProfit = pendingOrders.reduce((p, v) => p + +v.profit, 0);
+  const activeOrdersProfit = activeOrders.reduce((p, v) => p + +v.profit, 0);
   const closedOrdersProfit = closedOrders.reduce((p, v) => p + +v.profit, 0);
 
   const allowBonus = userProfile?.settings?.allowBonus;
@@ -977,7 +977,7 @@ export default function HomeRu() {
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance);
     if (closedOrdersProfit) balance += closedOrdersProfit;
-    if (pendingOrdersProfit) balance += pendingOrdersProfit;
+    if (activeOrdersProfit) balance += activeOrdersProfit;
     return balance;
   };
 
@@ -1093,14 +1093,14 @@ export default function HomeRu() {
               <input
                 type="number"
                 className={`balance-nums ${
-                  pendingOrdersProfit < 0
+                  activeOrdersProfit < 0
                     ? "text-danger"
-                    : pendingOrdersProfit == 0
+                    : activeOrdersProfit == 0
                     ? "text-muted"
                     : ""
                 }`}
                 readOnly={true}
-                value={+pendingOrdersProfit?.toFixed(6)}
+                value={+activeOrdersProfit?.toFixed(6)}
               />
             </div>
             <div
