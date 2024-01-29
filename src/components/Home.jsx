@@ -1006,8 +1006,8 @@ export default function HomeRu() {
     potentialTP = 0;
   if (orderData.symbolValue) {
     const symbolFee = (orderData.symbolValue / 100) * orderData.fee;
-    if (orderData.sl) potentialSL = orderData.sl - symbolFee;
-    if (orderData.tp) potentialTP = orderData.tp - symbolFee;
+    if (orderData.sl) potentialSL = orderData.volume * orderData.sl - symbolFee;
+    if (orderData.tp) potentialTP = orderData.volume * orderData.tp - symbolFee;
   }
 
   return (
