@@ -738,14 +738,13 @@ export default function HomeRu() {
   const placeOrder = async (e, type) => {
     e.preventDefault();
     const symbol = dbSymbols.find((el) => el.symbol == orderData?.symbol.value);
-    const bidValue = getBidValue(
-      orderData.symbolValue,
-      symbol?.settings?.bidSpread
-    );
-    const askValue = getAskValue(
-      orderData.symbolValue,
-      symbol?.settings?.askSpread
-    );
+    const { bidSpread, bidSpreadUnit, askSpread, askSpreadUnit } =
+      symbol.settings;
+
+    const closedPrice =
+      type === "Buy"
+        ? getBidValue(orderData.symbolValue, bidSpread, bidSpreadUnit === "$")
+        : getAskValue(orderData.symbolValue, askSpread, askSpreadUnit === "$");
 
     const form = document.getElementById("newOrderForm");
 
@@ -781,7 +780,7 @@ export default function HomeRu() {
     } else if (
       type == "Buy" &&
       orderData.sl &&
-      (orderData.sl >= bidValue || orderData.tp <= orderData.symbolValue)
+      (orderData.sl >= closedPrice || orderData.tp <= orderData.symbolValue)
     ) {
       toast.error(
         "To Buy SL should be less than the bid value and TP should be greater than the current value"
@@ -789,7 +788,7 @@ export default function HomeRu() {
     } else if (
       type == "Sell" &&
       orderData.sl &&
-      (orderData.sl <= askValue || orderData.tp >= orderData.symbolValue)
+      (orderData.sl <= closedPrice || orderData.tp >= orderData.symbolValue)
     ) {
       toast.error(
         "To Sell SL should be greater than the ask value and TP should be less than the current value"
@@ -966,6 +965,7 @@ export default function HomeRu() {
       return {
         ...order,
         currentPrice,
+        currentMarketPrice: parseFloat(symbol.price),
         enableOpenPrice,
         pledge: parseFloat(pledge),
         spread: parseFloat(spread),

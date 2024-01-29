@@ -4,16 +4,10 @@ import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { db } from "../firebase";
 import { toast } from "react-toastify";
-import { getAskValue, getBidValue } from "../helper/helpers";
 
 const EditOrderModal = ({ onClose, show, selectedOrder }) => {
   const [newSl, setNewSl] = useState(selectedOrder?.sl);
   const [newTp, setNewTp] = useState(selectedOrder?.tp);
-
-  const closedPrice =
-    selectedOrder.type == "Buy"
-      ? getBidValue(selectedOrder.currentPrice, selectedOrder.bidSpread)
-      : getAskValue(selectedOrder.currentPrice, selectedOrder.askSpread);
 
   const updateOrder = async () => {
     try {
@@ -22,14 +16,16 @@ const EditOrderModal = ({ onClose, show, selectedOrder }) => {
         toast.error("Make sure to fill both SL & TP values");
       } else if (
         selectedOrder.type == "Buy" &&
-        (newSl >= closedPrice || newTp <= selectedOrder.currentPrice)
+        (newSl >= selectedOrder.currentPrice ||
+          newTp <= selectedOrder.currentMarketPrice)
       ) {
         toast.error(
           "To Buy SL should be less than the bid value and TP should be greater than the current value"
         );
       } else if (
         selectedOrder.type == "Sell" &&
-        (newSl <= closedPrice || newTp >= selectedOrder.currentPrice)
+        (newSl <= selectedOrder.currentPrice ||
+          newTp >= selectedOrder.currentMarketPrice)
       ) {
         toast.error(
           "To Sell SL should be greater than the ask value and TP should be less than the current value"
@@ -135,7 +131,9 @@ const EditOrderModal = ({ onClose, show, selectedOrder }) => {
           </div>
           <div className="fs-4">
             Current market Price:
-            <span className="ms-2  text-success">{closedPrice}</span>
+            <span className="ms-2  text-success">
+              {selectedOrder.currentMarketPrice}
+            </span>
           </div>
           <div className="w-100 text-center my-2">
             <button
