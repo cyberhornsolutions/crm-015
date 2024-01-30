@@ -54,7 +54,6 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
       await updateDoc(userRef, {
         totalBalance: userData?.totalBalance - orderPrice,
       });
-      toast.success("Balance updated successfully");
     } else {
       toast.error("User not found");
     }
@@ -92,8 +91,8 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
         try {
           await createNewOrder();
           await updateOrderStatus(selectedOrder.id, "Closed", volume);
-          const orderPrice = volume * closedPrice;
-          await updateUserBalance(orderPrice);
+          // const orderPrice = volume * closedPrice;
+          // await updateUserBalance(orderPrice);
           onClose();
         } catch (error) {
           console.log(error);
@@ -105,8 +104,8 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
       setIsLoading(true);
       try {
         await updateOrderStatus(selectedOrder.id, "Closed");
-        const orderPrice = volume * closedPrice;
-        await updateUserBalance(orderPrice);
+        // const orderPrice = volume * closedPrice;
+        // await updateUserBalance(orderPrice);
         onClose();
       } catch (error) {
         console.log(error);

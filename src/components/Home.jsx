@@ -988,7 +988,7 @@ export default function HomeRu() {
   const bonus = userProfile?.bonus;
 
   const calculateTotalBalance = () => {
-    let balance = parseFloat(userProfile?.totalBalance);
+    let balance = parseFloat(userProfile?.totalBalance) - ordersFee;
     if (closedOrdersProfit) balance += closedOrdersProfit;
     if (activeOrdersProfit) balance += activeOrdersProfit;
     return balance;
@@ -1052,7 +1052,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={+(totalBalance - ordersFee)?.toFixed(6)}
+                value={+totalBalance?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
