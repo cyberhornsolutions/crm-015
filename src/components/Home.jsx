@@ -49,6 +49,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import EditOrderModal from "./EditOrderModal";
 import DelOrderModal from "./DelOrderModal ";
+import CancelOrderModal from "./CancelOrderModal";
 import ReportModal from "./ReportModal";
 import MessageModal from "./MessageModal";
 import {
@@ -103,6 +104,7 @@ export default function HomeRu() {
   const [isEditable, setIsEditable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
+  const [showCancelOrderModal, setShowCancelOrderModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState("");
   const [selectedOrder, setSelectedOrder] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -497,8 +499,8 @@ export default function HomeRu() {
     {
       name: t("Action"),
       selector: (row) =>
-        row ? (
-          <div className="">
+        row && (
+          <div>
             <FontAwesomeIcon
               icon={faEdit}
               size="lg"
@@ -510,12 +512,12 @@ export default function HomeRu() {
               className="ms-3"
               onClick={() => {
                 setSelectedOrder(row);
-                handleDelModal();
+                row.enableOpenPrice
+                  ? setShowCancelOrderModal(true)
+                  : handleDelModal();
               }}
             />
           </div>
-        ) : (
-          ""
         ),
       sortable: true,
       omit: hideColumns.action,
@@ -2255,6 +2257,12 @@ export default function HomeRu() {
           selectedOrder={selectedOrder}
           symbols={dbSymbols}
           currentUserId={currentUserId}
+        />
+      )}
+      {showCancelOrderModal && (
+        <CancelOrderModal
+          selectedOrder={selectedOrder}
+          setShow={setShowCancelOrderModal}
         />
       )}
       {isReportModalOpen && (

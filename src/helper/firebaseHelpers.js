@@ -7,6 +7,7 @@ import {
   query,
   onSnapshot,
   serverTimestamp,
+  deleteDoc,
   addDoc,
   setDoc,
   orderBy,
@@ -285,4 +286,12 @@ export const getAllBonus = (userId, setState) => {
   } catch (error) {
     console.error("Error:", error);
   }
+};
+
+export const deleteDocument = async (collectionPath, documentId) => {
+  const documentRef = doc(db, collectionPath, documentId);
+  await deleteDoc(documentRef);
+  console.log(
+    `Document with ID ${documentId} deleted successfully from ${collectionPath}`
+  );
 };
