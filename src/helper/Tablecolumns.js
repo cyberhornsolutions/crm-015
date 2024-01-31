@@ -22,6 +22,7 @@ export const generalColumns = [
   { name: "TP", selector: (row) => row.tp },
   { name: "SL", selector: (row) => row.sl },
   { name: "Swap", selector: (row) => row.swap },
+  { name: "Fee", selector: (row) => row.fee },
   {
     name: "Profit",
     selector: (row) => row && +parseFloat(row.profit)?.toFixed(6),
