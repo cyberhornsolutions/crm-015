@@ -526,9 +526,9 @@ export default function HomeRu() {
   const [quoteSearch, setQuoteSearch] = useState("");
 
   const userQuotes = userProfile?.quotes || [];
-  const userQuotesSymbols = userQuotes.map((q) =>
-    dbSymbols.find(({ symbol }) => symbol === q)
-  );
+  const userQuotesSymbols = userQuotes
+    .map((q) => dbSymbols.find(({ symbol }) => symbol === q))
+    .filter((s) => s);
   const filteredQuotesSymbols = quoteSearch
     ? userQuotesSymbols.filter(({ symbol }) =>
         symbol.toUpperCase().includes(quoteSearch.toUpperCase())
@@ -540,7 +540,7 @@ export default function HomeRu() {
     stocks = [],
     commodities = [];
   filteredQuotesSymbols.forEach((s) => {
-    if (s?.settings?.group === "crypto" || !s.settings) crypto.push(s);
+    if (s?.settings?.group === "crypto" || !s?.settings) crypto.push(s);
     else if (s?.settings?.group === "currencies") currencies.push(s);
     else if (s?.settings?.group === "stocks") stocks.push(s);
     else if (s?.settings?.group === "commodities") commodities.push(s);
