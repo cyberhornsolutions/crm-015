@@ -173,54 +173,46 @@ export const addUserNewBalance = async (userId, amount) => {
   }
 };
 
-export const getAllSymbols = (setState, setLoading) => {
-  setLoading(true);
-  try {
-    // const q = query(
-    //   collection(db, "symbols"),
-    //   where("symbol", "in", ["BTCUSDT", "ETHUSDT", "DOGEUSDT"])
-    // );
+export const getAllSymbols = (setState) => {
+  // const q = query(
+  //   collection(db, "symbols"),
+  //   where("symbol", "in", ["BTCUSDT", "ETHUSDT", "DOGEUSDT"])
+  // );
+  const symbolsRef = collection(db, "symbols");
 
-    const symbolsRef = collection(db, "symbols");
-    const unsubscribe = onSnapshot(
-      symbolsRef,
-      // q,
-      (snapshot) => {
-        const symbols = [];
-        snapshot.forEach((doc) => {
-          symbols.push({ id: doc.id, ...doc.data() });
-        });
+  const unsubscribe = onSnapshot(
+    symbolsRef,
+    // q,
+    (snapshot) => {
+      const realSymbols = [],
+        duplicateSymbols = [];
+      snapshot.forEach((doc) => {
+        const symbol = { id: doc.id, ...doc.data() };
+        symbol.duplicate
+          ? duplicateSymbols.push(symbol)
+          : realSymbols.push(symbol);
+      });
 
-        const symbolsData = symbols
-          // .filter(({ symbol }) => symbol.endsWith("USDT"))
-          .map((s) => {
-            return s.duplicates?.length
-              ? [
-                  s,
-                  ...s.duplicates.map((m) => ({
-                    symbolId: s.id,
-                    symbol: m,
-                    price: s.price,
-                    duplicate: s.symbol,
-                    settings: s.settings,
-                  })),
-                ]
-              : s;
-          })
-          .flat();
+      const symbolsData = realSymbols
+        .map((s) => {
+          return s.duplicates?.length
+            ? [
+                s,
+                ...s.duplicates.map((d) =>
+                  duplicateSymbols.find(({ id }) => id === d)
+                ),
+              ]
+            : s;
+        })
+        .flat();
 
-        setState(symbolsData);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    );
-    return () => unsubscribe();
-  } catch (error) {
-    console.error("Error:", error);
-  }
+      setState(symbolsData);
+    },
+    (error) => {
+      console.error("Error fetching data:", error);
+    }
+  );
+  return () => unsubscribe();
 };
 
 export const getDepositsByUser = (userId, setState) => {
