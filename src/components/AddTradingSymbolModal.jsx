@@ -55,7 +55,7 @@ const AddTradingSymbol = ({
               >
                 <option value="">Select symbol</option>
                 {symbols?.map((el, idx) => (
-                  <option key={idx} value={el?.symbol}>
+                  <option key={idx} value={el?.id}>
                     {el?.symbol}
                   </option>
                 ))}

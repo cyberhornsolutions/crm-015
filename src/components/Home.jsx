@@ -527,7 +527,7 @@ export default function HomeRu() {
 
   const userQuotes = userProfile?.quotes || [];
   const userQuotesSymbols = userQuotes
-    .map((q) => dbSymbols.find(({ symbol }) => symbol === q))
+    .map((q) => dbSymbols.find(({ id }) => id === q))
     .filter((s) => s);
   const filteredQuotesSymbols = quoteSearch
     ? userQuotesSymbols.filter(({ symbol }) =>
