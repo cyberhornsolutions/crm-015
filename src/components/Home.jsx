@@ -458,7 +458,7 @@ export default function HomeRu() {
       omit: hideColumns.additionalParameters,
     },
     {
-      name: "Pledge",
+      name: "Margin",
       selector: (row) => row && +parseFloat(row.pledge)?.toFixed(4),
       sortable: true,
       compact: true,
@@ -1007,13 +1007,7 @@ export default function HomeRu() {
 
   const pledge = pendingOrders.reduce((p, v) => p + v.pledge, 0);
 
-  const calculateEquity = () => {
-    let equity = freeMargin + pledge - ordersFee;
-    if (allowBonus) equity -= bonus;
-    return equity;
-  };
-
-  const equity = calculateEquity();
+  const level = (totalBalance / pledge) * 100;
 
   let potentialSL = 0,
     potentialTP = 0;
@@ -1041,7 +1035,7 @@ export default function HomeRu() {
         <div id="header-info">
           <div id="balance">
             <div className="balance-item">
-              <h2 className="balance-title">{t("balance")}:</h2>
+              <h2 className="balance-title">{t("Equity")}:</h2>
               <input
                 type="number"
                 className={`balance-nums ${
@@ -1053,6 +1047,21 @@ export default function HomeRu() {
                 }`}
                 readOnly={true}
                 value={+totalBalance?.toFixed(6)}
+              />
+            </div>
+            <div className="balance-item">
+              <h2 className="balance-title">{t("profit")}:</h2>
+              <input
+                type="number"
+                className={`balance-nums ${
+                  activeOrdersProfit < 0
+                    ? "text-danger"
+                    : activeOrdersProfit == 0
+                    ? "text-muted"
+                    : ""
+                }`}
+                readOnly={true}
+                value={+activeOrdersProfit?.toFixed(6)}
               />
             </div>
             <div className="balance-item">
@@ -1077,20 +1086,7 @@ export default function HomeRu() {
             </div>
             <div className="balance-item">
               <h2 className="balance-title" id="">
-                Equity:
-              </h2>
-              <input
-                type="number"
-                className={`balance-nums ${
-                  equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
-                }`}
-                readOnly={true}
-                value={+equity?.toFixed(6)}
-              />
-            </div>
-            <div className="balance-item">
-              <h2 className="balance-title" id="">
-                Pledge:
+                Margin:
               </h2>
               <input
                 type="number"
@@ -1102,18 +1098,16 @@ export default function HomeRu() {
               />
             </div>
             <div className="balance-item">
-              <h2 className="balance-title">{t("profit")}:</h2>
+              <h2 className="balance-title" id="">
+                Level:
+              </h2>
               <input
                 type="number"
                 className={`balance-nums ${
-                  activeOrdersProfit < 0
-                    ? "text-danger"
-                    : activeOrdersProfit == 0
-                    ? "text-muted"
-                    : ""
+                  level < 0 ? "text-danger" : level == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={+activeOrdersProfit?.toFixed(6)}
+                value={+level?.toFixed(6)}
               />
             </div>
             <div
