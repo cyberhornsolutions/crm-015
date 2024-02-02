@@ -581,7 +581,7 @@ export default function HomeRu() {
           <FontAwesomeIcon
             id="assetDeleteIcon"
             icon={faClose}
-            onClick={() => handleDeleteAsset(row.symbol)}
+            onClick={() => handleDeleteAsset(row.id)}
           />
         ),
       compact: true,
