@@ -1223,425 +1223,424 @@ export default function HomeRu() {
           </div>
         </div>
         <div id="content">
-          {(tab === "trade" || tab === "assets") && (
-            <div id="trade-div">
-              <div id="trade">
-                {tab === "assets" && (
-                  <div id="assets">
-                    <div className="tradingWidget h-100">
-                      <Tabs
-                        activeKey={assetsTab}
-                        onSelect={(k) => setAssetsTab(k)}
-                        className="mb-2 flex-nowrap overflow-hidden"
-                        fill
+          <div
+            id="trade-div"
+            className={`${!(tab === "trade" || tab === "assets") && "d-none"}`}
+          >
+            <div id="trade">
+              {tab === "assets" && (
+                <div id="assets">
+                  <div className="tradingWidget h-100">
+                    <Tabs
+                      activeKey={assetsTab}
+                      onSelect={(k) => setAssetsTab(k)}
+                      className="mb-2 flex-nowrap overflow-hidden"
+                      fill
+                    >
+                      <Tab
+                        eventKey="cryptoTab"
+                        title="Crypto"
+                        tabClassName={
+                          assetsTab === "commoditiesTab" && "d-none"
+                        }
                       >
+                        <input
+                          type="search"
+                          placeholder="Search..."
+                          className="w-100"
+                          value={quoteSearch}
+                          onChange={(e) => setQuoteSearch(e.target.value)}
+                        />
+                        <DataTable
+                          columns={assetsColumns}
+                          data={fillArrayWithEmptyRows(crypto, 10)}
+                          highlightOnHover
+                          pointerOnHover
+                          customStyles={customStylesAssetsTable}
+                          conditionalRowStyles={conditionalRowStyles}
+                          onRowDoubleClicked={handleRowDoubleClick}
+                        />
+                      </Tab>
+                      <Tab eventKey="currenciesTab" title="Currencies">
+                        <input
+                          type="search"
+                          placeholder="Search..."
+                          className="w-100"
+                          value={quoteSearch}
+                          onChange={(e) => setQuoteSearch(e.target.value)}
+                        />
+                        <DataTable
+                          columns={assetsColumns}
+                          data={fillArrayWithEmptyRows(currencies, 10)}
+                          highlightOnHover
+                          pointerOnHover
+                          customStyles={customStylesAssetsTable}
+                          conditionalRowStyles={conditionalRowStyles}
+                          onRowDoubleClicked={handleRowDoubleClick}
+                        />
+                      </Tab>
+                      <Tab eventKey="stocksTab" title="Stocks">
+                        <input
+                          type="search"
+                          placeholder="Search..."
+                          className="w-100"
+                          value={quoteSearch}
+                          customStyles={customStylesAssetsTable}
+                          conditionalRowStyles={conditionalRowStyles}
+                          onChange={(e) => setQuoteSearch(e.target.value)}
+                        />
+                        <DataTable
+                          columns={assetsColumns}
+                          data={fillArrayWithEmptyRows(stocks, 10)}
+                          highlightOnHover
+                          pointerOnHover
+                          customStyles={customStylesAssetsTable}
+                          conditionalRowStyles={conditionalRowStyles}
+                          onRowDoubleClicked={handleRowDoubleClick}
+                        />
+                      </Tab>
+                      <Tab eventKey="commoditiesTab" title="Commodities">
+                        <input
+                          type="search"
+                          placeholder="Search..."
+                          className="w-100"
+                          value={quoteSearch}
+                          onChange={(e) => setQuoteSearch(e.target.value)}
+                        />
+                        <DataTable
+                          columns={assetsColumns}
+                          data={fillArrayWithEmptyRows(commodities, 10)}
+                          highlightOnHover
+                          pointerOnHover
+                          customStyles={customStylesAssetsTable}
+                          conditionalRowStyles={conditionalRowStyles}
+                          onRowDoubleClicked={handleRowDoubleClick}
+                        />
+                      </Tab>
+                      {assetsTab === "commoditiesTab" && (
                         <Tab
-                          eventKey="cryptoTab"
-                          title="Crypto"
-                          tabClassName={
-                            assetsTab === "commoditiesTab" && "d-none"
-                          }
-                        >
-                          <input
-                            type="search"
-                            placeholder="Search..."
-                            className="w-100"
-                            value={quoteSearch}
-                            onChange={(e) => setQuoteSearch(e.target.value)}
-                          />
-                          <DataTable
-                            columns={assetsColumns}
-                            data={fillArrayWithEmptyRows(crypto, 10)}
-                            highlightOnHover
-                            pointerOnHover
-                            customStyles={customStylesAssetsTable}
-                            conditionalRowStyles={conditionalRowStyles}
-                            onRowDoubleClicked={handleRowDoubleClick}
-                          />
-                        </Tab>
-                        <Tab eventKey="currenciesTab" title="Currencies">
-                          <input
-                            type="search"
-                            placeholder="Search..."
-                            className="w-100"
-                            value={quoteSearch}
-                            onChange={(e) => setQuoteSearch(e.target.value)}
-                          />
-                          <DataTable
-                            columns={assetsColumns}
-                            data={fillArrayWithEmptyRows(currencies, 10)}
-                            highlightOnHover
-                            pointerOnHover
-                            customStyles={customStylesAssetsTable}
-                            conditionalRowStyles={conditionalRowStyles}
-                            onRowDoubleClicked={handleRowDoubleClick}
-                          />
-                        </Tab>
-                        <Tab eventKey="stocksTab" title="Stocks">
-                          <input
-                            type="search"
-                            placeholder="Search..."
-                            className="w-100"
-                            value={quoteSearch}
-                            customStyles={customStylesAssetsTable}
-                            conditionalRowStyles={conditionalRowStyles}
-                            onChange={(e) => setQuoteSearch(e.target.value)}
-                          />
-                          <DataTable
-                            columns={assetsColumns}
-                            data={fillArrayWithEmptyRows(stocks, 10)}
-                            highlightOnHover
-                            pointerOnHover
-                            customStyles={customStylesAssetsTable}
-                            conditionalRowStyles={conditionalRowStyles}
-                            onRowDoubleClicked={handleRowDoubleClick}
-                          />
-                        </Tab>
-                        <Tab eventKey="commoditiesTab" title="Commodities">
-                          <input
-                            type="search"
-                            placeholder="Search..."
-                            className="w-100"
-                            value={quoteSearch}
-                            onChange={(e) => setQuoteSearch(e.target.value)}
-                          />
-                          <DataTable
-                            columns={assetsColumns}
-                            data={fillArrayWithEmptyRows(commodities, 10)}
-                            highlightOnHover
-                            pointerOnHover
-                            customStyles={customStylesAssetsTable}
-                            conditionalRowStyles={conditionalRowStyles}
-                            onRowDoubleClicked={handleRowDoubleClick}
-                          />
-                        </Tab>
-                        {assetsTab === "commoditiesTab" && (
-                          <Tab
-                            eventKey="stocksTab"
-                            title={<FontAwesomeIcon icon={faAngleLeft} />}
-                            hidden={true}
-                          />
-                        )}
-                      </Tabs>
-                      <div className="text-center">
-                        <button
-                          className="btn btn-success"
-                          onClick={() => {
-                            handleTradingModal();
-                          }}
-                        >
-                          + Add Symbol
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div id="chart">
-                  <ul className="nav nav-tabs" id="myTabs">
-                    {tabs?.map((e, i) => (
-                      <li className="nav-item">
-                        <a
-                          className={`nav-link ${
-                            activeTab === i + 1 && "active"
-                          }`}
-                          data-bs-toggle="tab"
-                          style={{
-                            fontSize: "14px",
-                            cursor: "pointer",
-                            position: "relative",
-                          }}
-                          onClick={() => setActiveTab(i + 1)}
-                        >
-                          # {i + 1}
-                          <div
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              let _tabs = [...tabs].filter(
-                                (f, index) => index !== i
-                              );
-                              setTabs(_tabs);
-                              setActiveTab(_tabs.length);
-                            }}
-                          >
-                            <CloseCircleOutline
-                              style={{
-                                marginLeft: 10,
-                                height: "auto",
-                                position: "absolute",
-                                top: "-10px",
-                                left: "30px",
-                                borderRadius: "50%",
-                              }}
-                            />
-                          </div>
-                        </a>
-                      </li>
-                    ))}
-                    <li className="nav-item">
+                          eventKey="stocksTab"
+                          title={<FontAwesomeIcon icon={faAngleLeft} />}
+                          hidden={true}
+                        />
+                      )}
+                    </Tabs>
+                    <div className="text-center">
                       <button
-                        id="addTabButton"
-                        className="btn btn-primary"
-                        style={{ background: "transparent", border: "none" }}
-                        // onClick={addChart}
+                        className="btn btn-success"
                         onClick={() => {
-                          let highest = tabs[0];
-                          tabs.forEach((element) => {
-                            if (element > highest) {
-                              highest = element;
-                            }
-                          });
-                          let _tabs = [...tabs, highest + 1];
-                          setTabs(_tabs);
-                          setActiveTab(_tabs.length);
-                          // console.log({ _tabs, length: _tabs.length });
+                          handleTradingModal();
                         }}
                       >
-                        +
+                        + Add Symbol
                       </button>
-                    </li>
-                  </ul>
-                  {tabs?.map((e, i) => {
-                    return (
-                      <TradingView
-                        locale="en"
-                        hide={activeTab === i + 1 ? false : true}
-                        index={i}
-                        selectedSymbol={orderData?.symbol?.value}
-                      />
-                    );
-                  })}
-                </div>
-
-                <div id="newOrder" style={{ display: "none" }}>
-                  <div id="newOrderData">
-                    <h2
-                      style={{
-                        margin: "0",
-                        width: "70%",
-                        height: "5%",
-                        marginLeft: "15%",
-                        fontSize: "18px",
-                      }}
-                    >
-                      {t("newDeal")}
-                    </h2>
-                    {isLoading ? (
-                      <p>Loading....</p>
-                    ) : (
-                      <form id="newOrderForm">
-                        <label htmlFor="symbol-input">{t("symbol")}</label>
-                        <Select
-                          id="symbol-input"
-                          options={dbSymbols.map((f) => ({
-                            value: f.symbol,
-                            label: f.symbol,
-                          }))}
-                          onChange={(e) =>
-                            setOrderData({ ...orderData, symbol: e })
-                          }
-                          styles={customStyles}
-                          value={orderData.symbol}
-                          selectedValue={orderData.symbol}
-                        />
-                        <label htmlFor="symbol-current-value">Price</label>
-                        <div className="d-flex align-items-center gap-3">
-                          <input
-                            type="number"
-                            id="symbol-current-value"
-                            name="symbolValue"
-                            readOnly={true}
-                            value={+orderData?.symbolValue}
-                          />
-                          <FontAwesomeIcon
-                            onClick={() => {
-                              refreshPrice();
-                            }}
-                            icon={faRefresh}
-                          />
-                        </div>
-
-                        <label htmlFor="symbol-amount">Volume</label>
-                        <input
-                          type="number"
-                          step={0.1}
-                          id="symbol-amount"
-                          name="volume"
-                          onChange={(e) => {
-                            const { value } = e.target;
-                            setOrderData((p) => ({
-                              ...p,
-                              volume: !value ? "" : parseFloat(value),
-                            }));
-                          }}
-                          value={orderData.volume}
-                        />
-                        <label className="mt-1">
-                          Total: {+calculatedSum?.toFixed(6)} USDT
-                        </label>
-                        <label htmlFor="symbol-current-value">Open Price</label>
-                        <div className="d-flex align-items-center gap-3">
-                          <input
-                            type="number"
-                            readOnly={!enableOpenPrice}
-                            disabled={!enableOpenPrice}
-                            className={!enableOpenPrice && "disabled"}
-                            value={
-                              enableOpenPrice
-                                ? openPriceValue
-                                : +orderData?.symbolValue
-                            }
-                            onChange={(e) => setOpenPriceValue(e.target.value)}
-                          />
-                          <input
-                            // className="form-check-input"
-                            type="checkbox"
-                            checked={enableOpenPrice}
-                            onChange={(e) => {
-                              setOpenPriceValue(
-                                parseFloat(orderData.symbolValue)
-                              );
-                              setEnableOpenPrice(e.target.checked);
-                            }}
-                          />
-                        </div>
-
-                        <label htmlFor="stop-loss">SL</label>
-                        <input
-                          type="number"
-                          id="stop-loss"
-                          name="sl"
-                          // required
-                          onChange={(e) =>
-                            setOrderData({ ...orderData, sl: e.target.value })
-                          }
-                          value={orderData?.sl}
-                        />
-                        <label className="mt-1">
-                          Potential: {+parseFloat(potentialSL)?.toFixed(6)}
-                        </label>
-                        <label htmlFor="take-profit">TP</label>
-                        <input
-                          type="number"
-                          id="take-profit"
-                          name="tp"
-                          // required
-                          onChange={(e) =>
-                            setOrderData({ ...orderData, tp: e.target.value })
-                          }
-                          value={orderData?.tp}
-                        />
-                        <label className="mt-1">
-                          Potential: {+parseFloat(potentialTP)?.toFixed(6)}
-                        </label>
-                        <button
-                          // className="newOrderButton"
-                          // id="buyButton"
-                          className="newOrderButton buyButton"
-                          onClick={(e) => {
-                            placeOrder(e, "Buy");
-                            // console.log("Here");
-                          }}
-                          type="submit"
-                        >
-                          {t("buy")}
-                        </button>
-                        <button
-                          // className="newOrderButton"
-                          //  id="sellButton"
-                          onClick={(e) => placeOrder(e, "Sell")}
-                          type="submit"
-                          className="newOrderButton sellButton"
-                        >
-                          {t("sell")}
-                        </button>
-                      </form>
-                    )}
+                    </div>
                   </div>
                 </div>
+              )}
+              <div id="chart">
+                <ul className="nav nav-tabs" id="myTabs">
+                  {tabs?.map((e, i) => (
+                    <li className="nav-item">
+                      <a
+                        className={`nav-link ${
+                          activeTab === i + 1 && "active"
+                        }`}
+                        data-bs-toggle="tab"
+                        style={{
+                          fontSize: "14px",
+                          cursor: "pointer",
+                          position: "relative",
+                        }}
+                        onClick={() => setActiveTab(i + 1)}
+                      >
+                        # {i + 1}
+                        <div
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            let _tabs = [...tabs].filter(
+                              (f, index) => index !== i
+                            );
+                            setTabs(_tabs);
+                            setActiveTab(_tabs.length);
+                          }}
+                        >
+                          <CloseCircleOutline
+                            style={{
+                              marginLeft: 10,
+                              height: "auto",
+                              position: "absolute",
+                              top: "-10px",
+                              left: "30px",
+                              borderRadius: "50%",
+                            }}
+                          />
+                        </div>
+                      </a>
+                    </li>
+                  ))}
+                  <li className="nav-item">
+                    <button
+                      id="addTabButton"
+                      className="btn btn-primary"
+                      style={{ background: "transparent", border: "none" }}
+                      // onClick={addChart}
+                      onClick={() => {
+                        let highest = tabs[0];
+                        tabs.forEach((element) => {
+                          if (element > highest) {
+                            highest = element;
+                          }
+                        });
+                        let _tabs = [...tabs, highest + 1];
+                        setTabs(_tabs);
+                        setActiveTab(_tabs.length);
+                        // console.log({ _tabs, length: _tabs.length });
+                      }}
+                    >
+                      +
+                    </button>
+                  </li>
+                </ul>
+                {tabs?.map((e, i) => {
+                  return (
+                    <TradingView
+                      locale="en"
+                      hide={activeTab === i + 1 ? false : true}
+                      index={i}
+                      selectedSymbol={orderData?.symbol?.value}
+                    />
+                  );
+                })}
               </div>
-              <div id="history-div">
-                <div id="nav-buttons">
-                  <button
-                    id="newDealButton"
-                    onClick={() => {
-                      openOrderPanel();
-                      // let a = document.getElementById("newOrder");
-                      // let d = window.getComputedStyle(a).display;
-                      // document.getElementById("newOrder").style.display =
-                      //   d === "flex" ? "none" : "flex";
+
+              <div id="newOrder" style={{ display: "none" }}>
+                <div id="newOrderData">
+                  <h2
+                    style={{
+                      margin: "0",
+                      width: "70%",
+                      height: "5%",
+                      marginLeft: "15%",
+                      fontSize: "18px",
                     }}
                   >
-                    {t("newOrder")}
-                  </button>
-                  <button
-                    id="newDealButtonMobile"
-                    onClick={() => {
-                      openOrderPanel();
-                    }}
-                  >
-                    {t("newOrder")}
-                  </button>
-                  <button
-                    id="ordersHistoryButton"
-                    onClick={() => {
-                      openOrderHistory();
-                    }}
-                  >
-                    {t("ordersHistory")}
-                  </button>
-                  <button
-                    // id="ordersHistoryButton"
-                    onClick={() => {
-                      setIsReportModalOpen(true);
-                    }}
-                  >
-                    {t("orderReport")}
-                  </button>
-                </div>
-                <div id="orders">
-                  <Tabs
-                    activeKey={dealsTab}
-                    onSelect={(k) => setDealsTab(k)}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      setShowColumnsModal(true);
-                    }}
-                  >
-                    <Tab eventKey="activeTab" title="Active">
-                      <DataTable
-                        columns={columns}
-                        data={fillArrayWithEmptyRows(activeOrders, 3)}
-                        pagination
-                        paginationPerPage={5}
-                        paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
-                        highlightOnHover
-                        pointerOnHover
-                        responsive
-                        theme="dark"
-                        className="custom-data-table"
+                    {t("newDeal")}
+                  </h2>
+                  {isLoading ? (
+                    <p>Loading....</p>
+                  ) : (
+                    <form id="newOrderForm">
+                      <label htmlFor="symbol-input">{t("symbol")}</label>
+                      <Select
+                        id="symbol-input"
+                        options={dbSymbols.map((f) => ({
+                          value: f.symbol,
+                          label: f.symbol,
+                        }))}
+                        onChange={(e) =>
+                          setOrderData({ ...orderData, symbol: e })
+                        }
+                        styles={customStyles}
+                        value={orderData.symbol}
+                        selectedValue={orderData.symbol}
                       />
-                    </Tab>
-                    <Tab eventKey="delayedTab" title="Delayed">
-                      <DataTable
-                        columns={columns.filter(
-                          ({ name }) => name !== "Profit"
-                        )}
-                        data={fillArrayWithEmptyRows(delayedOrders, 3)}
-                        pagination
-                        paginationPerPage={5}
-                        paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
-                        highlightOnHover
-                        pointerOnHover
-                        responsive
-                        theme="dark"
-                        className="custom-data-table"
+                      <label htmlFor="symbol-current-value">Price</label>
+                      <div className="d-flex align-items-center gap-3">
+                        <input
+                          type="number"
+                          id="symbol-current-value"
+                          name="symbolValue"
+                          readOnly={true}
+                          value={+orderData?.symbolValue}
+                        />
+                        <FontAwesomeIcon
+                          onClick={() => {
+                            refreshPrice();
+                          }}
+                          icon={faRefresh}
+                        />
+                      </div>
+
+                      <label htmlFor="symbol-amount">Volume</label>
+                      <input
+                        type="number"
+                        step={0.1}
+                        id="symbol-amount"
+                        name="volume"
+                        onChange={(e) => {
+                          const { value } = e.target;
+                          setOrderData((p) => ({
+                            ...p,
+                            volume: !value ? "" : parseFloat(value),
+                          }));
+                        }}
+                        value={orderData.volume}
                       />
-                    </Tab>
-                  </Tabs>
+                      <label className="mt-1">
+                        Total: {+calculatedSum?.toFixed(6)} USDT
+                      </label>
+                      <label htmlFor="symbol-current-value">Open Price</label>
+                      <div className="d-flex align-items-center gap-3">
+                        <input
+                          type="number"
+                          readOnly={!enableOpenPrice}
+                          disabled={!enableOpenPrice}
+                          className={!enableOpenPrice && "disabled"}
+                          value={
+                            enableOpenPrice
+                              ? openPriceValue
+                              : +orderData?.symbolValue
+                          }
+                          onChange={(e) => setOpenPriceValue(e.target.value)}
+                        />
+                        <input
+                          // className="form-check-input"
+                          type="checkbox"
+                          checked={enableOpenPrice}
+                          onChange={(e) => {
+                            setOpenPriceValue(
+                              parseFloat(orderData.symbolValue)
+                            );
+                            setEnableOpenPrice(e.target.checked);
+                          }}
+                        />
+                      </div>
+
+                      <label htmlFor="stop-loss">SL</label>
+                      <input
+                        type="number"
+                        id="stop-loss"
+                        name="sl"
+                        // required
+                        onChange={(e) =>
+                          setOrderData({ ...orderData, sl: e.target.value })
+                        }
+                        value={orderData?.sl}
+                      />
+                      <label className="mt-1">
+                        Potential: {+parseFloat(potentialSL)?.toFixed(6)}
+                      </label>
+                      <label htmlFor="take-profit">TP</label>
+                      <input
+                        type="number"
+                        id="take-profit"
+                        name="tp"
+                        // required
+                        onChange={(e) =>
+                          setOrderData({ ...orderData, tp: e.target.value })
+                        }
+                        value={orderData?.tp}
+                      />
+                      <label className="mt-1">
+                        Potential: {+parseFloat(potentialTP)?.toFixed(6)}
+                      </label>
+                      <button
+                        // className="newOrderButton"
+                        // id="buyButton"
+                        className="newOrderButton buyButton"
+                        onClick={(e) => {
+                          placeOrder(e, "Buy");
+                          // console.log("Here");
+                        }}
+                        type="submit"
+                      >
+                        {t("buy")}
+                      </button>
+                      <button
+                        // className="newOrderButton"
+                        //  id="sellButton"
+                        onClick={(e) => placeOrder(e, "Sell")}
+                        type="submit"
+                        className="newOrderButton sellButton"
+                      >
+                        {t("sell")}
+                      </button>
+                    </form>
+                  )}
                 </div>
               </div>
             </div>
-          )}
+            <div id="history-div">
+              <div id="nav-buttons">
+                <button
+                  id="newDealButton"
+                  onClick={() => {
+                    openOrderPanel();
+                    // let a = document.getElementById("newOrder");
+                    // let d = window.getComputedStyle(a).display;
+                    // document.getElementById("newOrder").style.display =
+                    //   d === "flex" ? "none" : "flex";
+                  }}
+                >
+                  {t("newOrder")}
+                </button>
+                <button
+                  id="newDealButtonMobile"
+                  onClick={() => {
+                    openOrderPanel();
+                  }}
+                >
+                  {t("newOrder")}
+                </button>
+                <button
+                  id="ordersHistoryButton"
+                  onClick={() => {
+                    openOrderHistory();
+                  }}
+                >
+                  {t("ordersHistory")}
+                </button>
+                <button
+                  // id="ordersHistoryButton"
+                  onClick={() => {
+                    setIsReportModalOpen(true);
+                  }}
+                >
+                  {t("orderReport")}
+                </button>
+              </div>
+              <div id="orders">
+                <Tabs
+                  activeKey={dealsTab}
+                  onSelect={(k) => setDealsTab(k)}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setShowColumnsModal(true);
+                  }}
+                >
+                  <Tab eventKey="activeTab" title="Active">
+                    <DataTable
+                      columns={columns}
+                      data={fillArrayWithEmptyRows(activeOrders, 3)}
+                      pagination
+                      paginationPerPage={5}
+                      paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                      highlightOnHover
+                      pointerOnHover
+                      responsive
+                      theme="dark"
+                      className="custom-data-table"
+                    />
+                  </Tab>
+                  <Tab eventKey="delayedTab" title="Delayed">
+                    <DataTable
+                      columns={columns.filter(({ name }) => name !== "Profit")}
+                      data={fillArrayWithEmptyRows(delayedOrders, 3)}
+                      pagination
+                      paginationPerPage={5}
+                      paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                      highlightOnHover
+                      pointerOnHover
+                      responsive
+                      theme="dark"
+                      className="custom-data-table"
+                    />
+                  </Tab>
+                </Tabs>
+              </div>
+            </div>
+          </div>
           {tab === "account" && (
             <div id="account">
               <div id="account-profile">
