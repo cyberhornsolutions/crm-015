@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import symbolSlicer from "./slicer/symbolSlicer";
 import orderSlicer from "./slicer/orderSlicer";
+import transactionSlicer from "./slicer/transactionSlicer";
 
 const persistConfig = {
   key: "root",
@@ -17,6 +18,7 @@ const persistedReducer = persistReducer(
     //slice
     symbols: symbolSlicer,
     orders: orderSlicer,
+    deposits: transactionSlicer,
   })
 );
 

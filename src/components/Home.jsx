@@ -57,6 +57,7 @@ import {
   fetchAllOrdersByUserId,
   getAllSymbols,
   addQuotesToUser,
+  getDepositsByUser,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import MyBarChart from "./BarChart.js";
@@ -64,6 +65,7 @@ import CurrentProfit from "./CurrentProfit.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
 import { setOrdersState } from "../redux/slicer/orderSlicer.js";
+import { setDepositsState } from "../redux/slicer/transactionSlicer.js";
 import AddTradingSymbolModal from "./AddTradingSymbolModal.jsx";
 import {
   calculateProfit,
@@ -111,7 +113,6 @@ export default function HomeRu() {
   const [enableOpenPrice, setEnableOpenPrice] = useState(false);
   const [openPriceValue, setOpenPriceValue] = useState(null);
   const [isTradingModal, setIsTradingModal] = useState(false);
-  const [bQuotes, setBQuotes] = useState([]);
   const [userProfile, setUserProfile] = useState({
     name: "",
     surname: "",
@@ -243,7 +244,15 @@ export default function HomeRu() {
       }`,
     }));
     dispatch(setOrdersState(mappedOrders));
-  });
+  }, []);
+
+  const setDbSymbols = useCallback((data) => {
+    dispatch(setSymbolsState(data));
+  }, []);
+
+  const setDeposits = useCallback((data) => {
+    dispatch(setDepositsState(data));
+  }, []);
 
   useEffect(() => {
     return checkCurrentUser();
@@ -257,9 +266,15 @@ export default function HomeRu() {
       auth.currentUser.uid,
       setOrders
     );
+
+    if (!dbSymbols.length) getAllSymbols(setDbSymbols);
+
+    const unsubDeposits = getDepositsByUser(currentUserId, setDeposits);
+
     return () => {
       unsubUserData();
       if (unsubOrderData) unsubOrderData();
+      unsubDeposits();
     };
   }, [currentUserId]);
 
@@ -679,14 +694,6 @@ export default function HomeRu() {
       // tableOrders.style.maxHeight = "150px";
     }
   };
-
-  const setDbSymbols = useCallback((data) => {
-    dispatch(setSymbolsState(data));
-  }, []);
-
-  useEffect(() => {
-    return getAllSymbols(setDbSymbols, setIsLoading);
-  }, []);
 
   useEffect(() => {
     if (orderData?.symbol) {

@@ -1,21 +1,23 @@
 // Example: EditModal.js
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Modal } from "react-bootstrap";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import DataTable from "react-data-table-component";
 import { depositColumns, generalColumns } from "../helper/Tablecolumns";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getDepositsByUser } from "../helper/firebaseHelpers";
 import { fillArrayWithEmptyRows } from "../helper/helpers";
+import { setDepositsState } from "../redux/slicer/transactionSlicer";
 
 const ReportModal = ({ onClose, show, userId }) => {
+  const dispatch = useDispatch();
   const orders = useSelector((state) =>
     state.orders.filter(({ status }) => status != "Pending")
   );
+  const deposits = useSelector((state) => state.deposits);
   const [key, setKey] = useState("tradeOperations");
-  const [deposits, setDeposits] = useState([]);
   const [showRecord, setShowRecord] = useState("all");
 
   const totalProfit = orders.reduce((p, v) => p + +v.profit, 0);
@@ -23,6 +25,10 @@ const ReportModal = ({ onClose, show, userId }) => {
   const customStyle = {
     table: { style: { height: "70vh", backgroundColor: "#2f323d" } },
   };
+
+  const setDeposits = useCallback((data) => {
+    dispatch(setDepositsState(data));
+  }, []);
 
   useEffect(() => {
     if (!deposits.length) getDepositsByUser(userId, setDeposits);
