@@ -22,7 +22,9 @@
   background-color: unset;
 }
 .reports-modal .tab-content > div nav,
-.transactions-table nav {
+.reports-modal .tab-content > div nav *,
+.transactions-table nav,
+.transactions-table nav * {
   background-color: var(--main-bgc);
 }
 .transactions-table > div > div > div {
