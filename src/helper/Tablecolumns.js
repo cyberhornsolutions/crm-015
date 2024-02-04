@@ -62,15 +62,6 @@ export const tradOptColumns = [
   { name: "Type of closure", width: "150px" },
 ];
 
-export const depositColumns = [
-  {
-    name: "Date",
-    selector: (row) => row.createdAt && row.createdAt,
-  },
-  { name: "Sum", selector: (row) => row.sum },
-  { name: "Type", selector: (row) => row.type },
-];
-
 export const executedOrderColumns = [
   { name: "Number", selector: (row) => row.no },
   { name: "Symbol" },

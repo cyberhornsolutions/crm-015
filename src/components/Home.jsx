@@ -23,7 +23,7 @@ import { auth, db } from "../firebase";
 import { Tabs, Tab } from "react-bootstrap";
 import moment from "moment";
 import SelectColumnsModal from "./SelectColumnsModal.jsx";
-
+import depositsColumns from "./columns/depositsColumns.jsx";
 import {
   doc,
   setDoc,
@@ -94,6 +94,7 @@ export default function HomeRu() {
     tp: null,
   });
   const orders = useSelector((state) => state.orders);
+  const deposits = useSelector((state) => state.deposits);
   const [uploadModal, setUploadModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [depositModal, setDepositModal] = useState(false);
@@ -1927,43 +1928,22 @@ export default function HomeRu() {
                 >
                   {t("transactions")}
                 </h3>
-                <div id="trans-his">
-                  <table id="transactions-his-table">
-                    <thead
-                      className="sticky-header"
-                      style={{
-                        "border-radius": "5px",
-                        border: "1px solid rgb(39, 39, 23)",
-                      }}
-                    >
-                      <tr>
-                        <th>ID</th>
-                        <th>{t("type")}</th>
-                        <th>{t("amount")} $</th>
-                        <th>{t("method")}</th>
-                        <th>{t("status")}</th>
-                        <th>{t("date")}</th>
-                      </tr>
-                    </thead>
-                    <tbody id="transactions-t-body" className="table-body">
-                      <tr>
-                        <th>ID001</th>
-                        <th>Deposit</th>
-                        <th>100</th>
-                        <th>VISA</th>
-                        <th>Success</th>
-                        <th>08/08/2022</th>
-                      </tr>
-                      <tr>
-                        <th>ID002</th>
-                        <th>Withdraw</th>
-                        <th>100</th>
-                        <th>VISA</th>
-                        <th>Under review</th>
-                        <th>11/08/2022</th>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="transactions-table">
+                  <DataTable
+                    columns={depositsColumns}
+                    data={fillArrayWithEmptyRows(deposits, 5)}
+                    customStyles={{
+                      table: {
+                        style: {
+                          minHeight: "50vh",
+                        },
+                      },
+                    }}
+                    pagination
+                    theme="dark"
+                    paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                    dense
+                  />
                 </div>
                 <div id="transaction-request">
                   <button

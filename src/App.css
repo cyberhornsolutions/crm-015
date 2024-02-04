@@ -21,3 +21,10 @@
 .reports-modal .tab-content > div > div > div > div {
   background-color: unset;
 }
+.reports-modal .tab-content > div nav,
+.transactions-table nav {
+  background-color: var(--main-bgc);
+}
+.transactions-table > div > div > div {
+  background-color: unset;
+}

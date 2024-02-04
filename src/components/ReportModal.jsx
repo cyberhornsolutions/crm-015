@@ -4,7 +4,8 @@ import { Modal } from "react-bootstrap";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import DataTable from "react-data-table-component";
-import { depositColumns, generalColumns } from "../helper/Tablecolumns";
+import { generalColumns } from "../helper/Tablecolumns";
+import depositsColumns from "./columns/depositsColumns";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepositsByUser } from "../helper/firebaseHelpers";
@@ -120,7 +121,7 @@ const ReportModal = ({ onClose, show, userId }) => {
             </Tab>
             <Tab eventKey="balanceOperations" title="Balance operations">
               <DataTable
-                columns={depositColumns}
+                columns={depositsColumns}
                 data={fillArrayWithEmptyRows(filteredDeposits, 5)}
                 customStyles={customStyle}
                 pagination
