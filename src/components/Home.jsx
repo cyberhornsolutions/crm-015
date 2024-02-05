@@ -992,7 +992,6 @@ export default function HomeRu() {
   const activeOrdersProfit = activeOrders.reduce((p, v) => p + +v.profit, 0);
   const closedOrdersProfit = closedOrders.reduce((p, v) => p + +v.profit, 0);
 
-  const allowBonus = userProfile?.settings?.allowBonus;
   const bonus = userProfile?.bonus;
 
   const calculateTotalBalance = () => {
@@ -1015,7 +1014,8 @@ export default function HomeRu() {
 
   const pledge = pendingOrders.reduce((p, v) => p + v.pledge, 0);
 
-  const level = (totalBalance / pledge) * 100;
+  const userLevel = userProfile?.settings?.level || 100;
+  const level = pledge && (totalBalance / pledge) * (userLevel / 100);
 
   let potentialSL = 0,
     potentialTP = 0;
@@ -1668,27 +1668,31 @@ export default function HomeRu() {
                 <div id="acc-profile-main">
                   <div className="acc-profile-main-item">
                     <h6>{t("balance")} (USD):</h6>
-                    <h6>100.00</h6>
+                    <h6>{+parseFloat(userProfile.totalBalance)?.toFixed(6)}</h6>
                   </div>
                   <div className="acc-profile-main-item">
-                    <h6>{t("dept")} (USD):</h6>
-                    <h6>00.00</h6>
+                    <h6>{t("Free")} (USD):</h6>
+                    <h6>{+parseFloat(freeMargin - bonus)?.toFixed(6)}</h6>
                   </div>
                   <div className="acc-profile-main-item">
-                    <h6>{t("marginlvl")}:</h6>
-                    <h6>100.00</h6>
-                  </div>
-                  <div className="acc-profile-main-item">
-                    <h6>{t("total")} (USD):</h6>
-                    <h6>100.00</h6>
+                    <h6>{t("Bonus")} (USD):</h6>
+                    <h6>{+parseFloat(bonus)?.toFixed(6)}</h6>
                   </div>
                   <div className="acc-profile-main-item">
                     <h6>{t("deposited")} (USD):</h6>
-                    <h6>100.00</h6>
+                    <h6>
+                      {deposits
+                        .filter(({ type }) => type === "Deposit")
+                        .reduce((p, { sum }) => p + +sum, 0)}
+                    </h6>
                   </div>
                   <div className="acc-profile-main-item">
                     <h6>{t("withdrawn")} (USD):</h6>
-                    <h6>00.00</h6>
+                    <h6>
+                      {deposits
+                        .filter(({ type }) => type === "Withdraw")
+                        .reduce((p, { sum }) => p + +sum, 0)}
+                    </h6>
                   </div>
                 </div>
                 <div id="verif-buttons">
