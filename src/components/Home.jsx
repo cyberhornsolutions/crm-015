@@ -502,8 +502,13 @@ export default function HomeRu() {
       selector: (row) =>
         row && (
           <div
-            className="order-column"
-            style={{ color: `${row.profit < 0 ? "red" : "green"}` }}
+            className={`"order-column" ${
+              row.profit < 0
+                ? "text-danger"
+                : row.profit == 0
+                ? "text-muted"
+                : ""
+            }`}
             onDoubleClick={() => handleEditModal(row)}
           >
             {+parseFloat(row.profit)?.toFixed(6)}
