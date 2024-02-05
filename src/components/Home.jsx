@@ -170,6 +170,7 @@ export default function HomeRu() {
   const changeLanguage = (lng) => {
     setSelectedLanguage(lng);
     i18n.changeLanguage(lng);
+    localStorage.setItem("lang", lng);
   };
 
   const checkCurrentUser = () => {
@@ -1128,7 +1129,7 @@ export default function HomeRu() {
                   <img
                     src={languages[selectedLanguage]}
                     alt={selectedLanguage}
-                    width={50}
+                    width={40}
                   />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
@@ -1136,7 +1137,7 @@ export default function HomeRu() {
                     .filter((lang) => lang !== selectedLanguage)
                     .map((lang) => (
                       <Dropdown.Item onClick={() => changeLanguage(lang)}>
-                        <img src={languages[lang]} alt={lang} width={50} />
+                        <img src={languages[lang]} alt={lang} width={40} />
                       </Dropdown.Item>
                     ))}
                 </Dropdown.Menu>
