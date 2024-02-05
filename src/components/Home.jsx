@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import logoIcon from "../assets/images/logo.png";
-import enFlagIcon from "../assets/images/gb-fl.png";
-import ruFlagIcon from "../assets/images/ru-fl.png";
+import languages from "../assets/flags/index.js";
 import accPlaceholder from "../assets/images/acc-img-placeholder.png";
 import {
   InformationCircle,
@@ -16,7 +15,7 @@ import TradingWidget from "./TradingWidget";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
-import { Form } from "react-bootstrap";
+import { Form, Dropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
@@ -61,7 +60,6 @@ import {
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import MyBarChart from "./BarChart.js";
-import CurrentProfit from "./CurrentProfit.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
 import { setOrdersState } from "../redux/slicer/orderSlicer.js";
@@ -69,7 +67,6 @@ import { setDepositsState } from "../redux/slicer/transactionSlicer.js";
 import AddTradingSymbolModal from "./AddTradingSymbolModal.jsx";
 import {
   calculateProfit,
-  convertTimestamptToDate,
   fillArrayWithEmptyRows,
   getAskValue,
   getBidValue,
@@ -85,6 +82,7 @@ export default function HomeRu() {
   const [assetsTab, setAssetsTab] = useState("cryptoTab");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t, i18n } = useTranslation();
   const dbSymbols = useSelector((state) => state?.symbols?.symbols);
   const [orderData, setOrderData] = useState({
     symbol: null,
@@ -103,7 +101,7 @@ export default function HomeRu() {
   const [withdrawlSuccessModal, setWithdrawlSuccessModal] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
   const [tabs, setTabs] = useState([1]);
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
   const [isEditable, setIsEditable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
@@ -146,8 +144,6 @@ export default function HomeRu() {
     profit: false,
     action: false,
   });
-
-  const { t, i18n } = useTranslation();
 
   const handleEditModal = (row) => {
     setSelectedOrder(row);
@@ -1127,23 +1123,24 @@ export default function HomeRu() {
               id="balance-item-lang"
               className="balance-item d-flex flex-column gap-1 align-items-center justify-content-center"
             >
-              <button type="button" className="lang-flag border-0">
-                {selectedLanguage === "en" ? (
+              <Dropdown>
+                <Dropdown.Toggle variant="" id="dropdown-basic">
                   <img
-                    width={40}
-                    src={enFlagIcon}
-                    onClick={() => changeLanguage("ru")}
-                    alt="en-flag"
+                    src={languages[selectedLanguage]}
+                    alt={selectedLanguage}
+                    width={50}
                   />
-                ) : (
-                  <img
-                    width={40}
-                    src={ruFlagIcon}
-                    onClick={() => changeLanguage("en")}
-                    alt="ru-flag"
-                  />
-                )}
-              </button>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {Object.keys(languages)
+                    .filter((lang) => lang !== selectedLanguage)
+                    .map((lang) => (
+                      <Dropdown.Item onClick={() => changeLanguage(lang)}>
+                        <img src={languages[lang]} alt={lang} width={50} />
+                      </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+              </Dropdown>
               <Form.Check
                 type="switch"
                 // checked={false}
