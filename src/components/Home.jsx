@@ -58,6 +58,7 @@ import {
   getAllSymbols,
   addQuotesToUser,
   getDepositsByUser,
+  getColumnsById,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import MyBarChart from "./BarChart.js";
@@ -274,6 +275,8 @@ export default function HomeRu() {
     if (!dbSymbols.length) getAllSymbols(setDbSymbols);
 
     const unsubDeposits = getDepositsByUser(currentUserId, setDeposits);
+
+    getColumnsById(currentUserId, setShowColumns);
 
     return () => {
       unsubUserData();
@@ -2086,6 +2089,7 @@ export default function HomeRu() {
 
       {showColumnsModal && (
         <SelectColumnsModal
+          userId={currentUserId}
           setModal={setShowColumnsModal}
           columns={showColumns}
           setColumns={setShowColumns}

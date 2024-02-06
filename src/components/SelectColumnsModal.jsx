@@ -1,7 +1,14 @@
+import { useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
+import { updateShowColumnsById } from "../helper/firebaseHelpers";
 
-const SelectColumnsModal = ({ setModal, columns, setColumns }) => {
+const SelectColumnsModal = ({ userId, setModal, columns, setColumns }) => {
   const closeModal = () => setModal(false);
+
+  useEffect(
+    () => () => updateShowColumnsById(userId, { dealsColumns: columns }),
+    [columns]
+  );
 
   return (
     <Modal
