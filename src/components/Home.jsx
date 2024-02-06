@@ -23,6 +23,7 @@ import { Tabs, Tab } from "react-bootstrap";
 import moment from "moment";
 import SelectColumnsModal from "./SelectColumnsModal.jsx";
 import depositsColumns from "./columns/depositsColumns.jsx";
+import dealsColumns from "./columns/dealsColumns.jsx";
 import {
   doc,
   setDoc,
@@ -130,19 +131,19 @@ export default function HomeRu() {
     message: "",
   });
   const [showColumnsModal, setShowColumnsModal] = useState(false);
-  const [hideColumns, setHideColumns] = useState({
-    id: false,
-    date: false,
-    symbol: false,
-    type: false,
-    volume: false,
-    openPrice: false,
-    sltp: false,
-    additionalParameters: false,
-    pledge: false,
-    currentPrice: false,
-    profit: false,
-    action: false,
+  const [showColumns, setShowColumns] = useState({
+    id: true,
+    date: true,
+    symbol: true,
+    type: true,
+    volume: true,
+    openPrice: true,
+    sltp: true,
+    additionalParameters: true,
+    pledge: true,
+    currentPrice: true,
+    profit: true,
+    action: true,
   });
 
   const handleEditModal = (row) => {
@@ -165,6 +166,11 @@ export default function HomeRu() {
   };
   const handleDelModal = () => {
     setIsDelModalOpen(true);
+  };
+
+  const handleCloseBtn = (row) => {
+    setSelectedOrder(row);
+    row.enableOpenPrice ? setShowCancelOrderModal(true) : handleDelModal();
   };
 
   const changeLanguage = (lng) => {
@@ -331,216 +337,6 @@ export default function HomeRu() {
     setOrderData(newOr);
   };
 
-  const columns = [
-    {
-      name: "ID",
-      selector: (row, i) =>
-        row ? (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {i + 1}
-          </div>
-        ) : (
-          ""
-        ),
-      grow: 0.5,
-      omit: hideColumns.id,
-    },
-    {
-      name: t("date"), // Translate the header using your t function
-      selector: (row) =>
-        row.createdTime && (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {row.createdTime}
-          </div>
-        ),
-      sortable: true,
-      compact: true,
-      grow: 1.5,
-      omit: hideColumns.date,
-    },
-    {
-      name: t("symbol"),
-      selector: (row) =>
-        row ? (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {row.symbol}
-          </div>
-        ) : (
-          ""
-        ),
-      sortable: true,
-      omit: hideColumns.symbol,
-    },
-    {
-      name: t("type"),
-      selector: (row) =>
-        row ? (
-          row.type == "Buy" ? (
-            <div
-              className="order-column"
-              onDoubleClick={() => handleEditModal(row)}
-            >
-              <div className="custom-caret-up-icon">
-                <FontAwesomeIcon icon={faCaretUp} />
-                <div style={{ marginLeft: "3px" }}>{row.type}</div>
-              </div>
-            </div>
-          ) : (
-            <div
-              className="order-column"
-              onDoubleClick={() => handleEditModal(row)}
-            >
-              <div className="custom-caret-down-icon">
-                <FontAwesomeIcon icon={faCaretDown} />
-                <div style={{ marginLeft: "3px" }}>{row.type}</div>
-              </div>
-            </div>
-          )
-        ) : (
-          ""
-        ),
-      sortable: true,
-      compact: true,
-      omit: hideColumns.type,
-    },
-    {
-      name: t("volume"),
-      selector: (row) =>
-        row ? (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {row.volume}
-          </div>
-        ) : (
-          ""
-        ),
-      sortable: true,
-      omit: hideColumns.volume,
-    },
-    {
-      name: t("openPrice"),
-      selector: (row) =>
-        row ? (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {+row.symbolValue}
-          </div>
-        ) : (
-          ""
-        ),
-      sortable: true,
-      omit: hideColumns.openPrice,
-    },
-    {
-      name: "SL / TP",
-      selector: (row) => row && row.sltp,
-      sortable: true,
-      omit: hideColumns.sltp,
-    },
-    {
-      name: "Additional parameters",
-      selector: (row) =>
-        row && (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {`Spread: ${+parseFloat(row.spread)?.toFixed(
-              4
-            )} / Swap: ${+parseFloat(row.swap)?.toFixed(
-              4
-            )} / Fee: ${+parseFloat(row.fee)?.toFixed(4)}`}
-          </div>
-        ),
-      grow: 2.5,
-      compact: true,
-      sortable: true,
-      omit: hideColumns.additionalParameters,
-    },
-    {
-      name: "Margin",
-      selector: (row) => row && +parseFloat(row.pledge)?.toFixed(4),
-      sortable: true,
-      compact: true,
-      omit: hideColumns.pledge,
-    },
-    {
-      name: "Current Price",
-      selector: (row) =>
-        row ? (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {+parseFloat(row.currentPrice)?.toFixed(6)}
-          </div>
-        ) : (
-          ""
-        ),
-      sortable: true,
-      compact: true,
-      omit: hideColumns.currentPrice,
-    },
-    {
-      name: t("profit"),
-      selector: (row) =>
-        row && (
-          <div
-            className={`"order-column" ${
-              row.profit < 0
-                ? "text-danger"
-                : row.profit == 0
-                ? "text-muted"
-                : ""
-            }`}
-            onDoubleClick={() => handleEditModal(row)}
-          >
-            {+parseFloat(row.profit)?.toFixed(6)}
-          </div>
-        ),
-      sortable: true,
-      omit: hideColumns.profit,
-    },
-    {
-      name: t("Action"),
-      selector: (row) =>
-        row && (
-          <div>
-            <FontAwesomeIcon
-              icon={faEdit}
-              size="lg"
-              onClick={() => handleEditModal(row)}
-            />
-            <FontAwesomeIcon
-              icon={faClose}
-              size="lg"
-              className="ms-3"
-              onClick={() => {
-                setSelectedOrder(row);
-                row.enableOpenPrice
-                  ? setShowCancelOrderModal(true)
-                  : handleDelModal();
-              }}
-            />
-          </div>
-        ),
-      sortable: true,
-      omit: hideColumns.action,
-    },
-  ];
   const [quoteSearch, setQuoteSearch] = useState("");
 
   const userQuotes = userProfile?.quotes || [];
@@ -1622,7 +1418,12 @@ export default function HomeRu() {
                 >
                   <Tab eventKey="activeTab" title="Active">
                     <DataTable
-                      columns={columns}
+                      columns={dealsColumns({
+                        t,
+                        handleEditModal,
+                        handleCloseBtn,
+                        showColumns,
+                      })}
                       data={fillArrayWithEmptyRows(activeOrders, 3)}
                       pagination
                       paginationPerPage={5}
@@ -1636,7 +1437,12 @@ export default function HomeRu() {
                   </Tab>
                   <Tab eventKey="delayedTab" title="Delayed">
                     <DataTable
-                      columns={columns.filter(({ name }) => name !== "Profit")}
+                      columns={dealsColumns({
+                        t,
+                        handleEditModal,
+                        handleCloseBtn,
+                        showColumns,
+                      }).filter(({ name }) => name !== "Profit")}
                       data={fillArrayWithEmptyRows(delayedOrders, 3)}
                       pagination
                       paginationPerPage={5}
@@ -2281,8 +2087,8 @@ export default function HomeRu() {
       {showColumnsModal && (
         <SelectColumnsModal
           setModal={setShowColumnsModal}
-          columns={hideColumns}
-          setColumns={setHideColumns}
+          columns={showColumns}
+          setColumns={setShowColumns}
         />
       )}
     </>

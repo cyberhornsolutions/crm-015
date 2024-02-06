@@ -19,9 +19,9 @@ const SelectColumnsModal = ({ setModal, columns, setColumns }) => {
           return (
             <Form.Check
               label={column.toUpperCase()}
-              checked={!columns[column]}
+              checked={columns[column]}
               onChange={(e) =>
-                setColumns((p) => ({ ...p, [column]: !e.target.checked }))
+                setColumns((p) => ({ ...p, [column]: e.target.checked }))
               }
             />
           );
