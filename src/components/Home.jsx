@@ -758,7 +758,18 @@ export default function HomeRu() {
           ? getBidValue(symbol.price, bidSpread, bidSpreadUnit === "$")
           : getAskValue(symbol.price, askSpread, askSpreadUnit === "$");
 
-      const spread = order.sum / 100; // 1% of sum
+      let spread;
+      if (order.type === "Buy") {
+        spread =
+          bidSpreadUnit === "$"
+            ? order.volume * bidSpread
+            : (order.sum / 100) * bidSpread;
+      } else {
+        spread =
+          askSpreadUnit === "$"
+            ? order.volume * askSpread
+            : (order.sum / 100) * askSpread;
+      }
       const feeValue = feeUnit === "$" ? fee : spread * fee;
       const pledge = order.sum;
       let profit = calculateProfit(
