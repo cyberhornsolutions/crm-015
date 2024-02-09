@@ -5,26 +5,28 @@ import symbolSlicer from "./slicer/symbolSlicer";
 import orderSlicer from "./slicer/orderSlicer";
 import transactionSlicer from "./slicer/transactionSlicer";
 
-const persistConfig = {
-  key: "root",
-  storage,
-};
+// const persistConfig = {
+//   key: "root",
+//   storage,
+// };
 
-const persistedReducer = persistReducer(
-  persistConfig,
-  combineReducers({
-    //api
+// const persistedReducer = persistReducer(
+//   persistConfig,
+//   combineReducers({
+//     symbols: symbolSlicer,
+//     orders: orderSlicer,
+//     deposits: transactionSlicer,
+//   })
+// );
 
-    //slice
+export const store = configureStore({
+  // reducer: persistedReducer,
+  reducer: {
     symbols: symbolSlicer,
     orders: orderSlicer,
     deposits: transactionSlicer,
-  })
-);
-
-export const store = configureStore({
-  reducer: persistedReducer,
+  },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([]),
 });
 
-export const persistor = persistStore(store);
+// export const persistor = persistStore(store);

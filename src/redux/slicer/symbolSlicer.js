@@ -1,18 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  symbols: [],
-};
+const initialState = [];
 
 const symbolSlicer = createSlice({
   name: "symbols",
   initialState,
   reducers: {
-    setSymbolsState: (state, action) => {
-      state.symbols = action.payload;
-    },
+    setSymbolsState: (state, action) => action.payload,
   },
-  // extraReducers: {},
 });
 
 export const { setSymbolsState } = symbolSlicer.actions;

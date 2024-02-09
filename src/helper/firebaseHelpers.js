@@ -233,7 +233,7 @@ export const getAllSymbols = (setState) => {
       console.error("Error fetching data:", error);
     }
   );
-  return () => unsubscribe();
+  return unsubscribe;
 };
 
 export const getDepositsByUser = (userId, setState) => {

@@ -3,7 +3,7 @@ import { calculateProfit } from "../helper/helpers";
 import { useSelector } from "react-redux";
 
 const CurrentProfit = ({ orderData }) => {
-  const symbols = useSelector((state) => state?.symbols?.symbols);
+  const symbols = useSelector((state) => state.symbols);
   const calculateUpdatedProfit = () => {
     if (orderData.status === "Pending") {
       const newPrice = symbols?.find(

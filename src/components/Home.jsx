@@ -85,7 +85,7 @@ export default function HomeRu() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
-  const dbSymbols = useSelector((state) => state?.symbols?.symbols);
+  const dbSymbols = useSelector((state) => state.symbols);
   const [orderData, setOrderData] = useState({
     symbol: null,
     symbolValue: null,
