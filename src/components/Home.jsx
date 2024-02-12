@@ -922,12 +922,12 @@ export default function HomeRu() {
                 Level:
               </h2>
               <input
-                type="number"
+                type="text"
                 className={`balance-nums ${
                   level < 0 ? "text-danger" : level == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={+level?.toFixed(6)}
+                value={`${+level?.toFixed(6)}%`}
               />
             </div>
             <div
