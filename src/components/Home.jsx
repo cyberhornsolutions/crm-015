@@ -1707,7 +1707,6 @@ export default function HomeRu() {
                       type="text"
                       value={userProfile?.city}
                       name="city"
-                      id
                       placeholder=""
                       onChange={handleChange}
                       readOnly={!isEditable}
@@ -1717,9 +1716,10 @@ export default function HomeRu() {
                     <h6>{t("dateRegister")}</h6>
                     <input
                       type="text"
-                      value={userProfile?.createdAt}
+                      value={moment(
+                        userProfile?.createdAt?.seconds * 1000
+                      )?.format("MM/DD/YYYY")}
                       name="dateRegister"
-                      id
                       placeholder=""
                       // onChange={handleChange}
                       readOnly={true}
