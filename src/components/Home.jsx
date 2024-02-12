@@ -366,7 +366,9 @@ export default function HomeRu() {
   const assetsColumns = [
     {
       name: t("symbol"),
-      selector: (row) => row.symbol,
+      selector: (row) => (
+        <div title={row?.settings?.description}>{row.symbol}</div>
+      ),
       sortable: true,
     },
     {
@@ -375,7 +377,12 @@ export default function HomeRu() {
         if (!row) return;
         const { settings } = row;
         const isDirectPrice = settings.bidSpreadUnit === "$";
-        return getBidValue(row.price, settings.bidSpread, isDirectPrice);
+        const bidValue = getBidValue(
+          row.price,
+          settings.bidSpread,
+          isDirectPrice
+        );
+        return <div title={row?.settings?.description}>{bidValue}</div>;
       },
       sortable: true,
       compact: true,
@@ -386,7 +393,12 @@ export default function HomeRu() {
         if (!row) return;
         const { settings } = row;
         const isDirectPrice = settings.askSpreadUnit === "$";
-        return getAskValue(row.price, settings.askSpread, isDirectPrice);
+        const askValue = getAskValue(
+          row.price,
+          settings.askSpread,
+          isDirectPrice
+        );
+        return <div title={row?.settings?.description}>{askValue}</div>;
       },
       sortable: true,
       compact: true,
@@ -395,11 +407,14 @@ export default function HomeRu() {
       name: "",
       selector: (row) =>
         row && (
-          <FontAwesomeIcon
-            id="assetDeleteIcon"
-            icon={faClose}
-            onClick={() => handleDeleteAsset(row.id)}
-          />
+          <div title={row?.settings?.description}>
+            <FontAwesomeIcon
+              id="assetDeleteIcon"
+              title="Delete"
+              icon={faClose}
+              onClick={() => handleDeleteAsset(row.id)}
+            />
+          </div>
         ),
       compact: true,
       grow: 0.5,
@@ -1106,8 +1121,6 @@ export default function HomeRu() {
                           placeholder="Search..."
                           className="w-100"
                           value={quoteSearch}
-                          customStyles={customStylesAssetsTable}
-                          conditionalRowStyles={conditionalRowStyles}
                           onChange={(e) => setQuoteSearch(e.target.value)}
                         />
                         <DataTable
