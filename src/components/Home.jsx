@@ -352,22 +352,27 @@ export default function HomeRu() {
       )
     : userQuotesSymbols;
 
-  const crypto = [],
-    currencies = [],
-    stocks = [],
-    commodities = [];
-  filteredQuotesSymbols.forEach((s) => {
-    if (s?.settings?.group === "crypto" || !s?.settings) crypto.push(s);
-    else if (s?.settings?.group === "currencies") currencies.push(s);
-    else if (s?.settings?.group === "stocks") stocks.push(s);
-    else if (s?.settings?.group === "commodities") commodities.push(s);
-  });
+  // const crypto = [],
+  //   currencies = [],
+  //   stocks = [],
+  //   commodities = [];
+  // filteredQuotesSymbols.forEach((s) => {
+  //   if (s?.settings?.group === "crypto" || !s?.settings) crypto.push(s);
+  //   else if (s?.settings?.group === "currencies") currencies.push(s);
+  //   else if (s?.settings?.group === "stocks") stocks.push(s);
+  //   else if (s?.settings?.group === "commodities") commodities.push(s);
+  // });
 
   const assetsColumns = [
     {
       name: t("symbol"),
       selector: (row) => (
-        <div title={row?.settings?.description}>{row.symbol}</div>
+        <div
+          title={row?.settings?.description}
+          onDoubleClick={()=> handleRowDoubleClick(row)}
+        >
+          {row.symbol}
+        </div>
       ),
       sortable: true,
     },
@@ -382,7 +387,14 @@ export default function HomeRu() {
           settings.bidSpread,
           isDirectPrice
         );
-        return <div title={row?.settings?.description}>{bidValue}</div>;
+        return (
+          <div
+            onDoubleClick={()=>handleRowDoubleClick(row)}
+            title={row?.settings?.description}
+          >
+            {bidValue}
+          </div>
+        );
       },
       sortable: true,
       compact: true,
@@ -398,7 +410,14 @@ export default function HomeRu() {
           settings.askSpread,
           isDirectPrice
         );
-        return <div title={row?.settings?.description}>{askValue}</div>;
+        return (
+          <div
+            onDoubleClick={()=> handleRowDoubleClick(row)}
+            title={row?.settings?.description}
+          >
+            {askValue}
+          </div>
+        );
       },
       sortable: true,
       compact: true,
@@ -407,7 +426,10 @@ export default function HomeRu() {
       name: "",
       selector: (row) =>
         row && (
-          <div title={row?.settings?.description}>
+          <div
+            onDoubleClick={()=> handleRowDoubleClick(row)}
+            title={row?.settings?.description}
+          >
             <FontAwesomeIcon
               id="assetDeleteIcon"
               title="Delete"
@@ -1067,98 +1089,22 @@ export default function HomeRu() {
               {tab === "assets" && (
                 <div id="assets">
                   <div className="tradingWidget h-100">
-                    <Tabs
-                      activeKey={assetsTab}
-                      onSelect={(k) => setAssetsTab(k)}
-                      className="mb-2 flex-nowrap overflow-hidden"
-                      fill
-                    >
-                      <Tab
-                        eventKey="cryptoTab"
-                        title="Crypto"
-                        tabClassName={
-                          assetsTab === "commoditiesTab" && "d-none"
-                        }
-                      >
-                        <input
-                          type="search"
-                          placeholder="Search..."
-                          className="w-100"
-                          value={quoteSearch}
-                          onChange={(e) => setQuoteSearch(e.target.value)}
-                        />
-                        <DataTable
-                          columns={assetsColumns}
-                          data={fillArrayWithEmptyRows(crypto, 10)}
-                          highlightOnHover
-                          pointerOnHover
-                          customStyles={customStylesAssetsTable}
-                          conditionalRowStyles={conditionalRowStyles}
-                          onRowDoubleClicked={handleRowDoubleClick}
-                        />
-                      </Tab>
-                      <Tab eventKey="currenciesTab" title="Currencies">
-                        <input
-                          type="search"
-                          placeholder="Search..."
-                          className="w-100"
-                          value={quoteSearch}
-                          onChange={(e) => setQuoteSearch(e.target.value)}
-                        />
-                        <DataTable
-                          columns={assetsColumns}
-                          data={fillArrayWithEmptyRows(currencies, 10)}
-                          highlightOnHover
-                          pointerOnHover
-                          customStyles={customStylesAssetsTable}
-                          conditionalRowStyles={conditionalRowStyles}
-                          onRowDoubleClicked={handleRowDoubleClick}
-                        />
-                      </Tab>
-                      <Tab eventKey="stocksTab" title="Stocks">
-                        <input
-                          type="search"
-                          placeholder="Search..."
-                          className="w-100"
-                          value={quoteSearch}
-                          onChange={(e) => setQuoteSearch(e.target.value)}
-                        />
-                        <DataTable
-                          columns={assetsColumns}
-                          data={fillArrayWithEmptyRows(stocks, 10)}
-                          highlightOnHover
-                          pointerOnHover
-                          customStyles={customStylesAssetsTable}
-                          conditionalRowStyles={conditionalRowStyles}
-                          onRowDoubleClicked={handleRowDoubleClick}
-                        />
-                      </Tab>
-                      <Tab eventKey="commoditiesTab" title="Commodities">
-                        <input
-                          type="search"
-                          placeholder="Search..."
-                          className="w-100"
-                          value={quoteSearch}
-                          onChange={(e) => setQuoteSearch(e.target.value)}
-                        />
-                        <DataTable
-                          columns={assetsColumns}
-                          data={fillArrayWithEmptyRows(commodities, 10)}
-                          highlightOnHover
-                          pointerOnHover
-                          customStyles={customStylesAssetsTable}
-                          conditionalRowStyles={conditionalRowStyles}
-                          onRowDoubleClicked={handleRowDoubleClick}
-                        />
-                      </Tab>
-                      {assetsTab === "commoditiesTab" && (
-                        <Tab
-                          eventKey="stocksTab"
-                          title={<FontAwesomeIcon icon={faAngleLeft} />}
-                          hidden={true}
-                        />
-                      )}
-                    </Tabs>
+                    <input
+                      type="search"
+                      placeholder="Search..."
+                      className="w-100"
+                      value={quoteSearch}
+                      onChange={(e) => setQuoteSearch(e.target.value)}
+                    />
+                    <DataTable
+                      columns={assetsColumns}
+                      data={fillArrayWithEmptyRows(filteredQuotesSymbols, 10)}
+                      highlightOnHover
+                      pointerOnHover
+                      customStyles={customStylesAssetsTable}
+                      conditionalRowStyles={conditionalRowStyles}
+                      // onRowDoubleClicked={handleRowDoubleClick}
+                    />
                     <div className="text-center">
                       <button
                         className="btn btn-success"
