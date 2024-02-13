@@ -3,6 +3,25 @@ import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { addQuotesToUser } from "../helper/firebaseHelpers";
 
+const groups = [
+  {
+    key: "Crypto",
+    value: "crypto",
+  },
+  {
+    key: "Currencies",
+    value: "currencies",
+  },
+  {
+    key: "Stocks",
+    value: "stocks",
+  },
+  {
+    key: "Commodities",
+    value: "commodities",
+  },
+];
+
 const AddTradingSymbol = ({
   show,
   symbols,
@@ -11,6 +30,7 @@ const AddTradingSymbol = ({
   userId,
 }) => {
   const [formData, setFormData] = useState({ symbol: "" });
+  const [group, setGroup] = useState("crypto");
   const { symbol } = formData;
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,6 +60,9 @@ const AddTradingSymbol = ({
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const filteredSymbols = symbols.filter((s) => s?.settings?.group === group);
+
   return (
     <div>
       <Modal show={show} onHide={handleCloseModal}>
@@ -47,14 +70,30 @@ const AddTradingSymbol = ({
         <Modal.Body>
           <form className="form" onSubmit={handleSubmit}>
             <div className="form-group">
+              <label className="form-label">Group</label>
+              <select
+                name="group"
+                className="form-control"
+                onChange={(e) => setGroup(e.target.value)}
+              >
+                {groups?.map((el, idx) => (
+                  <option key={idx} value={el.value}>
+                    {el.key}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
               <label className="form-label">Select symbol</label>
               <select
                 name="symbol"
                 className="form-control"
                 onChange={handleChange}
               >
-                <option value="">Select symbol</option>
-                {symbols?.map((el, idx) => (
+                <option value="" disabled>
+                  Select symbol
+                </option>
+                {filteredSymbols?.map((el, idx) => (
                   <option key={idx} value={el?.id}>
                     {el?.symbol}
                   </option>
