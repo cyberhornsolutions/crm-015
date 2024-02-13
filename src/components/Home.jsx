@@ -369,7 +369,7 @@ export default function HomeRu() {
       selector: (row) => (
         <div
           title={row?.settings?.description}
-          onDoubleClick={()=> handleRowDoubleClick(row)}
+          onDoubleClick={() => handleRowDoubleClick(row)}
         >
           {row.symbol}
         </div>
@@ -389,7 +389,7 @@ export default function HomeRu() {
         );
         return (
           <div
-            onDoubleClick={()=>handleRowDoubleClick(row)}
+            onDoubleClick={() => handleRowDoubleClick(row)}
             title={row?.settings?.description}
           >
             {bidValue}
@@ -412,7 +412,7 @@ export default function HomeRu() {
         );
         return (
           <div
-            onDoubleClick={()=> handleRowDoubleClick(row)}
+            onDoubleClick={() => handleRowDoubleClick(row)}
             title={row?.settings?.description}
           >
             {askValue}
@@ -427,7 +427,7 @@ export default function HomeRu() {
       selector: (row) =>
         row && (
           <div
-            onDoubleClick={()=> handleRowDoubleClick(row)}
+            onDoubleClick={() => handleRowDoubleClick(row)}
             title={row?.settings?.description}
           >
             <FontAwesomeIcon
@@ -585,52 +585,51 @@ export default function HomeRu() {
 
   const placeOrder = async (e, type) => {
     e.preventDefault();
+
+    const minDealSum = userProfile?.settings?.minDealSum;
+    const maxDeals = userProfile?.settings?.maxDeals;
+
+    if (!userProfile?.allowTrading)
+      return toast.error("Trading is disabled for you.");
+    if (pendingOrders.length >= maxDeals)
+      return toast.error(`You can open maximum ${maxDeals} deals`);
+    if (!orderData.symbol) return toast.error("Symbol is missing.");
+    if (!orderData.volume || orderData.volume <= 0)
+      return toast.error("Volume should be greater than 0.");
+    if (calculatedSum < minDealSum)
+      return toast.error(`The minimum deal sum is ${minDealSum} USDT`);
+    if (calculatedSum > freeMargin) {
+      return setMessageModal({
+        show: true,
+        title: "Error",
+        message: "Not enough money to cover the Maintenance margin",
+      });
+    }
+    if ((orderData.sl && !orderData.tp) || (!orderData.sl && orderData.tp)) {
+      return toast.error("Make sure to fill both SL & TP values");
+    }
+
     const symbol = dbSymbols.find((el) => el.symbol == orderData?.symbol.value);
-    const { bidSpread, bidSpreadUnit, askSpread, askSpreadUnit } =
+    const { bidSpread, bidSpreadUnit, askSpread, askSpreadUnit, contractSize } =
       symbol.settings;
+
+    if (calculatedSum > contractSize) {
+      return toast.error(
+        `Cannot open deal greater than ${contractSize}$ for this symbol`
+      );
+    }
 
     const closedPrice =
       type === "Buy"
         ? getBidValue(orderData.symbolValue, bidSpread, bidSpreadUnit === "$")
         : getAskValue(orderData.symbolValue, askSpread, askSpreadUnit === "$");
 
-    const form = document.getElementById("newOrderForm");
-
-    const minDealSum = userProfile?.settings?.minDealSum;
-    const maxDeals = userProfile?.settings?.maxDeals;
-    const leverage = userProfile?.settings?.leverage ?? 1;
-    const formattedDate = new Date().toLocaleDateString("en-US");
-    if (!userProfile?.allowTrading) {
-      toastify("Trading is disabled for you.");
-    } else if (pendingOrders.length >= maxDeals) {
-      toastify(`You can open maximum ${maxDeals} deals`);
-    } else if (!orderData?.symbol) {
-      toastify("Symbol is missing.");
-    } else if (!orderData?.volume) {
-      toastify("Volume should be greater than 0.");
-    } else if (calculatedSum < minDealSum) {
-      toastify(`The minimum deal sum is ${minDealSum} USDT`);
-    } else if (calculatedSum > freeMargin) {
-      setMessageModal({
-        show: true,
-        title: "Error",
-        message: "Not enough money to cover the Maintenance margin",
-      });
-    } else if (calculatedSum > symbol?.settings?.contractSize) {
-      toast.error(
-        `Cannot open the deal greater than ${symbol?.settings?.contractSize}$ for this symbol`
-      );
-    } else if (
-      (orderData.sl && !orderData.tp) ||
-      (!orderData.sl && orderData.tp)
-    ) {
-      toast.error("Make sure to fill both SL & TP values");
-    } else if (
+    if (
       type == "Buy" &&
       orderData.sl &&
       (orderData.sl >= closedPrice || orderData.tp <= orderData.symbolValue)
     ) {
-      toast.error(
+      return toast.error(
         "To Buy SL should be less than the bid value and TP should be greater than the current value"
       );
     } else if (
@@ -638,46 +637,50 @@ export default function HomeRu() {
       orderData.sl &&
       (orderData.sl <= closedPrice || orderData.tp >= orderData.symbolValue)
     ) {
-      toast.error(
+      return toast.error(
         "To Sell SL should be greater than the ask value and TP should be less than the current value"
       );
-    } else {
-      const user = auth.currentUser;
-      const userId = user.uid;
+    }
 
-      const ordersCollectionRef = collection(db, "orders");
+    const form = document.getElementById("newOrderForm");
 
-      const payload = {
-        ...orderData,
-        userId,
-        type,
-        status: "Pending",
-        profit: 0,
-        symbol: orderData?.symbol.value,
-        volume: orderData.volume * parseFloat(leverage),
-        sum: calculatedSum,
-        enableOpenPrice,
-        createdAt: formattedDate,
-        createdTime: serverTimestamp(),
-      };
-      delete payload.fee;
+    const leverage = userProfile?.settings?.leverage ?? 1;
+    const user = auth.currentUser;
+    const userId = user.uid;
 
-      if (enableOpenPrice) payload.symbolValue = openPriceValue;
+    const ordersCollectionRef = collection(db, "orders");
 
-      try {
-        await addDoc(ordersCollectionRef, payload);
-        toastify("Order added to Database", "success");
-        setOrderData({
-          symbol: null,
-          symbolValue: null,
-          volume: 0,
-          sl: null,
-          tp: null,
-        });
-        form.reset();
-      } catch (error) {
-        console.error("Error adding order: ", error);
-      }
+    const formattedDate = new Date().toLocaleDateString("en-US");
+    const payload = {
+      ...orderData,
+      userId,
+      type,
+      status: "Pending",
+      profit: 0,
+      symbol: orderData?.symbol.value,
+      volume: orderData.volume * parseFloat(leverage),
+      sum: calculatedSum,
+      enableOpenPrice,
+      createdAt: formattedDate,
+      createdTime: serverTimestamp(),
+    };
+    delete payload.fee;
+
+    if (enableOpenPrice) payload.symbolValue = openPriceValue;
+
+    try {
+      await addDoc(ordersCollectionRef, payload);
+      toastify("Order added to Database", "success");
+      setOrderData({
+        symbol: null,
+        symbolValue: null,
+        volume: 0,
+        sl: null,
+        tp: null,
+      });
+      form.reset();
+    } catch (error) {
+      console.error("Error adding order: ", error);
     }
   };
   // const customStyles = {
