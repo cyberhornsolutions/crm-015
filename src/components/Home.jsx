@@ -610,8 +610,23 @@ export default function HomeRu() {
     }
 
     const symbol = dbSymbols.find((el) => el.symbol == orderData?.symbol.value);
-    const { bidSpread, bidSpreadUnit, askSpread, askSpreadUnit, contractSize } =
-      symbol.settings;
+    const {
+      bidSpread,
+      bidSpreadUnit,
+      askSpread,
+      askSpreadUnit,
+      contractSize,
+      group,
+    } = symbol.settings;
+
+    if (group === "commodities" && !symbol.settings?.closedMarket) {
+      const today = moment();
+      const weekDay = today.weekday();
+      const hour = today.hour();
+      if (weekDay == 0 || weekDay == 6 || hour < 9 || hour >= 23) {
+        return toast.error("Commodities Market open on Mon-Fri: 9AM-23PM");
+      }
+    }
 
     if (calculatedSum > contractSize) {
       return toast.error(
