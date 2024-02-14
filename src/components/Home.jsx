@@ -1625,7 +1625,7 @@ export default function HomeRu() {
                       type="text"
                       name="surname"
                       value={userProfile?.surname}
-                      placeholder=""
+                      placeholder="Surname"
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -1646,9 +1646,8 @@ export default function HomeRu() {
                     <input
                       type="number"
                       name="phone"
-                      id
                       value={userProfile?.phone}
-                      placeholder={+7777038475}
+                      placeholder="+7777038475"
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -1659,8 +1658,7 @@ export default function HomeRu() {
                       type="text"
                       value={userProfile?.country}
                       name="country"
-                      id
-                      placeholder=""
+                      placeholder="Country"
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -1671,7 +1669,7 @@ export default function HomeRu() {
                       type="text"
                       value={userProfile?.city}
                       name="city"
-                      placeholder=""
+                      placeholder="City"
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -1696,7 +1694,7 @@ export default function HomeRu() {
                       value={userProfile?.comment}
                       name="comment"
                       id="comment"
-                      placeholder="..."
+                      placeholder="Comment"
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />

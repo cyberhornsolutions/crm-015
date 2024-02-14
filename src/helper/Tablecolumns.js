@@ -2,7 +2,7 @@ import { convertTimestamptToDate } from "./helpers";
 
 //Reports table columns
 export const generalColumns = [
-  { name: "Number", selector: (row) => row.id },
+  { name: "ID", selector: (row) => row.id },
   {
     name: "Open date",
     selector: (row) => row.createdTime && row.createdTime,
