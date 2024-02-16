@@ -544,27 +544,17 @@ export default function HomeRu() {
   }, [orderData?.symbol]);
 
   const getValue = async () => {
-    const apiKeyFinnhub = "ck0cklhr01qtrbkm13m0ck0cklhr01qtrbkm13mg";
-
-    // const apiUrl =
-    //   `https://finnhub.io/api/v1/quote?symbol=${orderData.symbol.value}&token=` +
-    // apiKeyFinnhub;
-
-    // const apiUrl =
-    //   "https://api.binance.com/api/v3/ticker/price?symbol=" +
-    //   orderData?.symbol?.value;
-    // await axios.get(apiUrl).then((e) => {
-    //   console.log("-------->", e);
-
-    // });
     const symbol = dbSymbols?.find(
       (el) => el.symbol == orderData.symbol?.value
     );
     if (!symbol) return;
+    const { fee = 0, feeUnit } = symbol.settings;
+    const symbolFee =
+      feeUnit === "$" ? fee : (orderData.symbolValue / 100) * fee;
     setOrderData({
       ...orderData,
       symbolValue: symbol?.price,
-      fee: symbol?.settings?.fee,
+      fee: symbolFee,
     });
   };
 
@@ -744,20 +734,6 @@ export default function HomeRu() {
     }),
   };
 
-  const refreshPrice = () => {
-    if (orderData?.symbol?.value && orderData.symbol) {
-      const symbol = dbSymbols.find(
-        (el) => el.symbol == orderData?.symbol.value
-      );
-      if (!symbol) return;
-      setOrderData({
-        ...orderData,
-        symbolValue: symbol?.price,
-        fee: symbol?.settings?.fee,
-      });
-    }
-  };
-
   const handleTradingModal = () => {
     setIsTradingModal(true);
   };
@@ -890,9 +866,10 @@ export default function HomeRu() {
   let potentialSL = 0,
     potentialTP = 0;
   if (orderData.symbolValue) {
-    const symbolFee = (orderData.symbolValue / 100) * orderData.fee;
-    if (orderData.sl) potentialSL = orderData.volume * orderData.sl - symbolFee;
-    if (orderData.tp) potentialTP = orderData.volume * orderData.tp - symbolFee;
+    if (orderData.sl)
+      potentialSL = orderData.volume * orderData.sl - orderData.fee;
+    if (orderData.tp)
+      potentialTP = orderData.volume * orderData.tp - orderData.fee;
   }
 
   console.log("userProfile = ", userProfile);
@@ -1258,9 +1235,7 @@ export default function HomeRu() {
                           value={+orderData?.symbolValue}
                         />
                         <FontAwesomeIcon
-                          onClick={() => {
-                            refreshPrice();
-                          }}
+                          onClick={() => getValue()}
                           icon={faRefresh}
                         />
                       </div>
