@@ -46,6 +46,8 @@ import {
   faCaretUp,
   faRefresh,
   faAngleLeft,
+  faEye,
+  faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import EditOrderModal from "./EditOrderModal";
 import DelOrderModal from "./DelOrderModal ";
@@ -101,6 +103,7 @@ export default function HomeRu() {
   const [withdrawlModal, setWithdrawlModal] = useState(false);
   const [depositSuccessModal, setDepositSuccessModal] = useState(false);
   const [withdrawlSuccessModal, setWithdrawlSuccessModal] = useState(false);
+  const [passwordShown, setPasswordShown] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
   const [tabs, setTabs] = useState([1]);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
@@ -892,6 +895,8 @@ export default function HomeRu() {
     if (orderData.tp) potentialTP = orderData.volume * orderData.tp - symbolFee;
   }
 
+  console.log("userProfile = ", userProfile);
+
   return (
     <>
       {/* <div>
@@ -1615,7 +1620,7 @@ export default function HomeRu() {
                       type="text"
                       name="name"
                       value={userProfile?.name}
-                      onChange={handleChange}
+                      onChange={(e) => handleChange(e)}
                       readOnly={!isEditable}
                     />
                   </div>
@@ -1626,7 +1631,7 @@ export default function HomeRu() {
                       name="surname"
                       value={userProfile?.surname}
                       placeholder="Surname"
-                      onChange={handleChange}
+                      onChange={(e) => handleChange(e)}
                       readOnly={!isEditable}
                     />
                   </div>
@@ -1648,9 +1653,29 @@ export default function HomeRu() {
                       name="phone"
                       value={userProfile?.phone}
                       placeholder="+7777038475"
-                      onChange={handleChange}
+                      onChange={(e) => handleChange(e)}
                       readOnly={!isEditable}
                     />
+                  </div>
+                  <div className="acc-info-personal-item">
+                    <h6>{t("Password")}</h6>
+                    <div className="position-relative">
+                      <input
+                        type={passwordShown ? "text" : "password"}
+                        name="password"
+                        value={userProfile?.password}
+                        placeholder="Password"
+                        onChange={(e) => handleChange(e)}
+                        readOnly={!isEditable}
+                      />
+                      <FontAwesomeIcon
+                        cursor="pointer"
+                        className="position-absolute ms-1"
+                        style={{ top: 4 }}
+                        icon={passwordShown ? faEyeSlash : faEye}
+                        onClick={() => setPasswordShown(!passwordShown)}
+                      />
+                    </div>
                   </div>
                   <div className="acc-info-personal-item">
                     <h6>{t("country")}</h6>
@@ -1659,7 +1684,7 @@ export default function HomeRu() {
                       value={userProfile?.country}
                       name="country"
                       placeholder="Country"
-                      onChange={handleChange}
+                      onChange={(e) => handleChange(e)}
                       readOnly={!isEditable}
                     />
                   </div>
@@ -1670,7 +1695,7 @@ export default function HomeRu() {
                       value={userProfile?.city}
                       name="city"
                       placeholder="City"
-                      onChange={handleChange}
+                      onChange={(e) => handleChange(e)}
                       readOnly={!isEditable}
                     />
                   </div>
@@ -1683,7 +1708,7 @@ export default function HomeRu() {
                       )?.format("MM/DD/YYYY")}
                       name="dateRegister"
                       placeholder=""
-                      // onChange={handleChange}
+                      // onChange={e=> handleChange(e)}
                       readOnly={true}
                     />
                   </div>
@@ -1695,26 +1720,21 @@ export default function HomeRu() {
                       name="comment"
                       id="comment"
                       placeholder="Comment"
-                      onChange={handleChange}
+                      onChange={(e) => handleChange(e)}
                       readOnly={!isEditable}
                     />
                   </div>
                 </div>
-                {
-                  <div id="acc-info-buttons">
-                    {isEditable ? (
-                      <button id="acc-save-button" onClick={handleSaveClick}>
-                        Save
-                      </button>
-                    ) : (
-                      !userProfile.isUserEdited && (
-                        <button id="acc-edit-button" onClick={handleEditClick}>
-                          Edit
-                        </button>
-                      )
-                    )}
-                  </div>
-                }
+                <div id="acc-info-buttons">
+                  <button
+                    id="acc-save-button"
+                    onClick={() =>
+                      isEditable ? handleSaveClick() : setIsEditable(true)
+                    }
+                  >
+                    {isEditable ? "Save" : "Edit"}
+                  </button>
+                </div>
               </div>
               <div id="account-transactions">
                 <h3
