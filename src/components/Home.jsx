@@ -1215,7 +1215,7 @@ export default function HomeRu() {
                         selectedValue={orderData.symbol}
                       />
                       <label htmlFor="symbol-current-value">Price</label>
-                      <div className="d-flex align-items-center gap-3">
+                      <div className="position-relative">
                         <input
                           type="number"
                           id="symbol-current-value"
@@ -1224,6 +1224,9 @@ export default function HomeRu() {
                           value={+orderData?.symbolValue}
                         />
                         <FontAwesomeIcon
+                          cursor="pointer"
+                          className="position-absolute ms-2"
+                          style={{ top: 3 }}
                           onClick={() => getValue(orderData?.symbol)}
                           icon={faRefresh}
                         />
@@ -1248,7 +1251,7 @@ export default function HomeRu() {
                         Total: {+calculatedSum?.toFixed(6)} USDT
                       </label>
                       <label htmlFor="symbol-current-value">Open Price</label>
-                      <div className="d-flex align-items-center gap-3">
+                      <div className="position-relative">
                         <input
                           type="number"
                           readOnly={!enableOpenPrice}
@@ -1262,7 +1265,7 @@ export default function HomeRu() {
                           onChange={(e) => setOpenPriceValue(e.target.value)}
                         />
                         <input
-                          // className="form-check-input"
+                          className="position-absolute ms-2"
                           type="checkbox"
                           checked={enableOpenPrice}
                           onChange={(e) => {

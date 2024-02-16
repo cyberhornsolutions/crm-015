@@ -124,7 +124,7 @@ const EditOrderModal = ({ onClose, selectedOrder }) => {
               type="submit"
               className="btn btn-sm btn-success rounded-0 w-75 mx-auto"
               onClick={updateOrder}
-              disabled={loading}
+              disabled={loading || !newSl || !newTp}
             >
               Change
             </button>
