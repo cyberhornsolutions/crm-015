@@ -537,22 +537,15 @@ export default function HomeRu() {
     }
   };
 
-  useEffect(() => {
-    if (orderData?.symbol) {
-      getValue();
-    }
-  }, [orderData?.symbol]);
-
-  const getValue = async () => {
-    const symbol = dbSymbols?.find(
-      (el) => el.symbol == orderData.symbol?.value
-    );
+  const getValue = (s) => {
+    if (!s) return toast.error("No symbol");
+    const symbol = dbSymbols?.find((el) => el.symbol == s.value);
     if (!symbol) return;
     const { fee = 0, feeUnit } = symbol.settings;
-    const symbolFee =
-      feeUnit === "$" ? fee : (orderData.symbolValue / 100) * fee;
+    const symbolFee = feeUnit === "$" ? fee : (symbol?.price / 100) * fee;
     setOrderData({
       ...orderData,
+      symbol: s,
       symbolValue: symbol?.price,
       fee: symbolFee,
     });
@@ -804,7 +797,7 @@ export default function HomeRu() {
             ? order.volume * askSpread
             : (order.sum / 100) * askSpread;
       }
-      const feeValue = feeUnit === "$" ? fee : spread * fee;
+      const feeValue = feeUnit === "$" ? fee : (order.sum / 100) * fee;
       const pledge = order.sum;
       let profit = calculateProfit(
         order.type,
@@ -871,8 +864,6 @@ export default function HomeRu() {
     if (orderData.tp)
       potentialTP = orderData.volume * orderData.tp - orderData.fee;
   }
-
-  console.log("userProfile = ", userProfile);
 
   return (
     <>
@@ -1218,9 +1209,7 @@ export default function HomeRu() {
                           value: f.symbol,
                           label: f.symbol,
                         }))}
-                        onChange={(e) =>
-                          setOrderData({ ...orderData, symbol: e })
-                        }
+                        onChange={(e) => getValue(e)}
                         styles={customStyles}
                         value={orderData.symbol}
                         selectedValue={orderData.symbol}
@@ -1235,7 +1224,7 @@ export default function HomeRu() {
                           value={+orderData?.symbolValue}
                         />
                         <FontAwesomeIcon
-                          onClick={() => getValue()}
+                          onClick={() => getValue(orderData?.symbol)}
                           icon={faRefresh}
                         />
                       </div>
@@ -2022,7 +2011,6 @@ export default function HomeRu() {
       </div>
       {isModalOpen && (
         <EditOrderModal
-          show={isModalOpen}
           onClose={handleCloseModal}
           selectedOrder={selectedOrder}
         />
