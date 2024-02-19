@@ -832,11 +832,13 @@ export default function HomeRu() {
   const closedOrdersProfit = closedOrders.reduce((p, v) => p + +v.profit, 0);
 
   const bonus = userProfile?.bonus;
+	const allowBonus = userProfile?.settings?.allowBonus
 
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance) - ordersFee;
     if (closedOrdersProfit) balance += closedOrdersProfit;
     if (activeOrdersProfit) balance += activeOrdersProfit;
+		if (allowBonus) balance += bonus;
     return balance;
   };
 
