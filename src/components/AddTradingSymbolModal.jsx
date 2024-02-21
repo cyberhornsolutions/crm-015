@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { addQuotesToUser } from "../helper/firebaseHelpers";
@@ -32,9 +32,16 @@ const AddTradingSymbol = ({
   const [formData, setFormData] = useState({ symbol: "" });
   const [group, setGroup] = useState("crypto");
   const { symbol } = formData;
+
+  useEffect(() => {
+    setFormData({
+      symbol: symbols.find((s) => s?.settings?.group === group)?.id,
+    });
+  }, [group]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (symbol == "") {
+    if (!symbol) {
       toast.error("Please select symbol!");
     } else {
       let isExists = false;
