@@ -247,8 +247,8 @@ export default function HomeRu() {
   const setOrders = useCallback((data) => {
     const mappedOrders = data.map((order) => ({
       ...order,
-      sltp: `${+parseFloat(order?.sl)?.toFixed(6) || ""} / ${
-        +parseFloat(order?.tp)?.toFixed(6) || ""
+      sltp: `${+parseFloat(order?.sl)?.toFixed(2) || ""} / ${
+        +parseFloat(order?.tp)?.toFixed(2) || ""
       }`,
     }));
     dispatch(setOrdersState(mappedOrders));
@@ -896,7 +896,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={+totalBalance?.toFixed(6)}
+                value={+totalBalance?.toFixed(2)}
               />
             </div>
             <div className="balance-item">
@@ -911,7 +911,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={+activeOrdersProfit?.toFixed(6)}
+                value={+activeOrdersProfit?.toFixed(2)}
               />
             </div>
             <div className="balance-item">
@@ -931,7 +931,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={+freeMargin?.toFixed(6)}
+                value={+freeMargin?.toFixed(2)}
               />
             </div>
             <div className="balance-item">
@@ -944,7 +944,7 @@ export default function HomeRu() {
                   pledge < 0 ? "text-danger" : pledge == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={+pledge?.toFixed(6)}
+                value={+pledge?.toFixed(2)}
               />
             </div>
             <div className="balance-item">
@@ -957,7 +957,7 @@ export default function HomeRu() {
                   level < 0 ? "text-danger" : level == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={`${+level?.toFixed(6)}%`}
+                value={`${+level?.toFixed(2)}%`}
               />
             </div>
             <div
@@ -1250,7 +1250,7 @@ export default function HomeRu() {
                         value={orderData.volume}
                       />
                       <label className="mt-1">
-                        Total: {+calculatedSum?.toFixed(6)} USDT
+                        Total: {+calculatedSum?.toFixed(2)} USDT
                       </label>
                       <label htmlFor="symbol-current-value">Open Price</label>
                       <div className="position-relative">
@@ -1291,7 +1291,7 @@ export default function HomeRu() {
                         value={orderData?.sl}
                       />
                       <label className="mt-1">
-                        Potential: {+parseFloat(potentialSL)?.toFixed(6)}
+                        Potential: {+parseFloat(potentialSL)?.toFixed(2)}
                       </label>
                       <label htmlFor="take-profit">TP</label>
                       <input
@@ -1305,7 +1305,7 @@ export default function HomeRu() {
                         value={orderData?.tp}
                       />
                       <label className="mt-1">
-                        Potential: {+parseFloat(potentialTP)?.toFixed(6)}
+                        Potential: {+parseFloat(potentialTP)?.toFixed(2)}
                       </label>
                       <button
                         // className="newOrderButton"
@@ -1442,15 +1442,15 @@ export default function HomeRu() {
                 <div id="acc-profile-main">
                   <div className="acc-profile-main-item">
                     <h6>{t("balance")} (USD):</h6>
-                    <h6>{+parseFloat(userProfile.totalBalance)?.toFixed(6)}</h6>
+                    <h6>{+parseFloat(userProfile.totalBalance)?.toFixed(2)}</h6>
                   </div>
                   <div className="acc-profile-main-item">
                     <h6>{t("Free")} (USD):</h6>
-                    <h6>{+parseFloat(freeMargin - bonus)?.toFixed(6)}</h6>
+                    <h6>{+parseFloat(freeMargin - bonus)?.toFixed(2)}</h6>
                   </div>
                   <div className="acc-profile-main-item">
                     <h6>{t("Bonus")} (USD):</h6>
-                    <h6>{+parseFloat(bonus)?.toFixed(6)}</h6>
+                    <h6>{+parseFloat(bonus)?.toFixed(2)}</h6>
                   </div>
                   <div className="acc-profile-main-item">
                     <h6>{t("deposited")} (USD):</h6>

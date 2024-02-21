@@ -91,7 +91,7 @@ const EditOrderModal = ({ onClose, selectedOrder }) => {
                 <label className="mt-1">
                   Potential:{" "}
                   <label className="ms-2">
-                    {+parseFloat(potentialSL)?.toFixed(6)}
+                    {+parseFloat(potentialSL)?.toFixed(2)}
                   </label>
                 </label>
               </div>
@@ -109,7 +109,7 @@ const EditOrderModal = ({ onClose, selectedOrder }) => {
                 <label className="mt-1">
                   Potential:{" "}
                   <label className="ms-2">
-                    {+parseFloat(potentialTP)?.toFixed(6)}
+                    {+parseFloat(potentialTP)?.toFixed(2)}
                   </label>
                 </label>
               </div>

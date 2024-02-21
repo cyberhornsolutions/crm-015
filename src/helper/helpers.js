@@ -21,13 +21,13 @@ export const fillArrayWithEmptyRows = (arr, size) =>
 
 export const getBidValue = (val, bid, isDirectPrice = false) =>
   !isDirectPrice
-    ? +parseFloat(val * (1 - bid / 100))?.toFixed(6)
-    : +parseFloat(val - bid)?.toFixed(6);
+    ? +parseFloat(val * (1 - bid / 100))?.toFixed(2)
+    : +parseFloat(val - bid)?.toFixed(2);
 
 export const getAskValue = (val, ask, isDirectPrice = false) =>
   !isDirectPrice
-    ? +parseFloat(val * (1 + ask / 100))?.toFixed(6)
-    : +parseFloat(+val + +ask)?.toFixed(6);
+    ? +parseFloat(val * (1 + ask / 100))?.toFixed(2)
+    : +parseFloat(+val + +ask)?.toFixed(2);
 
 export const newFormulaForProfit = (
   sl,

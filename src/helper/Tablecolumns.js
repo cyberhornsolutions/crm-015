@@ -25,7 +25,7 @@ export const generalColumns = [
   { name: "Fee", selector: (row) => row.fee },
   {
     name: "Profit",
-    selector: (row) => row && +parseFloat(row.profit)?.toFixed(6),
+    selector: (row) => row && +parseFloat(row.profit)?.toFixed(2),
   },
   {
     name: "Status",

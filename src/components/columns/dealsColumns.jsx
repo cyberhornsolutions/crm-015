@@ -165,7 +165,7 @@ const dealsColumns = ({
           className="order-column"
           onDoubleClick={() => handleEditModal(row)}
         >
-          {+parseFloat(row.currentPrice)?.toFixed(6)}
+          {+parseFloat(row.currentPrice)?.toFixed(2)}
         </div>
       ) : (
         ""
@@ -184,7 +184,7 @@ const dealsColumns = ({
           }`}
           onDoubleClick={() => handleEditModal(row)}
         >
-          {+parseFloat(row.profit)?.toFixed(6)}
+          {+parseFloat(row.profit)?.toFixed(2)}
         </div>
       ),
     sortable: true,

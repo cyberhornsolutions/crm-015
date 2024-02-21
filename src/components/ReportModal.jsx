@@ -150,7 +150,7 @@ const ReportModal = ({ onClose, show, userId }) => {
               Total deals: {orders.length}
               <br />
               Total profit:{" "}
-              {totalProfit && +parseFloat(totalProfit)?.toFixed(6)}
+              {totalProfit && +parseFloat(totalProfit)?.toFixed(2)}
             </div>
             <button className=" greyBtn px-4 " onClick={onClose}>
               Close

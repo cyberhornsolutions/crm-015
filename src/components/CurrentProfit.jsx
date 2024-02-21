@@ -25,7 +25,7 @@ const CurrentProfit = ({ orderData }) => {
   return (
     <div style={{ color: `${profit < 0 ? "red" : "green"}` }}>
       {/*  sl,tp,type,currentPrice,symbolValue,volume */}
-      {profit.toFixed(6)}
+      {profit.toFixed(2)}
     </div>
   );
 };

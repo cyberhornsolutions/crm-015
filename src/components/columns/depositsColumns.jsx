@@ -12,7 +12,7 @@ const depositsColumns = [
   },
   {
     name: "Sum",
-    selector: (row) => row && +parseFloat(row.sum)?.toFixed(6),
+    selector: (row) => row && +parseFloat(row.sum)?.toFixed(2),
     grow: 0.5,
   },
   { name: "Type", selector: (row) => row.type },
