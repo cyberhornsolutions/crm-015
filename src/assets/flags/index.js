@@ -1,12 +1,21 @@
+import english from "./english.png";
+import spanish from "./spanish.png";
+import german from "./german.png";
+// import portuguese from "./portuguese.png";
+import russian from "./russian.png";
+// import chinese from "./chinese.png";
+import arabic from "./arabic.png";
+// import hindi from "./hindi.png";
+
 const languages = {
-  english: require("./english.png"),
-  spanish: require("./spanish.png"),
-  german: require("./german.png"),
-  // portuguese: require("./portuguese.png"),
-  russian: require("./russian.png"),
-  // chinese: require("./chinese.png"),
-  arabic: require("./arabic.png"),
-  // hindi: require("./hindi.png"),
+  english,
+  spanish,
+  german,
+  // portuguese,
+  russian,
+  // chinese,
+  arabic,
+  // hindi,
 };
 
 export default languages;

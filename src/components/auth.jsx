@@ -12,6 +12,7 @@ import {
   addUserNewBalance,
   updateOnlineStatus,
 } from "../helper/firebaseHelpers";
+import LOGO from "../assets/images/logo.png"
 // import "./style.css";
 // import { toastify } from "react-toastify";
 
@@ -144,7 +145,7 @@ export default function Auth() {
           <div id="logo_wrapper" className="logo_wrapper">
             <img
               className="logo"
-              src={require("../assets/images/logo.png")}
+              src={LOGO}
               alt="logo"
             />
           </div>
@@ -187,7 +188,7 @@ export default function Auth() {
           <div id="signup_logo_wrapper" class="logo_wrapper">
             <img
               class="signup_logo"
-              src={require("../assets/images/logo.png")}
+              src={LOGO}
               alt="logo"
             />
             <h3 class="signup_title">Регистрация</h3>

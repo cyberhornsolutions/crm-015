@@ -63,7 +63,7 @@ import {
   getColumnsById,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
-import MyBarChart from "./BarChart.js";
+import MyBarChart from "./BarChart";
 import { useDispatch, useSelector } from "react-redux";
 import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
 import { setOrdersState } from "../redux/slicer/orderSlicer.js";
