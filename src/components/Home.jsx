@@ -878,7 +878,7 @@ export default function HomeRu() {
           <img
             id="logo-img"
             src={logoIcon}
-            style={{ width: "45%", "background-color": "var(--main-bgc)" }}
+            style={{ width: "45%", backgroundColor: "var(--main-bgc)" }}
             alt="logo"
           />
         </div>
@@ -975,8 +975,8 @@ export default function HomeRu() {
                 <Dropdown.Menu>
                   {Object.keys(languages)
                     .filter((lang) => lang !== selectedLanguage)
-                    .map((lang) => (
-                      <Dropdown.Item onClick={() => changeLanguage(lang)}>
+                    .map((lang, i) => (
+                      <Dropdown.Item key={i} onClick={() => changeLanguage(lang)}>
                         <img src={languages[lang]} alt={lang} width={40} />
                       </Dropdown.Item>
                     ))}
@@ -1114,7 +1114,7 @@ export default function HomeRu() {
               <div id="chart">
                 <ul className="nav nav-tabs" id="myTabs">
                   {tabs?.map((e, i) => (
-                    <li className="nav-item">
+                    <li key={i} className="nav-item">
                       <a
                         className={`nav-link ${
                           activeTab === i + 1 && "active"
@@ -1178,6 +1178,7 @@ export default function HomeRu() {
                 {tabs?.map((e, i) => {
                   return (
                     <TradingView
+											key={i}
                       locale="en"
                       hide={activeTab === i + 1 ? false : true}
                       index={i}
