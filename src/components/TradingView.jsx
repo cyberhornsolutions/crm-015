@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 let tvScriptLoadingPromise;
 
-export default function TradingView({ locale, hide, index, selectedSymbol }) {
+export default function TradingView({ locale, hide, index, selectedSymbol, theme }) {
   const onLoadScriptRef = useRef();
+	const [symbol, setSymbol] = useState(selectedSymbol);
 
   useEffect(() => {
     onLoadScriptRef.current = createWidget;
@@ -43,12 +44,12 @@ export default function TradingView({ locale, hide, index, selectedSymbol }) {
           // hide_top_toolbar: true,
           // allow_symbol_change: true,
           // container_id: `tradingview_${}`,
-          symbol: selectedSymbol || "GOLD",
+          symbol: symbol || "Gold",
           width: "100%",
           height: "100%",
           interval: "H",
           timezone: "Etc/UTC",
-          theme: "dark",
+          theme,
           style: "1",
           locale: locale,
           enable_publishing: false,
@@ -61,7 +62,7 @@ export default function TradingView({ locale, hide, index, selectedSymbol }) {
         });
       }
     }
-  }, []);
+  }, [theme]);
 
   return (
     <div

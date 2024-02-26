@@ -106,6 +106,7 @@ export default function HomeRu() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [activeTab, setActiveTab] = useState("");
   const [tabs, setTabs] = useState([]);
+  const [theme, setTheme] = useState('dark');
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
   const [isEditable, setIsEditable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -771,6 +772,7 @@ export default function HomeRu() {
   const toggleTheme = () => {
     const root = document.getElementById("root");
     root.classList.toggle("light");
+		setTheme(p=> p === 'dark' ? "light" : "dark")
   };
 
   const closedOrders = orders.filter((order) => order.status !== "Pending");
@@ -1181,6 +1183,7 @@ export default function HomeRu() {
                       hide={activeTab !== tab}
                       index={i}
                       selectedSymbol={orderData?.symbol?.value}
+											theme={theme}
                     />
                   );
                 })}
