@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 let tvScriptLoadingPromise;
 
-export default function TradingView({ locale, hide, index }) {
+export default function TradingView({ locale, hide, index, selectedSymbol }) {
   const onLoadScriptRef = useRef();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function TradingView({ locale, hide, index }) {
           // hide_top_toolbar: true,
           // allow_symbol_change: true,
           // container_id: `tradingview_${}`,
-          symbol: "LTCBTC",
+          symbol: selectedSymbol || "LTCBTC",
           width: "100%",
           height: "100%",
           interval: "H",

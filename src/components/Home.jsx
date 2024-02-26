@@ -341,6 +341,13 @@ export default function HomeRu() {
       },
     };
     setOrderData(newOr);
+    openNewChartTab();
+  };
+
+  const openNewChartTab = () => {
+    const _tabs = [...tabs, tabs.length + 1];
+    setTabs(_tabs);
+    setActiveTab(_tabs.length);
   };
 
   const [quoteSearch, setQuoteSearch] = useState("");
@@ -832,13 +839,13 @@ export default function HomeRu() {
   const closedOrdersProfit = closedOrders.reduce((p, v) => p + +v.profit, 0);
 
   const bonus = userProfile?.bonus;
-	const allowBonus = userProfile?.settings?.allowBonus
+  const allowBonus = userProfile?.settings?.allowBonus;
 
   const calculateTotalBalance = () => {
     let balance = parseFloat(userProfile?.totalBalance) - ordersFee;
     if (closedOrdersProfit) balance += closedOrdersProfit;
     if (activeOrdersProfit) balance += activeOrdersProfit;
-		if (allowBonus) balance += bonus;
+    if (allowBonus) balance += bonus;
     return balance;
   };
 
