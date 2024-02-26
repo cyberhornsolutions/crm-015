@@ -24,32 +24,13 @@ export default function Auth() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [referralCode, setReferralCode] = useState("");
 
-  const getCurrentUser = () => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        console.log("User Already Login");
-        navigate("/main");
-      } else {
-        signOut(auth)
-          .then(() => {
-            console.log("Signout The User");
-            navigate("/");
-          })
-          .catch((error) => {
-            console.log("Signout The User Exception");
-          });
-      }
-    });
-  };
   const handleLogin = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        await updateOnlineStatus(userCredential?.user?.uid, true);
-        console.log(userCredential?.user?.uid, 4444);
-        console.log(`User logged in: ${userCredential.user}`);
-        navigate("/main");
+      .then((userCredential) => {
+        updateOnlineStatus(userCredential?.user?.uid, true);
+        localStorage.setItem("USER", JSON.stringify(userCredential));
+        window.location.href = "/";
       })
       .catch((error) => {
         const { message } = error;
@@ -134,9 +115,6 @@ export default function Auth() {
         });
     }
   };
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
   return (
     <>
       {tab === 1 ? (

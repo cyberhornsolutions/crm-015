@@ -187,12 +187,11 @@ export default function HomeRu() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUserId(user.uid);
-        console.log("User Already Login");
-        navigate("/main");
       } else {
         signOut(auth)
           .then(() => {
-            navigate("/");
+						localStorage.clear();
+            window.location.href = "/";
           })
           .catch((error) => {
             console.log("Signout The User Exception");
@@ -304,7 +303,8 @@ export default function HomeRu() {
       .then(async () => {
         await updateOnlineStatus(currentUserId, false);
         console.log("User signed out.");
-        navigate("/");
+				localStorage.clear();
+        window.location.href = "/";
       })
       .catch((error) => {
         console.log("Error", error);

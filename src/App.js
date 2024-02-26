@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import "./App.css";
 import Auth from "./components/auth";
 import Home from "./components/Home";
@@ -22,10 +22,13 @@ import {
 // import "./components/chart-tabs"; // Import the script
 import "./components/side-main.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import bootstrap from "bootstrap";
+// import bootstrap from "bootstrap";
 import "./components/style.css";
 
 const App = () => {
+  const [isLogin, setIsLogin] = useState(() =>
+    localStorage.getItem("USER") ? true : false
+  );
   // return (
   //   <Router>
   //     <Routes>login
@@ -36,15 +39,13 @@ const App = () => {
   // );
 
   const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        <Route path="/" Component={Auth} index />
-        <Route path="/main" Component={Home} />
-      </>
-    )
+    createRoutesFromElements(<Route path="/" Component={Auth} />)
+  );
+  const protectedRouter = createBrowserRouter(
+    createRoutesFromElements(<Route path="/" Component={Home} />)
   );
 
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={isLogin ? protectedRouter : router} />;
 };
 
 export default App;
