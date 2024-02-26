@@ -11,7 +11,7 @@ import {
   CloseCircleOutline,
 } from "react-ionicons";
 import TradingView from "./TradingView.jsx";
-import TradingWidget from "./TradingWidget";
+// import TradingWidget from "./TradingWidget";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
