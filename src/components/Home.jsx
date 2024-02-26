@@ -104,8 +104,8 @@ export default function HomeRu() {
   const [depositSuccessModal, setDepositSuccessModal] = useState(false);
   const [withdrawlSuccessModal, setWithdrawlSuccessModal] = useState(false);
   const [passwordShown, setPasswordShown] = useState(false);
-  const [activeTab, setActiveTab] = useState(1);
-  const [tabs, setTabs] = useState([1]);
+  const [activeTab, setActiveTab] = useState("");
+  const [tabs, setTabs] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
   const [isEditable, setIsEditable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -267,6 +267,17 @@ export default function HomeRu() {
   }, []);
 
   useEffect(() => {
+    if (!orderData.symbol && dbSymbols.length) {
+      setTabs([dbSymbols[0]?.symbol]);
+      setActiveTab(dbSymbols[0]?.symbol);
+      getValue({
+        value: dbSymbols[0]?.symbol,
+        label: dbSymbols[0]?.symbol,
+      });
+    }
+  }, [dbSymbols.length]);
+
+  useEffect(() => {
     if (!currentUserId) return;
 
     const unsubUserData = getUserDataByUID();
@@ -341,13 +352,16 @@ export default function HomeRu() {
       },
     };
     setOrderData(newOr);
-    openNewChartTab();
+    openNewChartTab(row.symbol);
   };
 
-  const openNewChartTab = () => {
-    const _tabs = [...tabs, tabs.length + 1];
-    setTabs(_tabs);
-    setActiveTab(_tabs.length);
+  const openNewChartTab = (newTab) => {
+    const findTab = tabs.find((tab) => tab === newTab);
+    if (!findTab) {
+      const _tabs = [...tabs, newTab];
+      setTabs(_tabs);
+    }
+    setActiveTab(newTab);
   };
 
   const [quoteSearch, setQuoteSearch] = useState("");
@@ -1120,42 +1134,31 @@ export default function HomeRu() {
               )}
               <div id="chart">
                 <ul className="nav nav-tabs" id="myTabs">
-                  {tabs?.map((e, i) => (
+                  {tabs?.map((tab, i) => (
                     <li className="nav-item">
                       <a
-                        className={`nav-link ${
-                          activeTab === i + 1 && "active"
-                        }`}
+                        className={`nav-link ${activeTab === tab && "active"}`}
                         data-bs-toggle="tab"
                         style={{
                           fontSize: "14px",
                           cursor: "pointer",
                           position: "relative",
                         }}
-                        onClick={() => setActiveTab(i + 1)}
+                        onClick={() => setActiveTab(tab)}
                       >
-                        # {i + 1}
-                        <div
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            let _tabs = [...tabs].filter(
-                              (f, index) => index !== i
-                            );
+                        {tab}
+                        <CloseCircleOutline
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const _tabs = tabs.filter((t, idx) => idx !== i);
                             setTabs(_tabs);
-                            setActiveTab(_tabs.length);
+                            setActiveTab(_tabs[_tabs.length - 1]);
                           }}
-                        >
-                          <CloseCircleOutline
-                            style={{
-                              marginLeft: 10,
-                              height: "auto",
-                              position: "absolute",
-                              top: "-10px",
-                              left: "30px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                        </div>
+                          style={{
+                            position: "absolute",
+                            top: "-10px",
+                          }}
+                        />
                       </a>
                     </li>
                   ))}
@@ -1165,28 +1168,17 @@ export default function HomeRu() {
                       className="btn btn-primary"
                       style={{ background: "transparent", border: "none" }}
                       // onClick={addChart}
-                      onClick={() => {
-                        let highest = tabs[0];
-                        tabs.forEach((element) => {
-                          if (element > highest) {
-                            highest = element;
-                          }
-                        });
-                        let _tabs = [...tabs, highest + 1];
-                        setTabs(_tabs);
-                        setActiveTab(_tabs.length);
-                        // console.log({ _tabs, length: _tabs.length });
-                      }}
+                      onClick={() => openNewChartTab(orderData?.symbol?.value)}
                     >
                       +
                     </button>
                   </li>
                 </ul>
-                {tabs?.map((e, i) => {
+                {tabs?.map((tab, i) => {
                   return (
                     <TradingView
                       locale="en"
-                      hide={activeTab === i + 1 ? false : true}
+                      hide={activeTab !== tab}
                       index={i}
                       selectedSymbol={orderData?.symbol?.value}
                     />
