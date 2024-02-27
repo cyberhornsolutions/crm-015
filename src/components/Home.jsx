@@ -106,7 +106,9 @@ export default function HomeRu() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [activeTab, setActiveTab] = useState("");
   const [tabs, setTabs] = useState([]);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("THEME") || "dark"
+  );
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
   const [isEditable, setIsEditable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -191,7 +193,7 @@ export default function HomeRu() {
       } else {
         signOut(auth)
           .then(() => {
-						localStorage.clear();
+            localStorage.clear();
             window.location.href = "/";
           })
           .catch((error) => {
@@ -304,7 +306,7 @@ export default function HomeRu() {
       .then(async () => {
         await updateOnlineStatus(currentUserId, false);
         console.log("User signed out.");
-				localStorage.clear();
+        localStorage.clear();
         window.location.href = "/";
       })
       .catch((error) => {
@@ -479,7 +481,7 @@ export default function HomeRu() {
       when: (row) => !row || row.symbol !== orderData?.symbol?.value,
       style: {
         backgroundColor: "inherit",
-        color: "#fff",
+        // color: "#fff",
       },
     },
   ];
@@ -496,9 +498,14 @@ export default function HomeRu() {
 
     // if (!ordersHistoryButton?.classList.contains("active")) {
     ordersHistoryButton?.classList.add("active");
-    ordersHistoryButton.style.backgroundColor = "#1e222d";
-    ordersHistoryButton.style.border = "1px solid rgb(0, 255, 110)";
-    ordersHistoryButton.style.color = "rgb(0, 255, 110)";
+    ordersHistoryButton.style.backgroundColor =
+      theme === "dark" ? "#1e222d" : "rgb(116 116 116)";
+    ordersHistoryButton.style.border =
+      theme === "dark"
+        ? "1px solid rgb(0, 255, 110)"
+        : "1px solid rgb(116 116 116)";
+    ordersHistoryButton.style.color =
+      theme === "dark" ? "rgb(0, 255, 110)" : "rgb(255 255 255)";
     ordersHistoryButton.style.fontWeight = "bold";
     newDealButton.removeAttribute("style");
     tableOrders.style.maxHeight = "350px";
@@ -537,9 +544,14 @@ export default function HomeRu() {
     ) {
       a.removeAttribute("style");
       newDealButton.classList.add("active");
-      newDealButton.style.backgroundColor = "#1e222d";
-      newDealButton.style.border = "1px solid rgb(0, 255, 110)";
-      newDealButton.style.color = "rgb(0, 255, 110)";
+      newDealButton.style.backgroundColor =
+        theme === "dark" ? "#1e222d" : "rgb(116 116 116)";
+      newDealButton.style.border =
+        theme === "dark"
+          ? "1px solid rgb(0, 255, 110)"
+          : "1px solid rgb(116 116 116)";
+      newDealButton.style.color =
+        theme === "dark" ? "rgb(0, 255, 110)" : "rgb(255 255 255)";
       newDealButton.style.fontWeight = "bold";
       // tableOrders.style.maxHeight = "115px";
     } else if (!ordersHistoryButton.classList.contains("active")) {
@@ -772,7 +784,9 @@ export default function HomeRu() {
   const toggleTheme = () => {
     const root = document.getElementById("root");
     root.classList.toggle("light");
-		setTheme(p=> p === 'dark' ? "light" : "dark")
+    const changedTheme = theme === "dark" ? "light" : "dark";
+    setTheme(changedTheme);
+    localStorage.setItem("THEME", changedTheme);
   };
 
   const closedOrders = orders.filter((order) => order.status !== "Pending");
@@ -1007,9 +1021,8 @@ export default function HomeRu() {
               </Dropdown>
               <Form.Check
                 type="switch"
-                // checked={false}
-                defaultChecked={true}
-                onChange={(e) => toggleTheme()}
+                checked={theme === "dark"}
+                onChange={toggleTheme}
               />
             </div>
           </div>
@@ -1183,7 +1196,7 @@ export default function HomeRu() {
                       hide={activeTab !== tab}
                       index={i}
                       selectedSymbol={orderData?.symbol?.value}
-											theme={theme}
+                      theme={theme}
                     />
                   );
                 })}
@@ -2042,6 +2055,7 @@ export default function HomeRu() {
           show={isReportModalOpen}
           onClose={handleCloseReportModal}
           userId={currentUserId}
+					theme={theme}
         />
       )}
       {messageModal?.show && (
