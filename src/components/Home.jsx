@@ -265,6 +265,9 @@ export default function HomeRu() {
   }, []);
 
   useEffect(() => {
+    if (theme !== "dark")
+      document.getElementById("root").classList.add("light");
+
     return checkCurrentUser();
   }, []);
 
@@ -459,6 +462,7 @@ export default function HomeRu() {
           >
             <FontAwesomeIcon
               id="assetDeleteIcon"
+              className="ms-1 p-2 rounded"
               title="Delete"
               icon={faClose}
               onClick={() => handleDeleteAsset(row.id)}
@@ -481,7 +485,7 @@ export default function HomeRu() {
       when: (row) => !row || row.symbol !== orderData?.symbol?.value,
       style: {
         backgroundColor: "inherit",
-        // color: "#fff",
+        color: theme === "dark" ? "#fff" : "unset",
       },
     },
   ];
@@ -1031,9 +1035,15 @@ export default function HomeRu() {
       <div className="d-flex h-100">
         <div id="sidebar">
           <div id="side-main-menu">
-            <div id="side-trade" onClick={() => setTab("trade")}>
+            <div className="side-btn" onClick={() => setTab("trade")}>
               <StatsChartSharp
-                color={tab === "trade" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"}
+                color={
+                  tab === "trade"
+                    ? "rgba(0, 255, 110, 0.952)"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000"
+                }
               />
               <button
                 id="side-button-trade"
@@ -1043,7 +1053,7 @@ export default function HomeRu() {
               </button>
             </div>
             <div
-              id="side-assets"
+              className="side-btn"
               onClick={() => {
                 setTab(tab === "assets" ? "trade" : "assets");
               }}
@@ -1051,7 +1061,11 @@ export default function HomeRu() {
               {/* <ion-icon id="side-button-assets-icon" name="list" /> */}
               <ListCircle
                 color={
-                  tab === "assets" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"
+                  tab === "assets"
+                    ? "rgba(0, 255, 110, 0.952)"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000"
                 }
               />
               <button
@@ -1060,20 +1074,16 @@ export default function HomeRu() {
               >
                 {t("assets")}
               </button>
-              <button
-                id="side-button-assets-mobile"
-                className={`side-button hidden ${
-                  tab === "assets" && " active"
-                }`}
-              >
-                {t("assets")}
-              </button>
             </div>
-            <div id="side-account" onClick={() => setTab("account")}>
+            <div className="side-btn" onClick={() => setTab("account")}>
               {/* <ion-icon id="side-button-account-icon" name="person-circle" /> */}
               <PersonCircle
                 color={
-                  tab === "account" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"
+                  tab === "account"
+                    ? "rgba(0, 255, 110, 0.952)"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000"
                 }
               />
               <button
@@ -1091,7 +1101,13 @@ export default function HomeRu() {
                 name="information-circle"
               /> */}
               <InformationCircle
-                color={tab === "help" ? "rgba(0, 255, 110, 0.952)" : "#ffffff"}
+                color={
+                  tab === "help"
+                    ? "rgba(0, 255, 110, 0.952)"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000"
+                }
               />
               <button
                 id="help-button"
@@ -1102,7 +1118,7 @@ export default function HomeRu() {
             </div>
             <div id="side-logout" onClick={hanldeLogout}>
               <ion-icon name="log-out" />
-              <LogOut color={"#ffffff"} />
+              <LogOut color={theme === "dark" ? "#fff" : "#000"} />
               <button id="logout-button" className="side-out-button">
                 {t("exit")}
               </button>
@@ -1204,17 +1220,7 @@ export default function HomeRu() {
 
               <div id="newOrder" style={{ display: "none" }}>
                 <div id="newOrderData">
-                  <h2
-                    style={{
-                      margin: "0",
-                      width: "70%",
-                      height: "5%",
-                      marginLeft: "15%",
-                      fontSize: "18px",
-                    }}
-                  >
-                    {t("newDeal")}
-                  </h2>
+                  <h2>{t("newDeal")}</h2>
                   {isLoading ? (
                     <p>Loading....</p>
                   ) : (
@@ -1323,23 +1329,18 @@ export default function HomeRu() {
                         Potential: {+parseFloat(potentialTP)?.toFixed(2)}
                       </label>
                       <button
-                        // className="newOrderButton"
-                        // id="buyButton"
-                        className="newOrderButton buyButton"
+                        className="newOrderButton btn btn-success mt-3 rounded border-0"
                         onClick={(e) => {
                           placeOrder(e, "Buy");
-                          // console.log("Here");
                         }}
                         type="submit"
                       >
                         {t("buy")}
                       </button>
                       <button
-                        // className="newOrderButton"
-                        //  id="sellButton"
                         onClick={(e) => placeOrder(e, "Sell")}
                         type="submit"
-                        className="newOrderButton sellButton"
+                        className="newOrderButton btn btn-danger mt-2 rounded border-0"
                       >
                         {t("sell")}
                       </button>
@@ -1349,7 +1350,10 @@ export default function HomeRu() {
               </div>
             </div>
             <div id="history-div">
-              <div id="nav-buttons">
+              <div
+                id="nav-buttons"
+                className="d-flex align-items-center justify-content-around"
+              >
                 <button
                   id="newDealButton"
                   onClick={() => {
@@ -1358,14 +1362,6 @@ export default function HomeRu() {
                     // let d = window.getComputedStyle(a).display;
                     // document.getElementById("newOrder").style.display =
                     //   d === "flex" ? "none" : "flex";
-                  }}
-                >
-                  {t("newOrder")}
-                </button>
-                <button
-                  id="newDealButtonMobile"
-                  onClick={() => {
-                    openOrderPanel();
                   }}
                 >
                   {t("newOrder")}
@@ -2055,7 +2051,7 @@ export default function HomeRu() {
           show={isReportModalOpen}
           onClose={handleCloseReportModal}
           userId={currentUserId}
-					theme={theme}
+          theme={theme}
         />
       )}
       {messageModal?.show && (

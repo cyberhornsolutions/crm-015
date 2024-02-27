@@ -20,7 +20,7 @@ import {
 // import "./components/single-widget.css";
 // import "./index.css";
 // import "./components/chart-tabs"; // Import the script
-import "./components/side-main.css";
+// import "./components/side-main.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 // import bootstrap from "bootstrap";
 import "./components/style.css";
