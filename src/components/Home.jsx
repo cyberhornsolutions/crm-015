@@ -1139,7 +1139,7 @@ export default function HomeRu() {
 
               <div id="newOrder" className={!showNewOrderPanel && "d-none"}>
                 <div id="newOrderData">
-                  <h2>{t("newDeal")}</h2>
+                  <h6>{t("newDeal")}</h6>
                   <form id="newOrderForm">
                     <label htmlFor="symbol-input">{t("symbol")}</label>
                     <Select
