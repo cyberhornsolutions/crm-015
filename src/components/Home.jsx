@@ -265,8 +265,10 @@ export default function HomeRu() {
   }, []);
 
   useEffect(() => {
-    if (theme !== "dark")
+    if (theme !== "dark") {
       document.getElementById("root").classList.add("light");
+      document.querySelector("html").setAttribute("data-bs-theme", "light");
+    }
 
     return checkCurrentUser();
   }, []);
@@ -477,7 +479,7 @@ export default function HomeRu() {
     {
       when: (row) => row && row.symbol === orderData?.symbol?.value,
       style: {
-        backgroundColor: "rgba(0, 255, 110, 0.952)",
+        backgroundColor: "var(--main-numbersc)",
         color: "#000",
       },
     },
@@ -789,6 +791,7 @@ export default function HomeRu() {
     const root = document.getElementById("root");
     root.classList.toggle("light");
     const changedTheme = theme === "dark" ? "light" : "dark";
+    document.querySelector("html").setAttribute("data-bs-theme", changedTheme);
     setTheme(changedTheme);
     localStorage.setItem("THEME", changedTheme);
   };
@@ -1039,7 +1042,7 @@ export default function HomeRu() {
               <StatsChartSharp
                 color={
                   tab === "trade"
-                    ? "rgba(0, 255, 110, 0.952)"
+                    ? "var(--main-numbersc)"
                     : theme === "dark"
                     ? "#fff"
                     : "#000"
@@ -1062,7 +1065,7 @@ export default function HomeRu() {
               <ListCircle
                 color={
                   tab === "assets"
-                    ? "rgba(0, 255, 110, 0.952)"
+                    ? "var(--main-numbersc)"
                     : theme === "dark"
                     ? "#fff"
                     : "#000"
@@ -1080,7 +1083,7 @@ export default function HomeRu() {
               <PersonCircle
                 color={
                   tab === "account"
-                    ? "rgba(0, 255, 110, 0.952)"
+                    ? "var(--main-numbersc)"
                     : theme === "dark"
                     ? "#fff"
                     : "#000"
@@ -1103,7 +1106,7 @@ export default function HomeRu() {
               <InformationCircle
                 color={
                   tab === "help"
-                    ? "rgba(0, 255, 110, 0.952)"
+                    ? "var(--main-numbersc)"
                     : theme === "dark"
                     ? "#fff"
                     : "#000"
@@ -1164,7 +1167,7 @@ export default function HomeRu() {
                 </div>
               )}
               <div id="chart">
-                <ul className="nav nav-tabs" id="myTabs">
+                <ul className="nav nav-tabs">
                   {tabs?.map((tab, i) => (
                     <li className="nav-item">
                       <a
@@ -1196,8 +1199,10 @@ export default function HomeRu() {
                   <li className="nav-item">
                     <button
                       id="addTabButton"
-                      className="btn btn-primary"
-                      style={{ background: "transparent", border: "none" }}
+                      className="btn border-0"
+                      style={{
+                        color: "inherit",
+                      }}
                       // onClick={addChart}
                       onClick={() => openNewChartTab(orderData?.symbol?.value)}
                     >
