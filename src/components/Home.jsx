@@ -1166,7 +1166,7 @@ export default function HomeRu() {
                   </div>
                 </div>
               )}
-              <div id="chart">
+              <div id="chart" className="rounded">
                 <ul className="nav nav-tabs">
                   {tabs?.map((tab, i) => (
                     <li className="nav-item">
@@ -1388,7 +1388,7 @@ export default function HomeRu() {
                   {t("orderReport")}
                 </button>
               </div>
-              <div id="orders">
+              <div id="orders" className="rounded">
                 <Tabs
                   activeKey={dealsTab}
                   onSelect={(k) => setDealsTab(k)}
