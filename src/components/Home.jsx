@@ -106,6 +106,8 @@ export default function HomeRu() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [activeTab, setActiveTab] = useState("");
   const [tabs, setTabs] = useState([]);
+  const [showNewOrderPanel, setShowNewOrderPanel] = useState(false);
+  const [showHistoryPanel, setShowHistoryPanel] = useState(false);
   const [theme, setTheme] = useState(
     () => localStorage.getItem("THEME") || "dark"
   );
@@ -211,10 +213,6 @@ export default function HomeRu() {
       ...userProfile,
       [name]: value,
     });
-  };
-
-  const handleEditClick = () => {
-    setIsEditable(true);
   };
 
   const handleSaveClick = async () => {
@@ -343,15 +341,7 @@ export default function HomeRu() {
 
   const handleRowDoubleClick = (row) => {
     if (!row) return;
-    const newDealButton = document.getElementById("newDealButton");
-    let a = document.getElementById("newOrder");
-
-    a.style.display = "none";
-    newDealButton.classList.remove("active");
-    newDealButton.removeAttribute("style");
-
-    // setTab("trade");
-    openOrderPanel();
+    openNewChartTab(row.symbol);
     let newOr = {
       ...orderData,
       symbol: {
@@ -360,7 +350,7 @@ export default function HomeRu() {
       },
     };
     setOrderData(newOr);
-    openNewChartTab(row.symbol);
+    if (!showNewOrderPanel) setShowNewOrderPanel(true);
   };
 
   const openNewChartTab = (newTab) => {
@@ -493,88 +483,13 @@ export default function HomeRu() {
   ];
 
   const openOrderHistory = () => {
-    const ordersHistoryButton = document.getElementById("ordersHistoryButton");
-    const tableOrders = document.getElementById("orders");
-    const tradeToToggle = document.getElementById("trade");
-    const navButtons = document.getElementById("nav-buttons");
-    const sideButtonTrade = document.getElementById("side-button-trade");
-    const iconTrade = document.getElementById("side-button-trade-icon");
-    const sideButtonAssets = document.getElementById("side-button-assets");
-    const newDealButton = document.getElementById("newDealButton");
-
-    // if (!ordersHistoryButton?.classList.contains("active")) {
-    ordersHistoryButton?.classList.add("active");
-    ordersHistoryButton.style.backgroundColor =
-      theme === "dark" ? "#1e222d" : "rgb(116 116 116)";
-    ordersHistoryButton.style.border =
-      theme === "dark"
-        ? "1px solid rgb(0, 255, 110)"
-        : "1px solid rgb(116 116 116)";
-    ordersHistoryButton.style.color =
-      theme === "dark" ? "rgb(0, 255, 110)" : "rgb(255 255 255)";
-    ordersHistoryButton.style.fontWeight = "bold";
-    newDealButton.removeAttribute("style");
-    tableOrders.style.maxHeight = "350px";
-    tradeToToggle.style.display = "none";
-    navButtons.setAttribute("style", "margin-top: 5px;");
-    // } else {
-    //   ordersHistoryButton?.classList.remove("active");
-    //   ordersHistoryButton.removeAttribute("style");
-
-    // tableOrders.style.maxHeight = "150px";
-    // tradeToToggle.style.display = "flex";
-    // sideButtonTrade?.classList.add("active");
-    // iconTrade?.classList.add("active");
-    // navButtons.setAttribute("style", "margin-top: 0;");
-
-    // if (newDealButton?.classList.contains("active")) {
-    //   if (sideButtonAssets?.classList.contains("active")) {
-    //     tableOrders.style.maxHeight = "150px";
-    //   } else {
-    //     tableOrders.style.maxHeight = "115px";
-    //   }
-    // }
-    // }
+    setShowHistoryPanel((p) => !p);
+    if (showNewOrderPanel) setShowNewOrderPanel(false);
   };
 
   const openOrderPanel = () => {
-    const newDealButton = document.getElementById("newDealButton");
-    let a = document.getElementById("newOrder");
-    const tableOrders = document.getElementById("orders");
-    const sideButtonAssets = document.getElementById("side-button-assets");
-    const ordersHistoryButton = document.getElementById("ordersHistoryButton");
-    const tradeToToggle = document.getElementById("trade");
-    if (
-      !newDealButton.classList.contains("active") &&
-      !ordersHistoryButton.classList.contains("active")
-    ) {
-      a.removeAttribute("style");
-      newDealButton.classList.add("active");
-      newDealButton.style.backgroundColor =
-        theme === "dark" ? "#1e222d" : "rgb(116 116 116)";
-      newDealButton.style.border =
-        theme === "dark"
-          ? "1px solid rgb(0, 255, 110)"
-          : "1px solid rgb(116 116 116)";
-      newDealButton.style.color =
-        theme === "dark" ? "rgb(0, 255, 110)" : "rgb(255 255 255)";
-      newDealButton.style.fontWeight = "bold";
-      // tableOrders.style.maxHeight = "115px";
-    } else if (!ordersHistoryButton.classList.contains("active")) {
-      a.style.display = "none";
-      newDealButton.classList.remove("active");
-      newDealButton.removeAttribute("style");
-
-      // tableOrders.style.maxHeight = "150px";
-    } else {
-      tradeToToggle.style.display = "flex";
-      ordersHistoryButton?.classList.remove("active");
-      ordersHistoryButton.removeAttribute("style");
-      newDealButton?.classList.add("active");
-    }
-    if (sideButtonAssets.classList.contains("active")) {
-      // tableOrders.style.maxHeight = "150px";
-    }
+    if (showHistoryPanel) setShowHistoryPanel(false);
+    setShowNewOrderPanel((p) => !p);
   };
 
   const getValue = (s) => {
@@ -1133,36 +1048,36 @@ export default function HomeRu() {
             id="trade-div"
             className={`${!(tab === "trade" || tab === "assets") && "d-none"}`}
           >
-            <div id="trade">
+            <div id="trade" className={showHistoryPanel && "d-none"}>
               {tab === "assets" && (
                 <div id="assets" className="h-100 px-1 py-2">
-                    <input
-                      type="search"
-                      placeholder="Search..."
-                      className="w-100"
-                      value={quoteSearch}
-                      onChange={(e) => setQuoteSearch(e.target.value)}
-                    />
-                    <DataTable
-                      columns={assetsColumns}
-                      data={fillArrayWithEmptyRows(filteredQuotesSymbols, 10)}
-                      highlightOnHover
-                      pointerOnHover
-                      customStyles={customStylesAssetsTable}
-                      conditionalRowStyles={conditionalRowStyles}
-                      // onRowDoubleClicked={handleRowDoubleClick}
-                    />
-                    <div className="text-center">
-                      <button
-                        className="newOrderButton btn btn-success border-0"
-                        onClick={() => {
-                          handleTradingModal();
-                        }}
-                      >
-                        + Add Symbol
-                      </button>
-                    </div>
+                  <input
+                    type="search"
+                    placeholder="Search..."
+                    className="w-100"
+                    value={quoteSearch}
+                    onChange={(e) => setQuoteSearch(e.target.value)}
+                  />
+                  <DataTable
+                    columns={assetsColumns}
+                    data={fillArrayWithEmptyRows(filteredQuotesSymbols, 10)}
+                    highlightOnHover
+                    pointerOnHover
+                    customStyles={customStylesAssetsTable}
+                    conditionalRowStyles={conditionalRowStyles}
+                    // onRowDoubleClicked={handleRowDoubleClick}
+                  />
+                  <div className="text-center">
+                    <button
+                      className="newOrderButton btn btn-success border-0"
+                      onClick={() => {
+                        handleTradingModal();
+                      }}
+                    >
+                      + Add Symbol
+                    </button>
                   </div>
+                </div>
               )}
               <div id="chart" className="rounded">
                 <ul className="nav nav-tabs">
@@ -1221,134 +1136,128 @@ export default function HomeRu() {
                 })}
               </div>
 
-              <div id="newOrder" style={{ display: "none" }}>
+              <div id="newOrder" className={!showNewOrderPanel && "d-none"}>
                 <div id="newOrderData">
                   <h2>{t("newDeal")}</h2>
-                  {isLoading ? (
-                    <p>Loading....</p>
-                  ) : (
-                    <form id="newOrderForm">
-                      <label htmlFor="symbol-input">{t("symbol")}</label>
-                      <Select
-                        id="symbol-input"
-                        options={dbSymbols.map((f) => ({
-                          value: f.symbol,
-                          label: f.symbol,
-                        }))}
-                        onChange={(e) => getValue(e)}
-                        styles={customStyles}
-                        value={orderData.symbol}
-                        selectedValue={orderData.symbol}
-                      />
-                      <label htmlFor="symbol-current-value">Price</label>
-                      <div className="position-relative">
-                        <input
-                          type="number"
-                          id="symbol-current-value"
-                          name="symbolValue"
-                          readOnly={true}
-                          value={+orderData?.symbolValue}
-                        />
-                        <FontAwesomeIcon
-                          cursor="pointer"
-                          className="position-absolute ms-2"
-                          style={{ top: 3 }}
-                          onClick={() => getValue(orderData?.symbol)}
-                          icon={faRefresh}
-                        />
-                      </div>
-
-                      <label htmlFor="symbol-amount">Volume</label>
+                  <form id="newOrderForm">
+                    <label htmlFor="symbol-input">{t("symbol")}</label>
+                    <Select
+                      id="symbol-input"
+                      options={dbSymbols.map((f) => ({
+                        value: f.symbol,
+                        label: f.symbol,
+                      }))}
+                      onChange={(e) => getValue(e)}
+                      styles={customStyles}
+                      value={orderData.symbol}
+                      selectedValue={orderData.symbol}
+                    />
+                    <label htmlFor="symbol-current-value">Price</label>
+                    <div className="position-relative">
                       <input
                         type="number"
-                        step={0.1}
-                        id="symbol-amount"
-                        name="volume"
+                        id="symbol-current-value"
+                        name="symbolValue"
+                        readOnly={true}
+                        value={+orderData?.symbolValue}
+                      />
+                      <FontAwesomeIcon
+                        cursor="pointer"
+                        className="position-absolute ms-2"
+                        style={{ top: 3 }}
+                        onClick={() => getValue(orderData?.symbol)}
+                        icon={faRefresh}
+                      />
+                    </div>
+
+                    <label htmlFor="symbol-amount">Volume</label>
+                    <input
+                      type="number"
+                      step={0.1}
+                      id="symbol-amount"
+                      name="volume"
+                      onChange={(e) => {
+                        const { value } = e.target;
+                        setOrderData((p) => ({
+                          ...p,
+                          volume: !value ? "" : parseFloat(value),
+                        }));
+                      }}
+                      value={orderData.volume}
+                    />
+                    <label className="mt-1">
+                      Total: {+calculatedSum?.toFixed(2)} USDT
+                    </label>
+                    <label htmlFor="symbol-current-value">Open Price</label>
+                    <div className="position-relative">
+                      <input
+                        type="number"
+                        readOnly={!enableOpenPrice}
+                        disabled={!enableOpenPrice}
+                        className={!enableOpenPrice && "disabled"}
+                        value={
+                          enableOpenPrice
+                            ? openPriceValue
+                            : +orderData?.symbolValue
+                        }
+                        onChange={(e) => setOpenPriceValue(e.target.value)}
+                      />
+                      <input
+                        className="position-absolute ms-2"
+                        type="checkbox"
+                        checked={enableOpenPrice}
                         onChange={(e) => {
-                          const { value } = e.target;
-                          setOrderData((p) => ({
-                            ...p,
-                            volume: !value ? "" : parseFloat(value),
-                          }));
+                          setOpenPriceValue(parseFloat(orderData.symbolValue));
+                          setEnableOpenPrice(e.target.checked);
                         }}
-                        value={orderData.volume}
                       />
-                      <label className="mt-1">
-                        Total: {+calculatedSum?.toFixed(2)} USDT
-                      </label>
-                      <label htmlFor="symbol-current-value">Open Price</label>
-                      <div className="position-relative">
-                        <input
-                          type="number"
-                          readOnly={!enableOpenPrice}
-                          disabled={!enableOpenPrice}
-                          className={!enableOpenPrice && "disabled"}
-                          value={
-                            enableOpenPrice
-                              ? openPriceValue
-                              : +orderData?.symbolValue
-                          }
-                          onChange={(e) => setOpenPriceValue(e.target.value)}
-                        />
-                        <input
-                          className="position-absolute ms-2"
-                          type="checkbox"
-                          checked={enableOpenPrice}
-                          onChange={(e) => {
-                            setOpenPriceValue(
-                              parseFloat(orderData.symbolValue)
-                            );
-                            setEnableOpenPrice(e.target.checked);
-                          }}
-                        />
-                      </div>
+                    </div>
 
-                      <label htmlFor="stop-loss">SL</label>
-                      <input
-                        type="number"
-                        id="stop-loss"
-                        name="sl"
-                        // required
-                        onChange={(e) =>
-                          setOrderData({ ...orderData, sl: e.target.value })
-                        }
-                        value={orderData?.sl}
-                      />
-                      <label className="mt-1">
-                        Potential: {+parseFloat(potentialSL)?.toFixed(2)}
-                      </label>
-                      <label htmlFor="take-profit">TP</label>
-                      <input
-                        type="number"
-                        id="take-profit"
-                        name="tp"
-                        // required
-                        onChange={(e) =>
-                          setOrderData({ ...orderData, tp: e.target.value })
-                        }
-                        value={orderData?.tp}
-                      />
-                      <label className="mt-1">
-                        Potential: {+parseFloat(potentialTP)?.toFixed(2)}
-                      </label>
-                      <button
-                        className="newOrderButton btn btn-success mt-3 rounded border-0"
-                        onClick={(e) => {
-                          placeOrder(e, "Buy");
-                        }}
-                        type="submit"
-                      >
-                        {t("buy")}
-                      </button>
-                      <button
-                        onClick={(e) => placeOrder(e, "Sell")}
-                        type="submit"
-                        className="newOrderButton btn btn-danger mt-2 rounded border-0"
-                      >
-                        {t("sell")}
-                      </button>
-                    </form>
-                  )}
+                    <label htmlFor="stop-loss">SL</label>
+                    <input
+                      type="number"
+                      id="stop-loss"
+                      name="sl"
+                      // required
+                      onChange={(e) =>
+                        setOrderData({ ...orderData, sl: e.target.value })
+                      }
+                      value={orderData?.sl}
+                    />
+                    <label className="mt-1">
+                      Potential: {+parseFloat(potentialSL)?.toFixed(2)}
+                    </label>
+                    <label htmlFor="take-profit">TP</label>
+                    <input
+                      type="number"
+                      id="take-profit"
+                      name="tp"
+                      // required
+                      onChange={(e) =>
+                        setOrderData({ ...orderData, tp: e.target.value })
+                      }
+                      value={orderData?.tp}
+                    />
+                    <label className="mt-1">
+                      Potential: {+parseFloat(potentialTP)?.toFixed(2)}
+                    </label>
+                    <button
+                      className="newOrderButton btn btn-success mt-3 rounded border-0"
+                      onClick={(e) => {
+                        placeOrder(e, "Buy");
+                      }}
+                      type="submit"
+                    >
+                      {t("buy")}
+                    </button>
+                    <button
+                      onClick={(e) => placeOrder(e, "Sell")}
+                      type="submit"
+                      className="newOrderButton btn btn-danger mt-2 rounded border-0"
+                    >
+                      {t("sell")}
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -1359,6 +1268,7 @@ export default function HomeRu() {
               >
                 <button
                   id="newDealButton"
+                  className={showNewOrderPanel && "active"}
                   onClick={() => {
                     openOrderPanel();
                     // let a = document.getElementById("newOrder");
@@ -1371,6 +1281,7 @@ export default function HomeRu() {
                 </button>
                 <button
                   id="ordersHistoryButton"
+                  className={showHistoryPanel && "active"}
                   onClick={() => {
                     openOrderHistory();
                   }}
