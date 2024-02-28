@@ -161,19 +161,19 @@ export default function Auth() {
           </div>
         </form>
       ) : (
-        <form class="signup_form" onSubmit={handleSignUp}>
-          <div id="signup_logo_wrapper" class="logo_wrapper">
+        <form className="signup_form" onSubmit={handleSignUp}>
+          <div id="signup_logo_wrapper" className="logo_wrapper">
             <img
-              class="signup_logo"
+              className="signup_logo"
               src={require("../assets/images/logo.png")}
               alt="logo"
             />
-            <h3 class="signup_title">Регистрация</h3>
+            <h3 className="signup_title">Регистрация</h3>
           </div>
 
-          <div class="fields">
+          <div className="fields">
             <input
-              class="name_input"
+              className="name_input"
               type="text"
               placeholder="Имя"
               name="name"
@@ -182,7 +182,7 @@ export default function Auth() {
             />
 
             <input
-              class="email_input"
+              className="email_input"
               type="email"
               placeholder="Электронная почта"
               name="email"
@@ -191,7 +191,7 @@ export default function Auth() {
             />
 
             <input
-              class="psw_input"
+              className="psw_input"
               type="password"
               placeholder="Пароль"
               name="psw"
@@ -200,7 +200,7 @@ export default function Auth() {
             />
 
             <input
-              class="psw_input"
+              className="psw_input"
               type="password"
               placeholder="Повторите пароль"
               name="psw"
@@ -209,7 +209,7 @@ export default function Auth() {
             />
 
             <input
-              class="psw_input"
+              className="psw_input"
               type="text"
               placeholder="реферальный код"
               name="psw"
@@ -217,13 +217,13 @@ export default function Auth() {
             />
           </div>
 
-          <button class="button" type="submit">
+          <button className="button" type="submit">
             Зарегистрироваться
           </button>
 
-          <div class="login_wrapper">
-            <p class="login">Есть аккаунт?</p>
-            <a class="login_link cursor-pointer" onClick={() => setTab(1)}>
+          <div className="login_wrapper">
+            <p className="login">Есть аккаунт?</p>
+            <a className="login_link cursor-pointer" onClick={() => setTab(1)}>
               Войти
             </a>
           </div>
