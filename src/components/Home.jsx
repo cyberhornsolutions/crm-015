@@ -264,8 +264,9 @@ export default function HomeRu() {
 
   useEffect(() => {
     if (theme !== "dark") {
-      document.getElementById("root").classList.add("light");
-      document.querySelector("html").setAttribute("data-bs-theme", "light");
+      const root = document.querySelector("html");
+      root.setAttribute("data-bs-theme", "light");
+      root.classList.add("light");
     }
 
     return checkCurrentUser();
@@ -703,10 +704,10 @@ export default function HomeRu() {
   // };
 
   const toggleTheme = () => {
-    const root = document.getElementById("root");
-    root.classList.toggle("light");
     const changedTheme = theme === "dark" ? "light" : "dark";
-    document.querySelector("html").setAttribute("data-bs-theme", changedTheme);
+    const root = document.querySelector("html");
+    root.setAttribute("data-bs-theme", changedTheme);
+    root.classList.toggle("light");
     setTheme(changedTheme);
     localStorage.setItem("THEME", changedTheme);
   };
@@ -1962,7 +1963,6 @@ export default function HomeRu() {
       )}
       {isReportModalOpen && (
         <ReportModal
-          show={isReportModalOpen}
           onClose={handleCloseReportModal}
           userId={currentUserId}
           theme={theme}
