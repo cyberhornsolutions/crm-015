@@ -1135,8 +1135,7 @@ export default function HomeRu() {
           >
             <div id="trade">
               {tab === "assets" && (
-                <div id="assets">
-                  <div className="tradingWidget h-100">
+                <div id="assets" className="h-100 px-1 py-2">
                     <input
                       type="search"
                       placeholder="Search..."
@@ -1155,7 +1154,7 @@ export default function HomeRu() {
                     />
                     <div className="text-center">
                       <button
-                        className="btn btn-success"
+                        className="newOrderButton btn btn-success border-0"
                         onClick={() => {
                           handleTradingModal();
                         }}
@@ -1164,7 +1163,6 @@ export default function HomeRu() {
                       </button>
                     </div>
                   </div>
-                </div>
               )}
               <div id="chart" className="rounded">
                 <ul className="nav nav-tabs">

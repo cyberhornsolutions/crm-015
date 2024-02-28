@@ -180,7 +180,7 @@ const dealsColumns = ({
       row && (
         <div
           className={`"order-column" ${
-            row.profit < 0 ? "text-danger" : row.profit == 0 ? "text-muted" : ""
+            row.profit < 0 ? "text-danger" : row.profit == 0 ? "text-muted" : "text-success"
           }`}
           onDoubleClick={() => handleEditModal(row)}
         >

@@ -87,6 +87,10 @@ button {
   color: var(--main-textc);
 }
 
+.btn-success {
+  --bs-btn-bg: var(--main-numbersc);
+}
+
 label {
   font-weight: 500;
   font-size: 14px;
@@ -684,7 +688,6 @@ acc-info-personal h3 {
 }
 .newOrderButton:hover {
   font-weight: bold;
-  box-shadow: 0px 4px 8px rgba(100, 100, 100, 0.4);
 }
 
 #chart {
