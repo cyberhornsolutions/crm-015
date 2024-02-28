@@ -1944,6 +1944,7 @@ export default function HomeRu() {
         <EditOrderModal
           onClose={handleCloseModal}
           selectedOrder={selectedOrder}
+					theme={theme}
         />
       )}
       {isDelModalOpen && (

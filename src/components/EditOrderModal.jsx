@@ -5,7 +5,7 @@ import { Modal, Form } from "react-bootstrap";
 import { db } from "../firebase";
 import { toast } from "react-toastify";
 
-const EditOrderModal = ({ onClose, selectedOrder }) => {
+const EditOrderModal = ({ onClose, selectedOrder, theme }) => {
   const [newSl, setNewSl] = useState(selectedOrder?.sl);
   const [newTp, setNewTp] = useState(selectedOrder?.tp);
   const [loading, setLoading] = useState(false);
@@ -72,7 +72,10 @@ const EditOrderModal = ({ onClose, selectedOrder }) => {
           className="bg-transparent rounded-0 border-0 p-1"
           closeButton
         >
-          <Modal.Title as="h2" className="bg-transparent mb-0">
+          <Modal.Title
+            as="h5"
+            className={`bg-transparent mb-0 w-100 text-center ${theme}`}
+          >
             Edit order - {selectedOrder?.orderId} - {selectedOrder?.symbol}
           </Modal.Title>
         </Modal.Header>
@@ -116,9 +119,7 @@ const EditOrderModal = ({ onClose, selectedOrder }) => {
             </Form.Group>
             <label className="text-center fs-5 mb-2">
               Current market Price:
-              <span className="ms-2 text-success">
-                {selectedOrder.currentMarketPrice}
-              </span>
+              <span className="ms-2">{selectedOrder.currentMarketPrice}</span>
             </label>
             <button
               type="submit"

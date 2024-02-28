@@ -12,7 +12,7 @@ import { getDepositsByUser } from "../helper/firebaseHelpers";
 import { fillArrayWithEmptyRows } from "../helper/helpers";
 import { setDepositsState } from "../redux/slicer/transactionSlicer";
 
-const ReportModal = ({ onClose, show, userId }) => {
+const ReportModal = ({ onClose, userId, theme }) => {
   const dispatch = useDispatch();
   const orders = useSelector((state) =>
     state.orders.filter(({ status }) => status != "Pending")
@@ -99,13 +99,13 @@ const ReportModal = ({ onClose, show, userId }) => {
       <Modal
         size="lg"
         fullscreen={true}
-        show={show}
+        show
         onHide={onClose}
         className="reports-modal"
         centered
       >
         <Modal.Header closeButton>
-          <h2 className="mb-0">Report</h2>
+          <h5 className="mb-0 text-center w-100">Reports</h5>
         </Modal.Header>
         <Modal.Body className="">
           <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
@@ -115,7 +115,7 @@ const ReportModal = ({ onClose, show, userId }) => {
                 data={fillArrayWithEmptyRows(filteredOrders, 5)}
                 customStyles={customStyle}
                 pagination
-                theme="dark"
+                theme={theme}
                 paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
               />
             </Tab>
@@ -125,7 +125,7 @@ const ReportModal = ({ onClose, show, userId }) => {
                 data={fillArrayWithEmptyRows(filteredDeposits, 5)}
                 customStyles={customStyle}
                 pagination
-                theme="dark"
+                theme={theme}
                 paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
               />
             </Tab>
@@ -134,7 +134,7 @@ const ReportModal = ({ onClose, show, userId }) => {
             <div>
               <span className="me-2">Period</span>
               <select
-                style={{ backgroundColor: "rgba(80,80,80,255)" }}
+                // style={{ backgroundColor: "rgba(80,80,80,255)" }}
                 onChange={(e) => {
                   setShowRecord(e.target.value);
                 }}
@@ -152,7 +152,12 @@ const ReportModal = ({ onClose, show, userId }) => {
               Total profit:{" "}
               {totalProfit && +parseFloat(totalProfit)?.toFixed(2)}
             </div>
-            <button className="greyBtn px-4 py-1 rounded border-0" onClick={onClose}>
+            <button
+              className={`btn px-4 py-1 rounded border-0 ${
+                theme === "dark" ? "btn-dark" : "btn-light"
+              }`}
+              onClick={onClose}
+            >
               Close
             </button>
           </div>
