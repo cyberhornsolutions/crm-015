@@ -1131,6 +1131,10 @@ export default function HomeRu() {
                           ...provided,
                           color: "var(--main-input-textc)",
                         }),
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "inherit",
+                        }),
                       }}
                       theme={(theme) => {
                         return {
@@ -1141,6 +1145,7 @@ export default function HomeRu() {
                           },
                         };
                       }}
+                      isSearchable={false}
                       value={orderData.symbol}
                       selectedValue={orderData.symbol}
                     />
