@@ -26,9 +26,6 @@
   background-color: var(--main-elc);
   /* font-family: sans-serif; */
 }
-option {
-  color: var(--main-input-textc) !important;
-}
 
 body {
   position: relative;

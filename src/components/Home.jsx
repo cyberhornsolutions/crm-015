@@ -640,48 +640,6 @@ export default function HomeRu() {
       console.error("Error adding order: ", error);
     }
   };
-  // const customStyles = {
-  //   option: (provided, state) => ({
-  //     ...provided,
-  //     backgroundColor: state.isSelected ? "blue" : "white",
-  //     color: state.isSelected ? "white" : "black",
-  //     "&:hover": {
-  //       backgroundColor: "lightgray",
-  //       color: "black",
-  //     },
-  //   }),
-  //   singleValue: (provided) => ({
-  //     ...provided,
-  //     color: "white",
-  //   }),
-  //   control: (provided) => ({
-  //     ...provided,
-  //     backgroundColor: "white", // Change the background color to white
-  //   }),
-  // };
-  const customStyles = {
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "blue" : "white",
-      color: state.isSelected ? "white" : "black",
-      "&:hover": {
-        backgroundColor: "lightgray",
-        color: "black",
-      },
-      opacity: state.isSelected ? "0.1" : "1",
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "white",
-      opacity: "0.9 !important",
-      visibility: "visible",
-    }),
-    control: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isFocused ? "white" : "white",
-      borderColor: state.isFocused ? "blue" : "gray",
-    }),
-  };
 
   const handleTradingModal = () => {
     setIsTradingModal(true);
@@ -1066,6 +1024,7 @@ export default function HomeRu() {
                     pointerOnHover
                     customStyles={customStylesAssetsTable}
                     conditionalRowStyles={conditionalRowStyles}
+                    theme={theme}
                     // onRowDoubleClicked={handleRowDoubleClick}
                   />
                   <div className="text-center">
@@ -1149,7 +1108,39 @@ export default function HomeRu() {
                         label: f.symbol,
                       }))}
                       onChange={(e) => getValue(e)}
-                      styles={customStyles}
+                      styles={{
+                        container: (provided, state) => ({
+                          ...provided,
+                          minWidth: 193,
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          backgroundColor: state.isSelected
+                            ? "var(--main-numbersc)"
+                            : "unset",
+                          color: state.isSelected
+                            ? "black"
+                            : "var(--main-input-textc)",
+                          "&:hover": {
+                            backgroundColor: state.isSelected
+                              ? ""
+                              : "var(--bs-body-bg)",
+                          },
+                        }),
+                        singleValue: (provided) => ({
+                          ...provided,
+                          color: "var(--main-input-textc)",
+                        }),
+                      }}
+                      theme={(theme) => {
+                        return {
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary: "var(--main-input-textc)",
+                          },
+                        };
+                      }}
                       value={orderData.symbol}
                       selectedValue={orderData.symbol}
                     />
@@ -1322,7 +1313,7 @@ export default function HomeRu() {
                       highlightOnHover
                       pointerOnHover
                       responsive
-                      theme="dark"
+                      theme={theme}
                       className="custom-data-table"
                     />
                   </Tab>
@@ -1341,7 +1332,7 @@ export default function HomeRu() {
                       highlightOnHover
                       pointerOnHover
                       responsive
-                      theme="dark"
+                      theme={theme}
                       className="custom-data-table"
                     />
                   </Tab>
@@ -1657,7 +1648,7 @@ export default function HomeRu() {
                       },
                     }}
                     pagination
-                    theme="dark"
+                    theme={theme}
                     paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
                     dense
                   />
@@ -1944,7 +1935,7 @@ export default function HomeRu() {
         <EditOrderModal
           onClose={handleCloseModal}
           selectedOrder={selectedOrder}
-					theme={theme}
+          theme={theme}
         />
       )}
       {isDelModalOpen && (
