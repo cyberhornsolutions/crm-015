@@ -522,8 +522,8 @@ export default function HomeRu() {
         }
       }
     }
-    if (leverage > 1) {
-      const { maintenanceMargin = 100 } = orderData.symbolSettings;
+    const maintenanceMargin = orderData?.symbolSettings?.maintenanceMargin;
+    if (leverage > 1 && maintenanceMargin > 0) {
       return (sum / leverage) * (maintenanceMargin / 100);
     }
     return sum;
