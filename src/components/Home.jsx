@@ -1128,6 +1128,7 @@ export default function HomeRu() {
                         }),
                         option: (provided, state) => ({
                           ...provided,
+                          cursor: "pointer",
                           backgroundColor: state.isSelected
                             ? "var(--main-numbersc)"
                             : "unset",
