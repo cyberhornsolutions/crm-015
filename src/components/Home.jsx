@@ -91,9 +91,11 @@ export default function HomeRu() {
   const [orderData, setOrderData] = useState({
     symbol: null,
     symbolValue: null,
+    symbolSettings: null,
     volume: 0,
     sl: null,
     tp: null,
+    fee: null,
   });
   const orders = useSelector((state) => state.orders);
   const deposits = useSelector((state) => state.deposits);
@@ -503,6 +505,7 @@ export default function HomeRu() {
       ...orderData,
       symbol: s,
       symbolValue: symbol?.price,
+      symbolSettings: symbol?.settings,
       fee: symbolFee,
     });
   };
@@ -519,9 +522,11 @@ export default function HomeRu() {
         }
       }
     }
-    const maintenanceMargin = userProfile?.settings?.maintenanceMargin || 0;
-    const margin = sum * leverage * (maintenanceMargin / 100);
-    return sum + margin;
+    if (leverage > 1) {
+      const { maintenanceMargin = 100 } = orderData.symbolSettings;
+      return (sum / leverage) * (maintenanceMargin / 100);
+    }
+    return sum;
   };
   const calculatedSum = calculateTotalSum();
 
@@ -551,7 +556,6 @@ export default function HomeRu() {
       return toast.error("Make sure to fill both SL & TP values");
     }
 
-    const symbol = dbSymbols.find((el) => el.symbol == orderData?.symbol.value);
     const {
       bidSpread,
       bidSpreadUnit,
@@ -559,9 +563,10 @@ export default function HomeRu() {
       askSpreadUnit,
       contractSize,
       group,
-    } = symbol.settings;
+      closedMarket,
+    } = orderData.symbolSettings;
 
-    if (group === "commodities" && !symbol.settings?.closedMarket) {
+    if (group === "commodities" && !closedMarket) {
       const today = moment();
       const weekDay = today.weekday();
       const hour = today.hour();
@@ -601,7 +606,6 @@ export default function HomeRu() {
 
     const form = document.getElementById("newOrderForm");
 
-    const leverage = userProfile?.settings?.leverage ?? 1;
     const user = auth.currentUser;
     const userId = user.uid;
 
@@ -615,12 +619,13 @@ export default function HomeRu() {
       status: "Pending",
       profit: 0,
       symbol: orderData?.symbol.value,
-      volume: orderData.volume * parseFloat(leverage),
+      volume: orderData.volume, // * parseFloat(leverage),
       sum: calculatedSum,
       enableOpenPrice,
       createdAt: formattedDate,
       createdTime: serverTimestamp(),
     };
+    delete payload.symbolSettings;
     delete payload.fee;
 
     if (enableOpenPrice) payload.symbolValue = openPriceValue;
@@ -631,9 +636,11 @@ export default function HomeRu() {
       setOrderData({
         symbol: null,
         symbolValue: null,
+        symbolSettings: null,
         volume: 0,
         sl: null,
         tp: null,
+        fee: null,
       });
       form.reset();
     } catch (error) {
@@ -688,6 +695,7 @@ export default function HomeRu() {
         swapShortUnit,
         swapLong,
         swapLongUnit,
+        maintenanceMargin,
       } = symbol.settings;
       let swapValue = 0;
       if (order.createdTime) {
@@ -724,6 +732,11 @@ export default function HomeRu() {
         order.volume
       );
       profit = profit - swapValue - feeValue;
+
+      const leverage = userProfile?.settings?.leverage;
+      if (leverage > 1 && maintenanceMargin > 0) {
+        profit = (profit / leverage) * (maintenanceMargin / 100);
+      }
 
       return {
         ...order,
