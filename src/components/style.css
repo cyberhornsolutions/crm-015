@@ -848,10 +848,6 @@ thead {
   padding: 8px;
 }
 
-.tradingview-widget-container {
-  height: 87% !important;
-}
-
 .login_form {
   box-sizing: border-box;
   display: flex;
