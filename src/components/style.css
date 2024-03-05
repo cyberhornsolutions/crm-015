@@ -85,12 +85,15 @@ label {
 input {
   margin-top: 1%;
   background-color: var(--bs-body-bg);
-  border: 2px solid var(--bs-border-color);
+  border: 1px solid var(--bs-border-color);
   border-radius: 5px;
   height: 24px;
   padding: 4px;
   color: var(--main-input-textc);
   text-align: center;
+}
+input:focus-visible {
+  outline: 2px solid var(--seco-grayc);
 }
 
 .hidden {

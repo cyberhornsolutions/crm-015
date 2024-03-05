@@ -1023,6 +1023,7 @@ export default function HomeRu() {
                     type="search"
                     placeholder="Search..."
                     className="w-100"
+                    style={{ height: 30 }}
                     value={quoteSearch}
                     onChange={(e) => setQuoteSearch(e.target.value)}
                   />
