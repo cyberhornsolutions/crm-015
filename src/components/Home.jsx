@@ -345,14 +345,10 @@ export default function HomeRu() {
   const handleRowDoubleClick = (row) => {
     if (!row) return;
     openNewChartTab(row.symbol);
-    let newOr = {
-      ...orderData,
-      symbol: {
-        value: row.symbol,
-        label: row.symbol,
-      },
-    };
-    setOrderData(newOr);
+    getValue({
+      value: row.symbol,
+      label: row.symbol,
+    });
     if (!showNewOrderPanel) setShowNewOrderPanel(true);
   };
 
