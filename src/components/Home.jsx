@@ -1607,7 +1607,7 @@ export default function HomeRu() {
                       type="text"
                       value={moment(
                         userProfile?.createdAt?.seconds * 1000
-                      )?.format("MM/DD/YYYY")}
+                      )?.format("DD/MM/YYYY")}
                       name="dateRegister"
                       placeholder=""
                       // onChange={e=> handleChange(e)}

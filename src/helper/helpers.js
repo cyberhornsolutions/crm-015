@@ -13,7 +13,7 @@ export const calculateProfit = (type, currentPrice, symbolPrice, volume) => {
 export const convertTimestamptToDate = (date) => {
   if (!date) return;
   const jsDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
-  return moment(jsDate).format("MM/DD/YYYY hh:mm:ss A");
+  return moment(jsDate).format("DD/MM/YYYY hh:mm:ss A");
 };
 
 export const fillArrayWithEmptyRows = (arr, size) =>
