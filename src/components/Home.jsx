@@ -151,7 +151,7 @@ export default function HomeRu() {
     openPrice: true,
     sltp: true,
     additionalParameters: true,
-    pledge: true,
+    margin: true,
     currentPrice: true,
     profit: true,
     action: true,
@@ -720,7 +720,7 @@ export default function HomeRu() {
             : (order.sum / 100) * askSpread;
       }
       const feeValue = feeUnit === "$" ? fee : (order.sum / 100) * fee;
-      const pledge = order.sum;
+      const margin = order.sum;
       let profit = calculateProfit(
         order.type,
         currentPrice,
@@ -739,7 +739,7 @@ export default function HomeRu() {
         currentPrice,
         currentMarketPrice: parseFloat(symbol.price),
         enableOpenPrice: order.enableOpenPrice,
-        pledge: parseFloat(pledge),
+        margin: parseFloat(margin),
         spread: parseFloat(spread),
         swap: parseFloat(swapValue),
         fee: parseFloat(feeValue),
@@ -780,10 +780,10 @@ export default function HomeRu() {
 
   const freeMargin = calculateFreeMargin();
 
-  const pledge = pendingOrders.reduce((p, v) => p + v.pledge, 0);
+  const totalMargin = pendingOrders.reduce((p, v) => p + v.margin, 0);
 
   const userLevel = userProfile?.settings?.level || 100;
-  const level = pledge && (totalBalance / pledge) * (userLevel / 100);
+  const level = totalMargin && (totalBalance / totalMargin) * (userLevel / 100);
 
   let potentialSL = 0,
     potentialTP = 0;
@@ -868,10 +868,14 @@ export default function HomeRu() {
               <input
                 type="number"
                 className={`balance-nums ${
-                  pledge < 0 ? "text-danger" : pledge == 0 ? "text-muted" : ""
+                  totalMargin < 0
+                    ? "text-danger"
+                    : totalMargin == 0
+                    ? "text-muted"
+                    : ""
                 }`}
                 readOnly={true}
-                value={+pledge?.toFixed(2)}
+                value={+totalMargin?.toFixed(2)}
               />
             </div>
             <div className="balance-item">

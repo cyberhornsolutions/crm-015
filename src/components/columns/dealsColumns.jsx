@@ -152,10 +152,10 @@ const dealsColumns = ({
   },
   {
     name: "Margin",
-    selector: (row) => row && +parseFloat(row.pledge)?.toFixed(4),
+    selector: (row) => row && +parseFloat(row.margin)?.toFixed(4),
     sortable: true,
     compact: true,
-    omit: !showColumns.pledge,
+    omit: !showColumns.margin,
   },
   {
     name: "Current Price",
@@ -180,7 +180,11 @@ const dealsColumns = ({
       row && (
         <div
           className={`"order-column" ${
-            row.profit < 0 ? "text-danger" : row.profit == 0 ? "text-muted" : "text-success"
+            row.profit < 0
+              ? "text-danger"
+              : row.profit == 0
+              ? "text-muted"
+              : "text-success"
           }`}
           onDoubleClick={() => handleEditModal(row)}
         >
