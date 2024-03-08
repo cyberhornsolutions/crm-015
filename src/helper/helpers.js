@@ -20,14 +20,12 @@ export const fillArrayWithEmptyRows = (arr, size) =>
   arr?.concat(arr.length < size ? new Array(size - arr.length).fill("") : []);
 
 export const getBidValue = (val, bid, isDirectPrice = false) =>
-  !isDirectPrice
-    ? +parseFloat(val * (1 - bid / 100))?.toFixed(2)
-    : +parseFloat(val - bid)?.toFixed(2);
+  !isDirectPrice ? val * (1 - bid / 100) : val - bid;
 
 export const getAskValue = (val, ask, isDirectPrice = false) =>
   !isDirectPrice
-    ? +parseFloat(val * (1 + ask / 100))?.toFixed(2)
-    : +parseFloat(+val + +ask)?.toFixed(2);
+    ? val * (1 + parseFloat(ask) / 100)
+    : parseFloat(val) + parseFloat(ask);
 
 export const newFormulaForProfit = (
   sl,

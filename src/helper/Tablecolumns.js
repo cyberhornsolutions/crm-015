@@ -26,7 +26,20 @@ export const generalColumns = [
   { name: "Fee", selector: (row) => row.fee },
   {
     name: "Profit",
-    selector: (row) => row && +parseFloat(row.profit)?.toFixed(2),
+    selector: (row) =>
+      row && (
+        <div
+          className={
+            row.profit < 0
+              ? "text-danger"
+              : row.profit > 0
+              ? "text-success"
+              : ""
+          }
+        >
+          {+parseFloat(row.profit)?.toFixed(2)}
+        </div>
+      ),
   },
   {
     name: "Status",

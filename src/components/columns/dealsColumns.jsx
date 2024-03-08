@@ -165,7 +165,7 @@ const dealsColumns = ({
           className="order-column"
           onDoubleClick={() => handleEditModal(row)}
         >
-          {+parseFloat(row.currentPrice)?.toFixed(2)}
+          {row.currentPrice}
         </div>
       ) : (
         ""

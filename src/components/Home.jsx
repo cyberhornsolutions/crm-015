@@ -403,7 +403,7 @@ export default function HomeRu() {
       selector: (row) => {
         if (!row) return;
         const { settings } = row;
-        const isDirectPrice = settings.bidSpreadUnit === "$";
+        const isDirectPrice = settings?.bidSpreadUnit === "$";
         const bidValue = getBidValue(
           row.price,
           settings.bidSpread,
@@ -414,7 +414,9 @@ export default function HomeRu() {
             onDoubleClick={() => handleRowDoubleClick(row)}
             title={row?.settings?.description}
           >
-            {bidValue}
+            {settings?.group === "currencies"
+              ? +parseFloat(bidValue)?.toFixed(6)
+              : +parseFloat(bidValue)?.toFixed(2)}
           </div>
         );
       },
@@ -437,7 +439,9 @@ export default function HomeRu() {
             onDoubleClick={() => handleRowDoubleClick(row)}
             title={row?.settings?.description}
           >
-            {askValue}
+            {settings?.group === "currencies"
+              ? +parseFloat(askValue)?.toFixed(6)
+              : +parseFloat(askValue)?.toFixed(2)}
           </div>
         );
       },
@@ -581,10 +585,15 @@ export default function HomeRu() {
       );
     }
 
-    const closedPrice =
+    let closedPrice =
       type === "Buy"
         ? getBidValue(orderData.symbolValue, bidSpread, bidSpreadUnit === "$")
         : getAskValue(orderData.symbolValue, askSpread, askSpreadUnit === "$");
+
+    closedPrice =
+      group === "currencies"
+        ? +parseFloat(closedPrice)?.toFixed(6)
+        : +parseFloat(closedPrice)?.toFixed(2);
 
     if (
       type == "Buy" &&
@@ -731,7 +740,8 @@ export default function HomeRu() {
   const totalMargin = parseFloat(userProfile?.totalMargin);
 
   const userLevel = parseFloat(userProfile?.settings?.level) || 100;
-  const level = totalMargin > 0 ? (equity / totalMargin) * (userLevel / 100) : 0;
+  const level =
+    totalMargin > 0 ? (equity / totalMargin) * (userLevel / 100) : 0;
 
   const totalBalance = equity + totalMargin;
 
