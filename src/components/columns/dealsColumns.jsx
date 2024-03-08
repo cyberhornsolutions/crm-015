@@ -188,7 +188,7 @@ const dealsColumns = ({
           }`}
           onDoubleClick={() => handleEditModal(row)}
         >
-          {+parseFloat(row.profit)?.toFixed(2)}
+          {row.profit}
         </div>
       ),
     sortable: true,
