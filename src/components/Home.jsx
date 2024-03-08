@@ -706,9 +706,9 @@ export default function HomeRu() {
   const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
   const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
 
-  const activeOrdersProfit = userProfile?.activeOrdersProfit;
+  const activeOrdersProfit = parseFloat(userProfile?.activeOrdersProfit);
 
-  const bonus = userProfile?.bonus;
+  const bonus = parseFloat(userProfile?.bonus);
   const allowBonus = userProfile?.settings?.allowBonus;
 
   const calculateEquity = () => {
@@ -728,9 +728,9 @@ export default function HomeRu() {
 
   const freeMargin = calculateFreeMargin();
 
-  const totalMargin = userProfile?.totalMargin;
+  const totalMargin = parseFloat(userProfile?.totalMargin);
 
-  const userLevel = userProfile?.settings?.level || 100;
+  const userLevel = parseFloat(userProfile?.settings?.level) || 100;
   const level = totalMargin > 0 ? (equity / totalMargin) * (userLevel / 100) : 0;
 
   const totalBalance = equity + totalMargin;
