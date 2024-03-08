@@ -11,8 +11,9 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { toast } from "react-toastify";
+import { updateUserById } from "../helper/firebaseHelpers";
 
-const DelOrderModal = ({ onClose, show, selectedOrder }) => {
+const DelOrderModal = ({ onClose, show, selectedOrder, userProfile }) => {
   const [isPartial, setIsPartial] = useState(false);
   const [volume, setVolume] = useState(selectedOrder.volume);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,10 +28,6 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
       status: newStatus,
       closedDate: serverTimestamp(),
       closedPrice,
-      profit: selectedOrder.profit,
-      spread: selectedOrder.spread,
-      swap: selectedOrder.swap,
-      fee: selectedOrder.fee,
     };
 
     if (newVolume) {
@@ -38,8 +35,23 @@ const DelOrderModal = ({ onClose, show, selectedOrder }) => {
       newData.sum = newVolume * closedPrice;
     }
 
+    let totalMargin = parseFloat(userProfile?.totalMargin);
+    if (newVolume) {
+      totalMargin = +(userProfile?.totalMargin - newData.sum).toFixed(2);
+    } else {
+      totalMargin = +(userProfile?.totalMargin - selectedOrder.sum).toFixed(2);
+    }
+
     if (docSnapshot.exists()) {
       await updateDoc(orderRef, newData);
+      await updateUserById(userProfile.id, {
+        totalBalance: userProfile?.totalBalance + selectedOrder.profit,
+        totalMargin,
+        activeOrdersProfit: +parseFloat(
+          userProfile?.activeOrdersProfit - selectedOrder.profit
+        ).toFixed(2),
+      });
+
       toast.success("Order status updated successfully");
     } else {
       toast.error("Order does not exist");

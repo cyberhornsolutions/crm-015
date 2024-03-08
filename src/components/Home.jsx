@@ -61,6 +61,7 @@ import {
   addQuotesToUser,
   getDepositsByUser,
   getColumnsById,
+  updateUserById,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import MyBarChart from "./BarChart.js";
@@ -557,9 +558,12 @@ export default function HomeRu() {
       bidSpreadUnit,
       askSpread,
       askSpreadUnit,
+      fee,
+      feeUnit,
       contractSize,
       group,
       closedMarket,
+      maintenanceMargin,
     } = orderData.symbolSettings;
 
     if (group === "commodities" && !closedMarket) {
@@ -600,6 +604,35 @@ export default function HomeRu() {
       );
     }
 
+    let spread;
+    if (type === "Buy") {
+      spread =
+        bidSpreadUnit === "$"
+          ? orderData.volume * bidSpread
+          : (calculatedSum / 100) * bidSpread;
+    } else {
+      spread =
+        askSpreadUnit === "$"
+          ? orderData.volume * askSpread
+          : (calculatedSum / 100) * askSpread;
+    }
+
+    const feeValue =
+      feeUnit === "$" ? parseFloat(fee) : (calculatedSum / 100) * fee;
+
+    let profit =
+      calculateProfit(
+        type,
+        closedPrice,
+        orderData.symbolValue,
+        orderData.volume
+      ) - feeValue;
+
+    const leverage = userProfile?.settings?.leverage;
+    if (leverage > 1 && maintenanceMargin > 0) {
+      profit = (profit / leverage) * (maintenanceMargin / 100);
+    }
+
     const form = document.getElementById("newOrderForm");
 
     const user = auth.currentUser;
@@ -613,21 +646,32 @@ export default function HomeRu() {
       userId,
       type,
       status: "Pending",
-      profit: 0,
+      profit,
+      currentPrice: closedPrice,
+      currentMarketPrice: parseFloat(orderData?.symbolValue),
       symbol: orderData?.symbol.value,
       volume: orderData.volume, // * parseFloat(leverage),
       sum: calculatedSum,
+      fee: feeValue,
+      swap: 0,
+      spread,
       enableOpenPrice,
       createdAt: formattedDate,
       createdTime: serverTimestamp(),
     };
     delete payload.symbolSettings;
-    delete payload.fee;
 
-    if (enableOpenPrice) payload.symbolValue = openPriceValue;
-
+    if (enableOpenPrice) {
+      payload.symbolValue = openPriceValue;
+      payload.profit = 0;
+    }
     try {
       await addDoc(ordersCollectionRef, payload);
+      await updateUserById(currentUserId, {
+        totalBalance: userProfile?.totalBalance - feeValue - spread,
+        totalMargin: totalMargin + calculatedSum,
+        activeOrdersProfit: activeOrdersProfit + payload.profit,
+      });
       toastify("Order added to Database", "success");
       setOrderData({
         symbol: null,
@@ -648,22 +692,6 @@ export default function HomeRu() {
     setIsTradingModal(true);
   };
 
-  // const bQuotesValues = async () => {
-  //   try {
-  //     const encodedSymbols = JSON.stringify(userQuotes);
-
-  //     const response = await axios.get(
-  //       "https://api.binance.us/api/v3/ticker/bookTicker?symbols=" +
-  //         [encodedSymbols]
-  //     );
-
-  //     console.log(response.data, 8080);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const toggleTheme = () => {
     const changedTheme = theme === "dark" ? "light" : "dark";
     const root = document.querySelector("html");
@@ -673,106 +701,26 @@ export default function HomeRu() {
     localStorage.setItem("THEME", changedTheme);
   };
 
-  const closedOrders = orders.filter((order) => order.status !== "Pending");
-
-  const pendingOrders = orders
-    .filter((order) => order.status === "Pending")
-    .map((order) => {
-      const symbol = dbSymbols.find((s) => s.symbol === order.symbol);
-      if (!symbol) return order;
-      const {
-        bidSpread,
-        bidSpreadUnit,
-        askSpread,
-        askSpreadUnit,
-        fee,
-        feeUnit,
-        swapShort,
-        swapShortUnit,
-        swapLong,
-        swapLongUnit,
-        maintenanceMargin,
-      } = symbol.settings;
-      let swapValue = 0;
-      if (order.createdTime) {
-        const swap = order.type === "Buy" ? swapShort : swapLong;
-        const swapUnit = order.type === "Buy" ? swapShortUnit : swapLongUnit;
-        const jsDate = new Date(order.createdTime).setHours(0, 0, 0);
-        const days = swap * moment().diff(jsDate, "d");
-        swapValue = swapUnit === "$" ? swap * days : (order.sum / 100) * days;
-      }
-
-      const currentPrice =
-        order.type === "Buy"
-          ? getBidValue(symbol.price, bidSpread, bidSpreadUnit === "$")
-          : getAskValue(symbol.price, askSpread, askSpreadUnit === "$");
-
-      let spread;
-      if (order.type === "Buy") {
-        spread =
-          bidSpreadUnit === "$"
-            ? order.volume * bidSpread
-            : (order.sum / 100) * bidSpread;
-      } else {
-        spread =
-          askSpreadUnit === "$"
-            ? order.volume * askSpread
-            : (order.sum / 100) * askSpread;
-      }
-      const feeValue = feeUnit === "$" ? fee : (order.sum / 100) * fee;
-      const margin = order.sum;
-      let profit = calculateProfit(
-        order.type,
-        currentPrice,
-        order.symbolValue,
-        order.volume
-      );
-      profit = profit - swapValue - feeValue;
-
-      const leverage = userProfile?.settings?.leverage;
-      if (leverage > 1 && maintenanceMargin > 0) {
-        profit = (profit / leverage) * (maintenanceMargin / 100);
-      }
-
-      return {
-        ...order,
-        currentPrice,
-        currentMarketPrice: parseFloat(symbol.price),
-        enableOpenPrice: order.enableOpenPrice,
-        margin: parseFloat(margin),
-        spread: parseFloat(spread),
-        swap: parseFloat(swapValue),
-        fee: parseFloat(feeValue),
-        profit,
-      };
-    });
-
-  const ordersFee = [...pendingOrders, ...closedOrders].reduce(
-    (p, v) => p + parseFloat(v.spread) + parseFloat(v.swap) + parseFloat(v.fee),
-    0
-  );
+  const pendingOrders = orders.filter((order) => order.status === "Pending");
 
   const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
   const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
 
-  const activeOrdersProfit = activeOrders.reduce((p, v) => p + +v.profit, 0);
-  const closedOrdersProfit = closedOrders.reduce((p, v) => p + +v.profit, 0);
+  const activeOrdersProfit = userProfile?.activeOrdersProfit;
 
   const bonus = userProfile?.bonus;
   const allowBonus = userProfile?.settings?.allowBonus;
 
-  const calculateTotalBalance = () => {
-    let balance = parseFloat(userProfile?.totalBalance) - ordersFee;
-    if (closedOrdersProfit) balance += closedOrdersProfit;
-    if (activeOrdersProfit) balance += activeOrdersProfit;
-    if (allowBonus) balance += bonus;
-    return balance;
+  const calculateEquity = () => {
+    let equity = parseFloat(userProfile?.totalBalance) + activeOrdersProfit;
+    if (allowBonus) equity += bonus;
+    return equity;
   };
 
-  const totalBalance = calculateTotalBalance();
+  const equity = calculateEquity();
 
   const calculateFreeMargin = () => {
-    let freeMarginOpened = totalBalance;
+    let freeMarginOpened = equity;
     const dealSum = pendingOrders.reduce((p, v) => p + v.sum, 0);
     freeMarginOpened -= parseFloat(dealSum);
     return freeMarginOpened;
@@ -780,10 +728,12 @@ export default function HomeRu() {
 
   const freeMargin = calculateFreeMargin();
 
-  const totalMargin = pendingOrders.reduce((p, v) => p + v.margin, 0);
+  const totalMargin = userProfile?.totalMargin;
 
   const userLevel = userProfile?.settings?.level || 100;
-  const level = totalMargin && (totalBalance / totalMargin) * (userLevel / 100);
+  const level = totalMargin > 0 ? (equity / totalMargin) * (userLevel / 100) : 0;
+
+  const totalBalance = equity + totalMargin;
 
   let potentialSL = 0,
     potentialTP = 0;
@@ -816,14 +766,10 @@ export default function HomeRu() {
               <input
                 type="number"
                 className={`balance-nums ${
-                  totalBalance < 0
-                    ? "text-danger"
-                    : totalBalance == 0
-                    ? "text-muted"
-                    : ""
+                  equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={+totalBalance?.toFixed(2)}
+                value={+parseFloat(equity)?.toFixed(2)}
               />
             </div>
             <div className="balance-item">
@@ -838,7 +784,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={+activeOrdersProfit?.toFixed(2)}
+                value={+parseFloat(activeOrdersProfit)?.toFixed(2)}
               />
             </div>
             <div className="balance-item">
@@ -875,7 +821,7 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={+totalMargin?.toFixed(2)}
+                value={+parseFloat(totalMargin)?.toFixed(2)}
               />
             </div>
             <div className="balance-item">
@@ -888,7 +834,7 @@ export default function HomeRu() {
                   level < 0 ? "text-danger" : level == 0 ? "text-muted" : ""
                 }`}
                 readOnly={true}
-                value={`${+level?.toFixed(2)}%`}
+                value={`${+parseFloat(level)?.toFixed(2)}%`}
               />
             </div>
             <div
@@ -1379,7 +1325,7 @@ export default function HomeRu() {
                 <div id="acc-profile-main">
                   <div className="acc-profile-main-item">
                     <h6>{t("balance")} (USD):</h6>
-                    <h6>{+parseFloat(userProfile.totalBalance)?.toFixed(2)}</h6>
+                    <h6>{+parseFloat(totalBalance)?.toFixed(2)}</h6>
                   </div>
                   <div className="acc-profile-main-item">
                     <h6>{t("Free")} (USD):</h6>
@@ -1964,13 +1910,14 @@ export default function HomeRu() {
           onClose={handleCloseModal}
           selectedOrder={selectedOrder}
           symbols={dbSymbols}
-          currentUserId={currentUserId}
+          userProfile={userProfile}
         />
       )}
       {showCancelOrderModal && (
         <CancelOrderModal
           selectedOrder={selectedOrder}
           setShow={setShowCancelOrderModal}
+          userProfile={userProfile}
         />
       )}
       {isReportModalOpen && (

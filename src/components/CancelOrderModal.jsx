@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { deleteDocument } from "../helper/firebaseHelpers";
+import { deleteDocument, updateUserById } from "../helper/firebaseHelpers";
 
-const CancelOrderModal = ({ setShow, selectedOrder }) => {
+const CancelOrderModal = ({ setShow, selectedOrder, userProfile }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const closeModal = () => setShow(false);
@@ -11,6 +11,9 @@ const CancelOrderModal = ({ setShow, selectedOrder }) => {
     setIsLoading(true);
     try {
       await deleteDocument("orders", selectedOrder.id);
+      await updateUserById(userProfile.id, {
+        totalMargin: +(userProfile?.totalMargin - selectedOrder.sum).toFixed(2),
+      });
       toast.success("Order cancelled");
       closeModal();
     } catch (error) {

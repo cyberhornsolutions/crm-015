@@ -52,6 +52,11 @@ export const updateOnlineStatus = async (userId, newStatus) => {
   }
 };
 
+export const updateUserById = async (id, payload) => {
+  const userDocRef = doc(db, "users", id);
+  await updateDoc(userDocRef, payload);
+};
+
 //Get user data
 
 export const getUserData = async (userId) => {

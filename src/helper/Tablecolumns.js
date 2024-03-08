@@ -21,6 +21,7 @@ export const generalColumns = [
   { name: "Close price", selector: (row) => row?.closedPrice },
   { name: "TP", selector: (row) => row.tp },
   { name: "SL", selector: (row) => row.sl },
+  { name: "Spread", selector: (row) => row.spread },
   { name: "Swap", selector: (row) => row.swap },
   { name: "Fee", selector: (row) => row.fee },
   {
