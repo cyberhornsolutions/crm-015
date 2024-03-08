@@ -668,9 +668,9 @@ export default function HomeRu() {
     try {
       await addDoc(ordersCollectionRef, payload);
       await updateUserById(currentUserId, {
-        totalBalance: userProfile?.totalBalance - feeValue - spread,
-        totalMargin: totalMargin + calculatedSum,
-        activeOrdersProfit: activeOrdersProfit + payload.profit,
+        totalBalance: parseFloat(userProfile?.totalBalance - feeValue - spread),
+        totalMargin: +totalMargin + +calculatedSum,
+        activeOrdersProfit: +activeOrdersProfit + +payload.profit,
       });
       toastify("Order added to Database", "success");
       setOrderData({
