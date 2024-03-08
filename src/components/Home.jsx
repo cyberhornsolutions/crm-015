@@ -618,12 +618,12 @@ export default function HomeRu() {
       spread =
         bidSpreadUnit === "$"
           ? orderData.volume * bidSpread
-          : (calculatedSum / 100) * bidSpread;
+          : orderData.volume * orderData.symbolValue * (bidSpread / 100);
     } else {
       spread =
         askSpreadUnit === "$"
           ? orderData.volume * askSpread
-          : (calculatedSum / 100) * askSpread;
+          : orderData.volume * orderData.symbolValue * (askSpread / 100);
     }
 
     const feeValue =
