@@ -655,7 +655,10 @@ export default function HomeRu() {
       userId,
       type,
       status: "Pending",
-      profit,
+      profit:
+        group === "currencies"
+          ? +parseFloat(profit).toFixed(6)
+          : +parseFloat(profit).toFixed(2),
       currentPrice: closedPrice,
       currentMarketPrice: parseFloat(orderData?.symbolValue),
       symbol: orderData?.symbol.value,

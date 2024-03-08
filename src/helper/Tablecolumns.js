@@ -37,7 +37,7 @@ export const generalColumns = [
               : ""
           }
         >
-          {+parseFloat(row.profit)?.toFixed(2)}
+          {row.profit}
         </div>
       ),
   },
