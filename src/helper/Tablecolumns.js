@@ -21,7 +21,10 @@ export const generalColumns = [
   { name: "Close price", selector: (row) => row?.closedPrice },
   { name: "TP", selector: (row) => row.tp },
   { name: "SL", selector: (row) => row.sl },
-  { name: "Spread", selector: (row) => row.spread },
+  {
+    name: "Spread",
+    selector: (row) => row && +parseFloat(row.spread)?.toFixed(6),
+  },
   { name: "Swap", selector: (row) => row.swap },
   { name: "Fee", selector: (row) => row.fee },
   {
@@ -47,9 +50,9 @@ export const generalColumns = [
       <div
         className={`order-column ${
           row.status == "Success"
-            ? "greenText"
+            ? "text-success"
             : row.status == "Closed"
-            ? "redText"
+            ? "text-danger"
             : "orangeText"
         } `}
       >
