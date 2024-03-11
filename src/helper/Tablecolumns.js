@@ -52,8 +52,8 @@ export const generalColumns = [
           row.status == "Success"
             ? "text-success"
             : row.status == "Closed"
-            ? "text-warning"
-            : "orangeText"
+            ? "text-danger"
+            : "text-warning"
         } `}
       >
         {row.status}
