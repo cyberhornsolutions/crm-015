@@ -52,7 +52,7 @@ export const generalColumns = [
           row.status == "Success"
             ? "text-success"
             : row.status == "Closed"
-            ? "text-danger"
+            ? "text-warning"
             : "orangeText"
         } `}
       >

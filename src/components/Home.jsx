@@ -718,13 +718,17 @@ export default function HomeRu() {
   const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
   const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
 
-  const activeOrdersProfit = parseFloat(userProfile?.activeOrdersProfit);
+  const activeOrdersProfit = parseFloat(userProfile?.activeOrdersProfit) || 0;
+  const activeOrdersSwap = parseFloat(userProfile?.activeOrdersSwap) || 0;
 
   const bonus = parseFloat(userProfile?.bonus);
   const allowBonus = userProfile?.settings?.allowBonus;
 
   const calculateEquity = () => {
-    let equity = parseFloat(userProfile?.totalBalance) + activeOrdersProfit;
+    let equity =
+      parseFloat(userProfile?.totalBalance) +
+      activeOrdersProfit -
+      activeOrdersSwap;
     if (allowBonus) equity += bonus;
     return equity;
   };
