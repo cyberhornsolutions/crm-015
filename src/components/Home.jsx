@@ -722,6 +722,7 @@ export default function HomeRu() {
   const activeOrdersSwap = parseFloat(userProfile?.activeOrdersSwap) || 0;
 
   const bonus = parseFloat(userProfile?.bonus);
+  const bonusSpent = parseFloat(userProfile?.bonusSpent) || 0;
   const allowBonus = userProfile?.settings?.allowBonus;
 
   const calculateEquity = () => {
@@ -1942,6 +1943,9 @@ export default function HomeRu() {
           onClose={handleCloseReportModal}
           userId={currentUserId}
           theme={theme}
+          balance={totalBalance}
+          bonus={bonus}
+          bonusSpent={bonusSpent}
         />
       )}
       {messageModal?.show && (

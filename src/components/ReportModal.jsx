@@ -12,7 +12,14 @@ import { getDepositsByUser } from "../helper/firebaseHelpers";
 import { fillArrayWithEmptyRows } from "../helper/helpers";
 import { setDepositsState } from "../redux/slicer/transactionSlicer";
 
-const ReportModal = ({ onClose, userId, theme }) => {
+const ReportModal = ({
+  onClose,
+  userId,
+  theme,
+  balance,
+  bonus,
+  bonusSpent,
+}) => {
   const dispatch = useDispatch();
   const orders = useSelector((state) =>
     state.orders.filter(({ status }) => status != "Pending")
@@ -34,6 +41,13 @@ const ReportModal = ({ onClose, userId, theme }) => {
   useEffect(() => {
     if (!deposits.length) getDepositsByUser(userId, setDeposits);
   }, []);
+
+  let deposited = 0,
+    withdrawn = 0;
+  deposits.forEach(({ type, sum }) => {
+    if (type === "Deposit") deposited += sum;
+    else if (type === "Withdraw") withdrawn += sum;
+  });
   const today = moment();
 
   let filteredOrders;
@@ -146,12 +160,13 @@ const ReportModal = ({ onClose, userId, theme }) => {
                 <option label="Last 3 Month" value="last3Month"></option>
               </select>
             </div>
-            <div className="text-center">
-              Total deals: {orders.length}
-              <br />
-              Total profit:{" "}
-              {totalProfit && +parseFloat(totalProfit)?.toFixed(2)}
-            </div>
+            <span>Balance: {+parseFloat(balance)?.toFixed(2)}</span>
+            <span>Bonus: {+parseFloat(bonus)?.toFixed(2)}</span>
+            <span>Total profit: {+parseFloat(totalProfit)?.toFixed(2)}</span>
+            <span>Bonus spent: {+bonusSpent?.toFixed(2)}</span>
+            <span>Deposited: {deposited}</span>
+            <span>Withdrawn: {withdrawn}</span>
+            <span>Total deals: {orders.length}</span>
             <button
               className={`btn px-4 py-1 rounded border-0 ${
                 theme === "dark" ? "btn-dark" : "btn-light"
