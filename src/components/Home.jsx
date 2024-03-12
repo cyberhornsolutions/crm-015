@@ -553,9 +553,6 @@ export default function HomeRu() {
         message: "Not enough money to cover the Maintenance margin",
       });
     }
-    if ((orderData.sl && !orderData.tp) || (!orderData.sl && orderData.tp)) {
-      return toast.error("Make sure to fill both SL & TP values");
-    }
 
     const {
       bidSpread,
@@ -597,16 +594,16 @@ export default function HomeRu() {
 
     if (
       type == "Buy" &&
-      orderData.sl &&
-      (orderData.sl >= closedPrice || orderData.tp <= orderData.symbolValue)
+      ((orderData.sl && orderData.sl >= closedPrice) ||
+        (orderData.tp && orderData.tp <= orderData.symbolValue))
     ) {
       return toast.error(
         "To Buy SL should be less than the bid value and TP should be greater than the current value"
       );
     } else if (
       type == "Sell" &&
-      orderData.sl &&
-      (orderData.sl <= closedPrice || orderData.tp >= orderData.symbolValue)
+      ((orderData.sl && orderData.sl <= closedPrice) ||
+        (orderData.tp && orderData.tp >= orderData.symbolValue))
     ) {
       return toast.error(
         "To Sell SL should be greater than the ask value and TP should be less than the current value"

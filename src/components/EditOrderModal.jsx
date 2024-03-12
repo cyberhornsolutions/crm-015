@@ -14,20 +14,18 @@ const EditOrderModal = ({ onClose, selectedOrder, theme }) => {
     e.preventDefault();
     try {
       const orderId = selectedOrder?.id;
-      if (!newSl || !newTp) {
-        toast.error("Make sure to fill both SL & TP values");
-      } else if (
+      if (
         selectedOrder.type == "Buy" &&
-        (newSl >= selectedOrder.currentPrice ||
-          newTp <= selectedOrder.currentMarketPrice)
+        ((newSl && newSl >= selectedOrder.currentPrice) ||
+          (newTp && newTp <= selectedOrder.currentMarketPrice))
       ) {
         toast.error(
           "To Buy SL should be less than the bid value and TP should be greater than the current value"
         );
       } else if (
         selectedOrder.type == "Sell" &&
-        (newSl <= selectedOrder.currentPrice ||
-          newTp >= selectedOrder.currentMarketPrice)
+        ((newSl && newSl <= selectedOrder.currentPrice) ||
+          (newTp && newTp >= selectedOrder.currentMarketPrice))
       ) {
         toast.error(
           "To Sell SL should be greater than the ask value and TP should be less than the current value"
@@ -125,7 +123,7 @@ const EditOrderModal = ({ onClose, selectedOrder, theme }) => {
               type="submit"
               className="btn btn-sm btn-success rounded-0 w-75 mx-auto"
               onClick={updateOrder}
-              disabled={loading || !newSl || !newTp}
+              disabled={loading}
             >
               Change
             </button>
