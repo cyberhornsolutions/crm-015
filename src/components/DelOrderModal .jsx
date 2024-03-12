@@ -42,19 +42,38 @@ const DelOrderModal = ({ onClose, show, selectedOrder, userProfile }) => {
       totalMargin = +(userProfile?.totalMargin - selectedOrder.sum).toFixed(2);
     }
 
+    const userPayload = {
+      totalBalance:
+        userProfile?.totalBalance + selectedOrder.profit - selectedOrder.swap,
+      totalMargin,
+      activeOrdersProfit: +parseFloat(
+        userProfile?.activeOrdersProfit - selectedOrder.profit
+      ).toFixed(2),
+      activeOrdersSwap: +parseFloat(
+        userProfile?.activeOrdersSwap - selectedOrder.swap
+      )?.toFixed(2),
+    };
+
+    if (
+      userProfile?.settings?.allowBonus &&
+      userPayload.totalBalance < 0 &&
+      userProfile.bonus - Math.abs(userPayload.totalBalance) >= 0
+    ) {
+      const spentBonus = Math.abs(userPayload.totalBalance);
+      if (userProfile.bonus < spentBonus)
+        return toast.error("Not enough bonus to cover the loss");
+      userPayload.totalBalance = userPayload.totalBalance + spentBonus;
+      userPayload.bonus = +parseFloat(userProfile.bonus - spentBonus)?.toFixed(
+        2
+      );
+      userPayload.bonusSpent = +parseFloat(
+        userProfile.bonusSpent + spentBonus
+      )?.toFixed(2);
+    }
+
     if (docSnapshot.exists()) {
       await updateDoc(orderRef, newData);
-      await updateUserById(userProfile.id, {
-        totalBalance:
-          userProfile?.totalBalance + selectedOrder.profit - selectedOrder.swap,
-        totalMargin,
-        activeOrdersProfit: +parseFloat(
-          userProfile?.activeOrdersProfit - selectedOrder.profit
-        ).toFixed(2),
-        activeOrdersSwap: +parseFloat(
-          userProfile?.activeOrdersSwap - selectedOrder.swap
-        )?.toFixed(2),
-      });
+      await updateUserById(userProfile.id, userPayload);
 
       toast.success("Order status updated successfully");
     } else {

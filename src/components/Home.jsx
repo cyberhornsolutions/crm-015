@@ -647,7 +647,7 @@ export default function HomeRu() {
     const ordersCollectionRef = collection(db, "orders");
 
     const formattedDate = new Date().toLocaleDateString("en-US");
-    const payload = {
+    const dealPayload = {
       ...orderData,
       userId,
       type,
@@ -668,19 +668,40 @@ export default function HomeRu() {
       createdAt: formattedDate,
       createdTime: serverTimestamp(),
     };
-    delete payload.symbolSettings;
+    delete dealPayload.symbolSettings;
 
     if (enableOpenPrice) {
-      payload.symbolValue = openPriceValue;
-      payload.profit = 0;
+      dealPayload.symbolValue = openPriceValue;
+      dealPayload.profit = 0;
     }
+
+    const userPayload = {
+      totalBalance: parseFloat(userProfile?.totalBalance - feeValue - spread),
+      totalMargin: +totalMargin + +calculatedSum,
+      activeOrdersProfit: +activeOrdersProfit + +dealPayload.profit,
+    };
+
+    if (
+      allowBonus &&
+      calculatedSum > freeMargin - bonus &&
+      userPayload.totalBalance < 0
+    ) {
+      const spentBonus = Math.abs(userPayload.totalBalance);
+      if (bonus < spentBonus) {
+        return setMessageModal({
+          show: true,
+          title: "Error",
+          message: "Not enough bonus to cover the deal fee",
+        });
+      }
+      userPayload.totalBalance = userPayload.totalBalance + spentBonus;
+      userPayload.bonus = +parseFloat(bonus - spentBonus)?.toFixed(2);
+      userPayload.bonusSpent = +parseFloat(bonusSpent + spentBonus)?.toFixed(2);
+    }
+
     try {
-      await addDoc(ordersCollectionRef, payload);
-      await updateUserById(currentUserId, {
-        totalBalance: parseFloat(userProfile?.totalBalance - feeValue - spread),
-        totalMargin: +totalMargin + +calculatedSum,
-        activeOrdersProfit: +activeOrdersProfit + +payload.profit,
-      });
+      await addDoc(ordersCollectionRef, dealPayload);
+      await updateUserById(currentUserId, userPayload);
       toastify("Order added to Database", "success");
       setOrderData({
         symbol: null,
@@ -734,10 +755,8 @@ export default function HomeRu() {
   const equity = calculateEquity();
 
   const calculateFreeMargin = () => {
-    let freeMarginOpened = equity;
-    const dealSum = pendingOrders.reduce((p, v) => p + v.sum, 0);
-    freeMarginOpened -= parseFloat(dealSum);
-    return freeMarginOpened;
+    const dealSum = pendingOrders.reduce((p, v) => p + +v.sum, 0);
+    return equity - dealSum;
   };
 
   const freeMargin = calculateFreeMargin();
@@ -803,12 +822,7 @@ export default function HomeRu() {
               />
             </div>
             <div className="balance-item">
-              <h2 className="balance-title" id="free-margi">
-                {t("freeMargin")}:
-              </h2>
-              <h2 className="balance-title hidden" id="free-margi2">
-                {t("freeMargin2")}
-              </h2>
+              <h2 className="balance-title">{t("freeMargin")}:</h2>
               <input
                 type="number"
                 className={`balance-nums ${
@@ -819,13 +833,11 @@ export default function HomeRu() {
                     : ""
                 }`}
                 readOnly={true}
-                value={+freeMargin?.toFixed(2)}
+                value={+parseFloat(freeMargin)?.toFixed(2)}
               />
             </div>
             <div className="balance-item">
-              <h2 className="balance-title" id="">
-                Margin:
-              </h2>
+              <h2 className="balance-title">Margin:</h2>
               <input
                 type="number"
                 className={`balance-nums ${
@@ -840,9 +852,7 @@ export default function HomeRu() {
               />
             </div>
             <div className="balance-item">
-              <h2 className="balance-title" id="">
-                Level:
-              </h2>
+              <h2 className="balance-title">Level:</h2>
               <input
                 type="text"
                 className={`balance-nums ${
