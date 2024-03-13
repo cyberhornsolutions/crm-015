@@ -12,8 +12,8 @@
 }
 
 .light {
-  /* --main-textc: #1e222d; */
-  /* --main-input-textc: #11131a; */
+  --main-textc: #1e222d;
+  --main-input-textc: #11131a;
   --bs-body-bg: whitesmoke;
   --main-elc: #e2e8f0;
   --bs-border-color: whitesmoke;
