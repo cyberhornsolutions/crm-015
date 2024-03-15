@@ -767,7 +767,7 @@ export default function HomeRu() {
   const level =
     totalMargin > 0 ? (equity / totalMargin) * (userLevel / 100) : 0;
 
-  const totalBalance = equity + totalMargin;
+  const totalBalance = freeMargin + totalMargin + bonus;
 
   let potentialSL = 0,
     potentialTP = 0;
