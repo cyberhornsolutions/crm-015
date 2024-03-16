@@ -12,6 +12,7 @@ export const generalColumns = [
   { name: "Symbol", selector: (row) => row.symbol },
   { name: "Volume", selector: (row) => row.volume },
   {
+    id: "close-date",
     name: "Close date",
     selector: (row) =>
       row.closedDate && convertTimestamptToDate(row?.closedDate),

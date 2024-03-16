@@ -131,6 +131,8 @@ const ReportModal = ({
                 pagination
                 theme={theme}
                 paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                defaultSortFieldId="close-date"
+                defaultSortAsc={false}
               />
             </Tab>
             <Tab eventKey="balanceOperations" title="Balance operations">
