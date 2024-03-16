@@ -47,6 +47,7 @@ export const generalColumns = [
         </div>
       ),
   },
+  { name: "Balance", selector: (row) => row.balance },
   {
     name: "Status",
     selector: (row) => (
