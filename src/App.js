@@ -24,6 +24,8 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 // import bootstrap from "bootstrap";
 import "./components/style.css";
+import "highcharts/css/stocktools/gui.css";
+import "highcharts/css/annotations/popup.css";
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(() =>

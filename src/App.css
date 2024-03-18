@@ -30,3 +30,8 @@
 .transactions-table > div > div > div {
   background-color: unset;
 }
+
+div[data-highcharts-chart] * {
+  color: unset;
+  background-color: unset;
+}
