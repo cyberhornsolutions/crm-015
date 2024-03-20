@@ -23,10 +23,9 @@ import {
 // import "./components/side-main.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 // import bootstrap from "bootstrap";
-import "./components/style.css";
 import "highcharts/css/stocktools/gui.css";
 import "highcharts/css/annotations/popup.css";
-
+import "./components/style.css";
 const App = () => {
   const [isLogin, setIsLogin] = useState(() =>
     localStorage.getItem("USER") ? true : false

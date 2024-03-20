@@ -31,7 +31,136 @@
   background-color: unset;
 }
 
-div[data-highcharts-chart] * {
+/* div[data-highcharts-chart] * {
   color: unset;
   background-color: unset;
+} */
+
+/* chart custom styling */
+
+.highcharts-background {
+  fill: var(--bs-body-bg);
 }
+
+/* toolbar */
+.highcharts-bindings-wrapper {
+  width: 60px !important;
+}
+/* .highcharts-bindings-wrapper .highcharts-arrow-wrapper {
+  width: 50px;
+} */
+.highcharts-toggle-toolbar.highcharts-arrow-left {
+  left: 50px !important;
+}
+.highcharts-menu-wrapper {
+  /* background-color: var(--bs-body-bg); */
+  background-color: var(--main-elc);
+}
+
+/* spacing between buttons */
+.highcharts-bindings-wrapper .highcharts-stocktools-toolbar li {
+  background-color: var(--main-elc) !important;
+}
+/* toolbar dark */
+.highcharts-bindings-wrapper li > button.highcharts-menu-item-btn {
+  filter: invert(1);
+}
+/* toolbar light */
+.light .highcharts-bindings-wrapper li > button.highcharts-menu-item-btn {
+  filter: none;
+}
+
+/* .highcharts-axis-labels .highcharts-xaxis-labels text{ */
+.highcharts-axis-labels text {
+  fill: white !important;
+}
+.light .highcharts-axis-labels text {
+  fill: unset !important;
+}
+
+.highcharts-axis-labels.highcharts-xaxis-labels.highcharts-navigator-xaxis
+  .highcharts-text-outline {
+  stroke-width: 0px;
+}
+
+.highcharts-annotation-shapes * {
+  stroke: rgba(255, 255, 255, 0.75) !important;
+  fill: rgba(255, 255, 255, 0.75) !important;
+}
+.light .highcharts-annotation-shapes * {
+  stroke: rgba(0, 0, 0, 0.75) !important;
+  fill: rgba(0, 0, 0, 0.75) !important;
+}
+
+.highcharts-label.highcharts-annotation-label.highcharts-no-tooltip {
+  filter: invert(1);
+}
+.light .highcharts-label.highcharts-annotation-label.highcharts-no-tooltip {
+  filter: none;
+}
+
+/* stock tracker */
+.highcharts-series.highcharts-series-0.highcharts-candlestick-series.highcharts-tracker
+  path {
+  stroke: #fff !important;
+  stroke-width: 0.75px;
+}
+.light
+  .highcharts-series.highcharts-series-0.highcharts-candlestick-series.highcharts-tracker
+  path {
+  stroke: #000 !important;
+}
+
+/* toolbar 1st button popup */
+.highcharts-indicator-list button.highcharts-indicator-list-item {
+  background-color: unset;
+}
+
+/* grid lines */
+.highcharts-grid-line {
+  stroke: rgb(30, 30, 30);
+}
+.light .highcharts-grid-line {
+  stroke: rgb(230, 230, 230);
+}
+
+/* toolbar collapse button */
+/* .highcharts-bindings-wrapper .highcharts-arrow-left {
+  background-color: #fff;
+  filter: invert(1);
+} */
+
+/* range selector */
+.highcharts-range-selector-buttons {
+  filter: invert(1);
+}
+.light .highcharts-range-selector-buttons {
+  filter: none;
+}
+
+/* other styling */
+
+/* .highcharts-label-box{
+  fill: red !important;
+} */
+
+/* active button color */
+/* .highcharts-bindings-wrapper li.highcharts-active .highcharts-menu-item-btn {
+  background-color: #ffff !important;
+  filter: invert(1);
+} */
+
+/* toolbar arrows button at bottom */
+/* .highcharts-bindings-wrapper .highcharts-arrow-wrapper > div {
+  background-color: #ffff !important;
+  filter: invert(1);
+} */
+
+/* .highcharts-navigator-mask-inside {
+  fill: rgb(255 255 255) !important;
+  fill-opacity: 0.1 !important;
+} */
+
+/* #chart .nav-tabs .nav-item .nav-link span svg {
+  top: 0 !important;
+} */

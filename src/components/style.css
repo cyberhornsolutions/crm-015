@@ -9,6 +9,15 @@
   --main-bluec: rgb(0, 106, 255);
   --seco-grayc: rgb(175, 175, 175);
   --bs-border-color: rgb(24, 24, 36);
+
+  --highcharts-background-color: #000;
+  --highcharts-neutral-color-100: #fff;
+  --highcharts-neutral-color-80: #ccc;
+  --highcharts-neutral-color-60: #999999;
+  --highcharts-neutral-color-20: #333333;
+  --highcharts-neutral-color-10: #191919;
+  --highcharts-neutral-color-3: #080808;
+  --highcharts-highlight-color-80: #cca352;
 }
 
 .light {
@@ -17,6 +26,16 @@
   --bs-body-bg: whitesmoke;
   --main-elc: #e2e8f0;
   --bs-border-color: whitesmoke;
+
+  /* reset highchart popup colors */
+  --highcharts-background-color: #fff;
+  --highcharts-neutral-color-100: #000;
+  --highcharts-neutral-color-80: #333333;
+  --highcharts-neutral-color-60: #666666;
+  --highcharts-neutral-color-20: #cccccc;
+  --highcharts-neutral-color-10: #e6e6e6;
+  --highcharts-neutral-color-3: #f7f7f7;
+  --highcharts-highlight-color-80: #335cad;
 }
 
 * {
@@ -666,6 +685,8 @@ acc-info-personal h3 {
   flex: 3;
   text-align: center;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  overflow: hidden;
+  /* height: max-content; */
 }
 
 #assets {
