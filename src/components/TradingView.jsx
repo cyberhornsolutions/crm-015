@@ -7,6 +7,7 @@ import indicatorsAll from "highcharts/indicators/indicators-all";
 import annotationsAdvanced from "highcharts/modules/annotations-advanced";
 import priceIndicator from "highcharts/modules/price-indicator";
 import fullScreen from "highcharts/modules/full-screen";
+// import exporting from "highcharts/modules/exporting";
 
 stockTools(Highcharts);
 dragPanes(Highcharts);
@@ -14,6 +15,7 @@ indicatorsAll(Highcharts);
 annotationsAdvanced(Highcharts);
 priceIndicator(Highcharts);
 fullScreen(Highcharts);
+// exporting(Highcharts);
 
 // const aaple = require("../json/aapl/2024-03-18.json")
 // const aapl = aaple.results.map(t=> [t.t, t.o, t.h, t.l, t.c])
@@ -172,24 +174,46 @@ export default function TradingView({
         // width: "100%",
         // backgroundColor: "var(--bs-body-bg)",
         // backgroundColor: "#131722",
+        // zoomType: "x",
+        // zooming: {
+        //   mouseWheel: false,
+        // },
       },
       // container: {
       //   border: "thin solid blue",
       // },
 
+      // loading: {
+      //   hideDuration: 1000,
+      //   showDuration: 1000,
+      // },
+
       xAxis: {
-        // overscroll: 500000,
-        overscroll: 1000 * 30,
+        // overscroll: 5000 * 2,
+        overscroll: 20000,
         // range: 4 * 200000,
         gridLineWidth: 1,
-        endOnTick: false,
-        gridLineColor: "green",
+        // endOnTick: false,
+        // gridLineColor: "green",
         // gridLineColor: " #e6e6e6" //default
         // gridLineDashStyle:
         // gridLineWidth
         // lineColor
         // lineWidth
         // panningEnabled: false,
+        // minRange: 50000,
+        // maxRange: 500,
+        // softMax: 50,
+        // startOnTick: true,
+        // title: "Hello world",
+        // height: '80%',
+        // width: '100%',
+        // top: '60%',
+        // left: '50%',
+        // offset: 0
+        // uniqueNames: false,
+        // visible: false,
+        // zoomEnabled: false,
       },
 
       rangeSelector: {
@@ -226,6 +250,12 @@ export default function TradingView({
         // enabled: false,
       },
 
+      // navigation: {
+      //   buttonOptions: {
+      //     enabled: true,
+      //   },
+      // },
+
       // plotOptions: {
       //   candlestick: {
       //     color: "pink",
@@ -240,7 +270,7 @@ export default function TradingView({
           type: "candlestick",
           color: "#dc3545",
           upColor: "var(--main-numbersc)",
-          pointInterval: 1000,
+          // pointInterval: 1000 * 60,
           lastPrice: {
             enabled: true,
             label: {
@@ -249,6 +279,7 @@ export default function TradingView({
             },
           },
           data: [
+            // ...require("../json/btcusdt/2024-03-15.json"),
             ...require("../json/btcusdt/2024-03-16.json"),
             ...require("../json/btcusdt/2024-03-17.json"),
           ],
@@ -329,11 +360,10 @@ export default function TradingView({
     // console.log("chartRef", chartRef.current);
     if (!chartRef.current) return;
     const chart = chartRef.current.chart;
+    // chart.showLoading();
     const series = chart.series[0];
 
-    let i = 0;
-
-    const id = setInterval(() => {
+    const updateChart = () => {
       const data = series.options.data;
       const lastPoint = data[data.length - 1];
       const randValue = Math.floor(Math.random() * 100);
@@ -342,7 +372,7 @@ export default function TradingView({
           ? randValue + lastPoint[4]
           : lastPoint[4] - randValue;
       const newPoint = [
-        lastPoint[0] + 1000,
+        lastPoint[0] + 1000 * 60,
         lastPoint[4],
         newValue,
         newValue,
@@ -357,9 +387,11 @@ export default function TradingView({
         series.options.data[data.length - 1] = newPoint;
         series.setData(data);
       }
-      i++;
-    }, 1000);
+    };
 
+    // chart.hideLoading();
+    setTimeout(updateChart, 3000);
+    const id = setInterval(updateChart, 1000 * 60);
     return () => clearInterval(id);
   }, []);
 
