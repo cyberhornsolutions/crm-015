@@ -313,3 +313,32 @@ export const deleteDocument = async (collectionPath, documentId) => {
     `Document with ID ${documentId} deleted successfully from ${collectionPath}`
   );
 };
+
+export const getSymbolPriceHistory = (id, dateCollection, setState) => {
+  try {
+    const symbolDocRef = doc(db, "symbols", id);
+    const priceHistoryCollectionRef = collection(symbolDocRef, "priceHistory");
+    const dateDocRef = doc(priceHistoryCollectionRef, dateCollection);
+    const hourCollectionRef = collection(dateDocRef, "hours");
+    // const docRef = doc(hourCollectionRef, "0");
+
+    const unsubscribe = onSnapshot(
+      hourCollectionRef,
+      (hourSnaps) => {
+        const chartData = [];
+        hourSnaps.forEach((hourSnap) => {
+          console.log("hourSnap id ===> ", hourSnap.id);
+          // if (hourSnap.id === "0")
+          chartData[hourSnap.id] = hourSnap.data()?.data || [];
+        });
+        setState(chartData);
+      },
+      (error) => {
+        console.log("error", error.message);
+      }
+    );
+    return unsubscribe;
+  } catch (error) {
+    console.error("Error in getting priceHistory document:", error.message);
+  }
+};
