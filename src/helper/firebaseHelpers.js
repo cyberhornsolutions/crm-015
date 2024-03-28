@@ -11,6 +11,7 @@ import {
   addDoc,
   setDoc,
   orderBy,
+  getDocs,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { convertTimestamptToDate } from "./helpers";
@@ -314,24 +315,44 @@ export const deleteDocument = async (collectionPath, documentId) => {
   );
 };
 
-export const getSymbolPriceHistory = (id, dateCollection, setState) => {
+export const getSymbolPriceHistory = async (id, setState) => {
   try {
+    const date = new Date();
+    const dateCollectionStr = date.toISOString().slice(0, 10);
+    // const dateHourStr = date.getUTCHours().toString();
     const symbolDocRef = doc(db, "symbols", id);
     const priceHistoryCollectionRef = collection(symbolDocRef, "priceHistory");
-    const dateDocRef = doc(priceHistoryCollectionRef, dateCollection);
+    const dateDocRef = doc(priceHistoryCollectionRef, dateCollectionStr);
     const hourCollectionRef = collection(dateDocRef, "hours");
     // const docRef = doc(hourCollectionRef, "0");
+
+    let prevDayData = [];
+    // if (dateHourStr === "0" || dateHourStr === "1")
+    {
+      const prevDateStr = new Date(new Date(date).setDate(date.getDate() - 1))
+        .toISOString()
+        .slice(0, 10);
+      const dateDocRef2 = doc(priceHistoryCollectionRef, prevDateStr);
+      const hourCollectionRef2 = collection(dateDocRef2, "hours");
+
+      const querySnapshot = await getDocs(hourCollectionRef2);
+      querySnapshot.forEach((snap) => {
+        prevDayData[snap.id] = snap.data()?.data || [];
+      });
+      prevDayData = prevDayData.filter((d) => d);
+    }
 
     const unsubscribe = onSnapshot(
       hourCollectionRef,
       (hourSnaps) => {
-        const chartData = [];
+        let chartData = [];
         hourSnaps.forEach((hourSnap) => {
-          console.log("hourSnap id ===> ", hourSnap.id);
-          // if (hourSnap.id === "0")
           chartData[hourSnap.id] = hourSnap.data()?.data || [];
         });
-        setState(chartData);
+        chartData = chartData.filter((d) => d);
+
+        const ans = [...prevDayData.slice(-6), ...chartData];
+        setState(ans);
       },
       (error) => {
         console.log("error", error.message);

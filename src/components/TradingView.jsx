@@ -266,9 +266,8 @@ export default function TradingView({
       chart.showLoading();
     }
 
-    const dateStr = new Date().toISOString().slice(0, 10);
-    const unsub = getSymbolPriceHistory(symbol.id, dateStr, processChartData);
-    return unsub;
+    const unsub = getSymbolPriceHistory(symbol.id, processChartData);
+    return () => unsub.then((unsub) => unsub());
   }, []);
 
   // useEffect(() => {
