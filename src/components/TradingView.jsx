@@ -74,8 +74,8 @@ export default function TradingView({
       // },
 
       xAxis: {
-        // overscroll: 5000 * 2,
-        overscroll: 20000,
+        // overscroll: 20000,
+        overscroll: "1%",
         // range: 4 * 200000,
         gridLineWidth: 1,
         // endOnTick: false,
