@@ -341,6 +341,7 @@ export const getSymbolPriceHistory = async (id, setState) => {
       });
       prevDayData = prevDayData.filter((d) => d);
     }
+    let includePrevData = true;
 
     const unsubscribe = onSnapshot(
       hourCollectionRef,
@@ -351,8 +352,13 @@ export const getSymbolPriceHistory = async (id, setState) => {
         });
         chartData = chartData.filter((d) => d);
 
-        const ans = [...prevDayData.slice(-6), ...chartData];
-        setState(ans);
+        if (includePrevData) {
+          includePrevData = false;
+          setState([...prevDayData.slice(-6), ...chartData]);
+          prevDayData = [];
+        } else {
+          setState(chartData);
+        }
       },
       (error) => {
         console.log("error", error.message);
