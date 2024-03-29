@@ -1026,8 +1026,8 @@ export default function HomeRu() {
               )}
               <div id="chart" className="rounded">
                 <ul className="nav nav-tabs">
-                  {tabs?.map((tab, i) => (
-                    <li className="nav-item">
+                  {tabs?.map((tab) => (
+                    <li className="nav-item" key={tab}>
                       <a
                         className={`nav-link ${activeTab === tab && "active"}`}
                         data-bs-toggle="tab"
@@ -1042,9 +1042,9 @@ export default function HomeRu() {
                         <CloseCircleOutline
                           onClick={(e) => {
                             e.stopPropagation();
-                            const _tabs = tabs.filter((t, idx) => idx !== i);
+                            const _tabs = tabs.filter((t) => t !== tab);
                             setTabs(_tabs);
-                            setActiveTab(_tabs[_tabs.length - 1]);
+                            setActiveTab(_tabs.at(-1));
                           }}
                           style={{
                             position: "absolute",
@@ -1071,6 +1071,7 @@ export default function HomeRu() {
                 {tabs?.map((tab, i) => {
                   return (
                     <TradingView
+                      key={tab}
                       locale="en"
                       hide={activeTab !== tab}
                       index={i}
