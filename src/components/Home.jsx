@@ -276,15 +276,18 @@ export default function HomeRu() {
   }, []);
 
   useEffect(() => {
-    if (!orderData.symbol && dbSymbols.length) {
+    if (!dbSymbols.length) return;
+    if (!orderData.symbol) {
       setTabs([dbSymbols[0]?.symbol]);
       setActiveTab(dbSymbols[0]?.symbol);
       getValue({
         value: dbSymbols[0]?.symbol,
         label: dbSymbols[0]?.symbol,
       });
+    } else {
+      getValue(orderData.symbol);
     }
-  }, [dbSymbols.length]);
+  }, [dbSymbols]);
 
   useEffect(() => {
     if (!currentUserId) return;
