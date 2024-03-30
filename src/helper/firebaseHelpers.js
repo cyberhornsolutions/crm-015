@@ -9,6 +9,7 @@ import {
   serverTimestamp,
   deleteDoc,
   addDoc,
+  limit,
   setDoc,
   orderBy,
   getDocs,
@@ -317,32 +318,29 @@ export const deleteDocument = async (collectionPath, documentId) => {
 
 export const getSymbolPriceHistory = async (id, setState) => {
   try {
-    const date = new Date();
-    const dateCollectionStr = date.toISOString().slice(0, 10);
-    // const dateHourStr = date.getUTCHours().toString();
     const symbolDocRef = doc(db, "symbols", id);
     const priceHistoryCollectionRef = collection(symbolDocRef, "priceHistory");
-    const dateDocRef = doc(priceHistoryCollectionRef, dateCollectionStr);
-    const hourCollectionRef = collection(dateDocRef, "hours");
-    // const docRef = doc(hourCollectionRef, "0");
+    const daysDocs = (
+      await getDocs(
+        query(priceHistoryCollectionRef, orderBy("updatedAt", "desc"), limit(2))
+      )
+    ).docs;
+
+    if (!daysDocs.length) return;
 
     let prevDayData = [];
-    // if (dateHourStr === "0" || dateHourStr === "1")
-    {
-      const prevDateStr = new Date(new Date(date).setDate(date.getDate() - 1))
-        .toISOString()
-        .slice(0, 10);
-      const dateDocRef2 = doc(priceHistoryCollectionRef, prevDateStr);
-      const hourCollectionRef2 = collection(dateDocRef2, "hours");
-
-      const querySnapshot = await getDocs(hourCollectionRef2);
-      querySnapshot.forEach((snap) => {
+    if (daysDocs[1] && daysDocs[1].exists()) {
+      const prevDaySnapshot = await getDocs(
+        collection(daysDocs[1].ref, "hours")
+      );
+      prevDaySnapshot.forEach((snap) => {
         prevDayData[snap.id] = snap.data()?.data || [];
       });
       prevDayData = prevDayData.filter((d) => d);
     }
     let includePrevData = true;
 
+    const hourCollectionRef = collection(daysDocs[0].ref, "hours");
     const unsubscribe = onSnapshot(
       hourCollectionRef,
       (hourSnaps) => {
@@ -354,7 +352,7 @@ export const getSymbolPriceHistory = async (id, setState) => {
 
         if (includePrevData) {
           includePrevData = false;
-          setState([...prevDayData.slice(-6), ...chartData]);
+          setState([...prevDayData, ...chartData]);
           prevDayData = [];
         } else {
           setState(chartData);

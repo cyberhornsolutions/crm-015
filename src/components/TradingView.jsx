@@ -267,7 +267,10 @@ export default function TradingView({
     }
 
     const unsub = getSymbolPriceHistory(symbol.id, processChartData);
-    return () => unsub.then((unsub) => unsub());
+    return () =>
+      unsub.then((unsub) => {
+        if (unsub) unsub();
+      });
   }, []);
 
   // useEffect(() => {
