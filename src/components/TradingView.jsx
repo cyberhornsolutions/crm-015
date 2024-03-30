@@ -160,9 +160,9 @@ export default function TradingView({
       //   },
       // },
 
-      time: {
-        useUTC: false,
-      },
+      // time: {
+      //   useUTC: false,
+      // },
 
       series: [
         {
@@ -249,11 +249,14 @@ export default function TradingView({
       .map((d) => [d.time, d.open, d.high, d.low, d.close]);
 
     if (lastPoint) {
-      const newData = allData.filter((d) => d[0] > lastPoint[0]);
-      console.log("new Data => ", newData);
-      newData.forEach((d) => {
-        series.addPoint(d, true, false, true);
+      series.update({
+        data: allData,
       });
+      // const newData = allData.filter((d) => d[0] > lastPoint[0]);
+      // console.log("new Data => ", newData);
+      // newData.forEach((d) => {
+      //   series.addPoint(d, true, false, true);
+      // });
     } else {
       series.setData(allData);
       chart.hideLoading();
