@@ -260,12 +260,14 @@ export default function TradingView({
     } else {
       series.setData(allData);
       chart.hideLoading();
+      window.document.querySelector("body").style.pointerEvents = "unset";
     }
   }, []);
 
   useEffect(() => {
     if (chartRef.current) {
       const chart = chartRef.current.chart;
+      window.document.querySelector("body").style.pointerEvents = "none";
       chart.showLoading();
     }
 
