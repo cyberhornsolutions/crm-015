@@ -75,7 +75,9 @@ export default function TradingView({
 
       xAxis: {
         // overscroll: 20000,
-        overscroll: "1%",
+        overscroll: ["EURUSD", "EURUSDT"].includes(selectedSymbol)
+          ? "4%"
+          : "1%",
         // range: 4 * 200000,
         gridLineWidth: 1,
         // endOnTick: false,
@@ -134,7 +136,7 @@ export default function TradingView({
           //   text: "All",
           // },
         ],
-        selected: 0,
+        selected: 1,
         inputEnabled: false,
       },
 
@@ -152,12 +154,15 @@ export default function TradingView({
       // },
 
       // plotOptions: {
-      //   candlestick: {
-      //     color: "pink",
-      //     lineColor: "blue",
-      //     upColor: "lightgreen",
-      //     upLineColor: "green",
-      //   },
+      // candlestick: {
+      // color: "pink",
+      // lineColor: "blue",
+      // upColor: "lightgreen",
+      // upLineColor: "green",
+      // pointWidth: 5, // Set the width of the candlestick
+      // lineWidth: 1,
+      // pointInterval: 3600000, // one hour
+      // },
       // },
 
       // time: {
