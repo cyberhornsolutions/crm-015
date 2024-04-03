@@ -177,7 +177,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder, userProfile }) => {
               Closing type:
             </label>
             <div className="d-flex gap-4 fs-6 ">
-              <div class="form-check form-check-inline">
+              <div className="form-check form-check-inline">
                 <input
                   class="form-check-input"
                   type="radio"

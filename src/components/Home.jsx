@@ -793,7 +793,7 @@ export default function HomeRu() {
           <img
             id="logo-img"
             src={logoIcon}
-            style={{ width: "45%", "background-color": "var(--main-bgc)" }}
+            style={{ width: "45%", backgroundColor: "var(--main-bgc)" }}
             alt="logo"
           />
         </div>
