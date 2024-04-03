@@ -84,14 +84,13 @@ import {
 export default function HomeRu() {
   const [tab, setTab] = useState("trade");
   const [dealsTab, setDealsTab] = useState("activeTab");
-  const [assetsTab, setAssetsTab] = useState("cryptoTab");
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   const dbSymbols = useSelector((state) => state.symbols);
   const [orderData, setOrderData] = useState({
     symbol: null,
     symbolValue: null,
+    symbolId: null,
     symbolSettings: null,
     volume: 0,
     sl: null,
@@ -508,6 +507,7 @@ export default function HomeRu() {
     setOrderData({
       ...orderData,
       symbol: s,
+      symbolId: symbol.id,
       symbolValue: symbol?.price,
       symbolSettings: symbol?.settings,
       fee: symbolFee,
@@ -709,6 +709,7 @@ export default function HomeRu() {
       setOrderData({
         symbol: null,
         symbolValue: null,
+        symbolId: null,
         symbolSettings: null,
         volume: 0,
         sl: null,
