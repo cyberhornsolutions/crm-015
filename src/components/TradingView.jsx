@@ -16,6 +16,7 @@ import fullScreen from "highcharts/modules/full-screen";
 import { useSelector } from "react-redux";
 import { getSymbolPriceHistory } from "../helper/firebaseHelpers";
 // import exporting from "highcharts/modules/exporting";
+import { timezoneList } from "../helper/helpers";
 
 stockTools(Highcharts);
 dragPanes(Highcharts);
@@ -45,168 +46,169 @@ export default function TradingView({
   theme,
 }) {
   const chartRef = useRef();
+  const [timezone, setTimeZone] = useState(timezoneList[0]);
+
   const symbol = useSelector((state) =>
     state.symbols.find((s) => s.symbol === selectedSymbol)
   );
 
-  const options = useMemo(() => {
-    return {
-      // title: {
-      //   text: selectedSymbol,
+  const options = {
+    // title: {
+    //   text: selectedSymbol,
+    // },
+    chart: {
+      // height: "100%",
+      // width: "100%",
+      // backgroundColor: "var(--bs-body-bg)",
+      // backgroundColor: "#131722",
+      // zoomType: "x",
+      // zooming: {
+      //   mouseWheel: false,
       // },
-      chart: {
-        // height: "100%",
-        // width: "100%",
-        // backgroundColor: "var(--bs-body-bg)",
-        // backgroundColor: "#131722",
-        // zoomType: "x",
-        // zooming: {
-        //   mouseWheel: false,
-        // },
-      },
-      // container: {
-      //   border: "thin solid blue",
-      // },
+    },
+    time: {
+      timezone,
+    },
+    // container: {
+    //   border: "thin solid blue",
+    // },
 
-      // loading: {
-      //   hideDuration: 1000,
-      //   showDuration: 1000,
-      // },
+    // loading: {
+    //   hideDuration: 1000,
+    //   showDuration: 1000,
+    // },
 
-      xAxis: {
-        // overscroll: 20000,
-        overscroll: ["EURUSD", "EURUSDT"].includes(selectedSymbol)
-          ? "4%"
-          : "1%",
-        // range: 4 * 200000,
-        gridLineWidth: 1,
-        // endOnTick: false,
-        // gridLineColor: "green",
-        // gridLineColor: " #e6e6e6" //default
-        // gridLineDashStyle:
-        // gridLineWidth
-        // lineColor
-        // lineWidth
-        // panningEnabled: false,
-        // minRange: 50000,
-        // maxRange: 500,
-        // softMax: 50,
-        // startOnTick: true,
-        // title: "Hello world",
-        // height: '80%',
-        // width: '100%',
-        // top: '60%',
-        // left: '50%',
-        // offset: 0
-        // uniqueNames: false,
-        // visible: false,
-        // zoomEnabled: false,
-      },
+    xAxis: {
+      // overscroll: 20000,
+      overscroll: ["EURUSD", "EURUSDT"].includes(selectedSymbol) ? "4%" : "1%",
+      // range: 4 * 200000,
+      gridLineWidth: 1,
+      // endOnTick: false,
+      // gridLineColor: "green",
+      // gridLineColor: " #e6e6e6" //default
+      // gridLineDashStyle:
+      // gridLineWidth
+      // lineColor
+      // lineWidth
+      // panningEnabled: false,
+      // minRange: 50000,
+      // maxRange: 500,
+      // softMax: 50,
+      // startOnTick: true,
+      // title: "Hello world",
+      // height: '80%',
+      // width: '100%',
+      // top: '60%',
+      // left: '50%',
+      // offset: 0
+      // uniqueNames: false,
+      // visible: false,
+      // zoomEnabled: false,
+    },
 
-      rangeSelector: {
-        buttons: [
-          {
-            type: "minute",
-            count: 30,
-            text: "30m",
-          },
-          {
-            type: "hour",
-            count: 1,
-            text: "1h",
-          },
-          {
-            type: "hour",
-            count: 2,
-            text: "2h",
-          },
-          {
-            type: "hour",
-            count: 6,
-            text: "6h",
-          },
-          // {
-          //   type: "day",
-          //   count: 1,
-          //   text: "1d",
-          // },
-          // {
-          //   type: "all",
-          //   count: 1,
-          //   text: "All",
-          // },
-        ],
-        selected: 1,
-        inputEnabled: false,
-      },
-
-      navigator: {
-        // series: {
-        //   color: "#000",
-        // },
-        // enabled: false,
-      },
-
-      // navigation: {
-      //   buttonOptions: {
-      //     enabled: true,
-      //   },
-      // },
-
-      // plotOptions: {
-      // candlestick: {
-      // color: "pink",
-      // lineColor: "blue",
-      // upColor: "lightgreen",
-      // upLineColor: "green",
-      // pointWidth: 5, // Set the width of the candlestick
-      // lineWidth: 1,
-      // pointInterval: 3600000, // one hour
-      // },
-      // },
-
-      // time: {
-      //   useUTC: false,
-      // },
-
-      series: [
+    rangeSelector: {
+      buttons: [
         {
-          type: "candlestick",
-          color: "#dc3545",
-          upColor: "var(--main-numbersc)",
-          // pointInterval: 1000 * 60,
-          lastPrice: {
-            enabled: true,
-            label: {
-              enabled: true,
-              // backgroundColor: "#FF7F7F",
-            },
-          },
-          // data: [
-          //   // ...require("../json/btcusdt/2024-03-15.json"),
-          //   ...require("../json/btcusdt/2024-03-16.json"),
-          //   ...require("../json/btcusdt/2024-03-17.json"),
-          // ],
-          // data: dummy_data,
-          // dataGrouping: {
-          //   enabled: true,
-          //   units: [
-          //     ["day", [1]], // Group by day, include only the open and close values
-          //     ["week", [1]], // Group by week, include only the open and close values
-          //     ["month", [1]], // Group by month, include only the open and close values
-          //   ],
-          // },
-          // data: [
-          //   [1710979260000, 3500, 3500, 3550, 3550],
-          //   [1710979270000, 3600, 3600, 3630, 3630],
-          //   [1710979280000, 3700, 3700, 3750, 3750],
-          //   [1710979290000, 3400, 3400, 3450, 3450],
-          // ],
-          // data: chartData,
+          type: "minute",
+          count: 30,
+          text: "30m",
         },
+        {
+          type: "hour",
+          count: 1,
+          text: "1h",
+        },
+        {
+          type: "hour",
+          count: 2,
+          text: "2h",
+        },
+        {
+          type: "hour",
+          count: 6,
+          text: "6h",
+        },
+        // {
+        //   type: "day",
+        //   count: 1,
+        //   text: "1d",
+        // },
+        // {
+        //   type: "all",
+        //   count: 1,
+        //   text: "All",
+        // },
       ],
-    };
-  }, []);
+      selected: 1,
+      inputEnabled: false,
+    },
+
+    navigator: {
+      // series: {
+      //   color: "#000",
+      // },
+      // enabled: false,
+    },
+
+    // navigation: {
+    //   buttonOptions: {
+    //     enabled: true,
+    //   },
+    // },
+
+    // plotOptions: {
+    // candlestick: {
+    // color: "pink",
+    // lineColor: "blue",
+    // upColor: "lightgreen",
+    // upLineColor: "green",
+    // pointWidth: 5, // Set the width of the candlestick
+    // lineWidth: 1,
+    // pointInterval: 3600000, // one hour
+    // },
+    // },
+
+    // time: {
+    //   useUTC: false,
+    // },
+
+    series: [
+      {
+        type: "candlestick",
+        color: "#dc3545",
+        upColor: "var(--main-numbersc)",
+        // pointInterval: 1000 * 60,
+        lastPrice: {
+          enabled: true,
+          label: {
+            enabled: true,
+            // backgroundColor: "#FF7F7F",
+          },
+        },
+        // data: [
+        //   // ...require("../json/btcusdt/2024-03-15.json"),
+        //   ...require("../json/btcusdt/2024-03-16.json"),
+        //   ...require("../json/btcusdt/2024-03-17.json"),
+        // ],
+        // data: dummy_data,
+        // dataGrouping: {
+        //   enabled: true,
+        //   units: [
+        //     ["day", [1]], // Group by day, include only the open and close values
+        //     ["week", [1]], // Group by week, include only the open and close values
+        //     ["month", [1]], // Group by month, include only the open and close values
+        //   ],
+        // },
+        // data: [
+        //   [1710979260000, 3500, 3500, 3550, 3550],
+        //   [1710979270000, 3600, 3600, 3630, 3630],
+        //   [1710979280000, 3700, 3700, 3750, 3750],
+        //   [1710979290000, 3400, 3400, 3450, 3450],
+        // ],
+        // data: chartData,
+      },
+    ],
+  };
 
   // On load, start the interval that adds points
 
@@ -332,20 +334,31 @@ export default function TradingView({
   // }, [chartData]);
 
   return (
-    <HighchartsReact
-      highcharts={Highcharts}
-      options={options}
-      ref={chartRef}
-      constructorType={"stockChart"}
-      containerProps={{
-        className: `${hide && "d-none"}`,
-        style: {
-          // flex: 1,
-          // width: "99%",
-          height: "90%",
-          // border: "thin solid red",
-        },
-      }}
-    />
+    <div className={hide ? "d-none" : "h-100"}>
+      <HighchartsReact
+        highcharts={Highcharts}
+        options={options}
+        ref={chartRef}
+        constructorType={"stockChart"}
+        containerProps={{
+          style: {
+            // flex: 1,
+            // width: "99%",
+            height: "89%",
+            // border: "thin solid red",
+          },
+        }}
+      />
+      <select
+        id="timezone"
+        value={timezone}
+        onChange={(e) => setTimeZone(e.target.value)}
+        className="float-end border-0 text-end"
+      >
+        {timezoneList.map((timezone) => (
+          <option value={timezone}>{timezone}</option>
+        ))}
+      </select>
+    </div>
   );
 }

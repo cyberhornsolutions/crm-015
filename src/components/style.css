@@ -1121,3 +1121,7 @@ h4 {
 .cursor-pointer {
   cursor: pointer !important;
 }
+
+#timezone {
+  outline: none;
+}
