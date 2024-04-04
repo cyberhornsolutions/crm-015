@@ -265,14 +265,18 @@ export default function TradingView({
     } else {
       series.setData(allData);
       chart.hideLoading();
-      window.document.querySelector("body").style.pointerEvents = "unset";
+      window.document.getElementById("sidebar").style.pointerEvents = "unset";
+      window.document.getElementById("nav-buttons").style.pointerEvents =
+        "unset";
     }
   }, []);
 
   useEffect(() => {
     if (chartRef.current) {
       const chart = chartRef.current.chart;
-      window.document.querySelector("body").style.pointerEvents = "none";
+      window.document.getElementById("sidebar").style.pointerEvents = "none";
+      window.document.getElementById("nav-buttons").style.pointerEvents =
+        "none";
       chart.showLoading();
     }
 
