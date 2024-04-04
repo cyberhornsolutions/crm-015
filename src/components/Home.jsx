@@ -881,8 +881,11 @@ export default function HomeRu() {
                 <Dropdown.Menu>
                   {Object.keys(languages)
                     .filter((lang) => lang !== selectedLanguage)
-                    .map((lang) => (
-                      <Dropdown.Item onClick={() => changeLanguage(lang)}>
+                    .map((lang, i) => (
+                      <Dropdown.Item
+                        key={i}
+                        onClick={() => changeLanguage(lang)}
+                      >
                         <img src={languages[lang]} alt={lang} width={40} />
                       </Dropdown.Item>
                     ))}

@@ -9,6 +9,7 @@ import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
 import stockTools from "highcharts/modules/stock-tools";
 import dragPanes from "highcharts/modules/drag-panes";
+import accessibility from "highcharts/modules/accessibility";
 import indicatorsAll from "highcharts/indicators/indicators-all";
 import annotationsAdvanced from "highcharts/modules/annotations-advanced";
 import priceIndicator from "highcharts/modules/price-indicator";
@@ -24,6 +25,7 @@ indicatorsAll(Highcharts);
 annotationsAdvanced(Highcharts);
 priceIndicator(Highcharts);
 fullScreen(Highcharts);
+accessibility(Highcharts);
 // exporting(Highcharts);
 
 // const aaple = require("../json/aapl/2024-03-18.json")
@@ -185,12 +187,6 @@ export default function TradingView({
             // backgroundColor: "#FF7F7F",
           },
         },
-        // data: [
-        //   // ...require("../json/btcusdt/2024-03-15.json"),
-        //   ...require("../json/btcusdt/2024-03-16.json"),
-        //   ...require("../json/btcusdt/2024-03-17.json"),
-        // ],
-        // data: dummy_data,
         // dataGrouping: {
         //   enabled: true,
         //   units: [
@@ -205,7 +201,6 @@ export default function TradingView({
         //   [1710979280000, 3700, 3700, 3750, 3750],
         //   [1710979290000, 3400, 3400, 3450, 3450],
         // ],
-        // data: chartData,
       },
     ],
   };
@@ -355,8 +350,10 @@ export default function TradingView({
         onChange={(e) => setTimeZone(e.target.value)}
         className="float-end border-0 text-end"
       >
-        {timezoneList.map((timezone) => (
-          <option value={timezone}>{timezone}</option>
+        {timezoneList.map((timezone, i) => (
+          <option key={i} value={timezone}>
+            {timezone}
+          </option>
         ))}
       </select>
     </div>
