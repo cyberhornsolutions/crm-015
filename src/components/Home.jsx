@@ -345,6 +345,34 @@ export default function HomeRu() {
     },
   };
 
+  const customStylesOnDeals = {
+    rows: {
+      style: {
+        "*": {
+          backgroundColor: "unset",
+          color: "unset",
+        },
+      },
+    },
+  };
+
+  const conditionalRowStylesOnOrders = [
+    {
+      when: (row) => row && row.id === selectedOrder.id,
+      style: {
+        backgroundColor: "var(--main-numbersc)",
+        color: "#000",
+      },
+    },
+    {
+      when: (row) => !row || row.id !== selectedOrder.id,
+      style: {
+        backgroundColor: "inherit",
+        color: "inherit",
+      },
+    },
+  ];
+
   const handleRowDoubleClick = (row) => {
     if (!row) return;
     openNewChartTab(row.symbol);
@@ -353,6 +381,16 @@ export default function HomeRu() {
       label: row.symbol,
     });
     if (!showNewOrderPanel) setShowNewOrderPanel(true);
+  };
+
+  const handleDoubleClickOnOrders = (row, e) => {
+    if (!row) return;
+    setSelectedOrder(row);
+    openNewChartTab(row.symbol);
+    getValue({
+      value: row.symbol,
+      label: row.symbol,
+    });
   };
 
   const openNewChartTab = (newTab) => {
@@ -1314,6 +1352,9 @@ export default function HomeRu() {
                       responsive
                       theme={theme}
                       className="custom-data-table"
+                      onRowDoubleClicked={handleDoubleClickOnOrders}
+                      customStyles={customStylesOnDeals}
+                      conditionalRowStyles={conditionalRowStylesOnOrders}
                     />
                   </Tab>
                   <Tab eventKey="delayedTab" title="Delayed">
@@ -1333,6 +1374,9 @@ export default function HomeRu() {
                       responsive
                       theme={theme}
                       className="custom-data-table"
+                      onRowDoubleClicked={handleDoubleClickOnOrders}
+                      customStyles={customStylesOnDeals}
+                      conditionalRowStyles={conditionalRowStylesOnOrders}
                     />
                   </Tab>
                 </Tabs>

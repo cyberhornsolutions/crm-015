@@ -14,31 +14,13 @@ const dealsColumns = ({
 } = {}) => [
   {
     name: "Id",
-    selector: (row, i) =>
-      row ? (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {i + 1}
-        </div>
-      ) : (
-        ""
-      ),
+    selector: (row, i) => row && i + 1,
     grow: 0.5,
     omit: !showColumns.id,
   },
   {
     name: t("date"), // Translate the header using your t function
-    selector: (row) =>
-      row.createdTime && (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.createdTime}
-        </div>
-      ),
+    selector: (row) => row.createdTime && row.createdTime,
     sortable: true,
     compact: true,
     grow: 1.5,
@@ -46,17 +28,7 @@ const dealsColumns = ({
   },
   {
     name: t("symbol"),
-    selector: (row) =>
-      row ? (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.symbol}
-        </div>
-      ) : (
-        ""
-      ),
+    selector: (row) => row && row.symbol,
     sortable: true,
     omit: !showColumns.symbol,
   },
@@ -65,20 +37,14 @@ const dealsColumns = ({
     selector: (row) =>
       row ? (
         row.type == "Buy" ? (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
+          <div className="order-column">
             <div className="custom-caret-up-icon">
               <FontAwesomeIcon icon={faCaretUp} />
               <div style={{ marginLeft: "3px" }}>{row.type}</div>
             </div>
           </div>
         ) : (
-          <div
-            className="order-column"
-            onDoubleClick={() => handleEditModal(row)}
-          >
+          <div className="order-column">
             <div className="custom-caret-down-icon">
               <FontAwesomeIcon icon={faCaretDown} />
               <div style={{ marginLeft: "3px" }}>{row.type}</div>
@@ -94,60 +60,30 @@ const dealsColumns = ({
   },
   {
     name: t("volume"),
-    selector: (row) =>
-      row ? (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.volume}
-        </div>
-      ) : (
-        ""
-      ),
+    selector: (row) => row && row.volume,
     sortable: true,
     omit: !showColumns.volume,
   },
   {
     name: t("openPrice"),
-    selector: (row) =>
-      row ? (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {+row.symbolValue}
-        </div>
-      ) : (
-        ""
-      ),
+    selector: (row) => row && +row.symbolValue,
     sortable: true,
     omit: !showColumns.openPrice,
   },
   {
     name: "SL / TP",
     selector: (row) => row && row.sltp,
-    sortable: true,
     omit: !showColumns.sltp,
   },
   {
     name: "Additional parameters",
     selector: (row) =>
-      row && (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {`Spread: ${+parseFloat(row.spread)?.toFixed(
-            4
-          )} / Swap: ${+parseFloat(row.swap)?.toFixed(4)} / Fee: ${+parseFloat(
-            row.fee
-          )?.toFixed(4)}`}
-        </div>
-      ),
+      row &&
+      `Spread: ${+parseFloat(row.spread)?.toFixed(4)} / Swap: ${+parseFloat(
+        row.swap
+      )?.toFixed(4)} / Fee: ${+parseFloat(row.fee)?.toFixed(4)}`,
     grow: 2.5,
     compact: true,
-    sortable: true,
     omit: !showColumns.additionalParameters,
   },
   {
@@ -159,17 +95,7 @@ const dealsColumns = ({
   },
   {
     name: "Current Price",
-    selector: (row) =>
-      row ? (
-        <div
-          className="order-column"
-          onDoubleClick={() => handleEditModal(row)}
-        >
-          {row.currentPrice}
-        </div>
-      ) : (
-        ""
-      ),
+    selector: (row) => row && row.currentPrice,
     sortable: true,
     compact: true,
     omit: !showColumns.currentPrice,
@@ -186,7 +112,6 @@ const dealsColumns = ({
               ? "text-muted"
               : "text-success"
           }`}
-          onDoubleClick={() => handleEditModal(row)}
         >
           {row.profit}
         </div>
@@ -212,7 +137,6 @@ const dealsColumns = ({
           />
         </div>
       ),
-    sortable: true,
     omit: !showColumns.action,
   },
 ];
