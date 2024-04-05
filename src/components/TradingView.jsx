@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
 import stockTools from "highcharts/modules/stock-tools";
@@ -40,6 +34,41 @@ const dummy_data = [
   // [1317888240000, 371.75, 372.4, 371.57, 372],
 ];
 
+const TIMEFRAMES = [
+  {
+    label: "1m",
+    value: ["minute", [1]],
+  },
+  {
+    label: "15m",
+    value: ["minute", [15]],
+  },
+  {
+    label: "1h",
+    value: ["hour", [1]],
+  },
+  {
+    label: "4h",
+    value: ["hour", [4]],
+  },
+  {
+    label: "1d",
+    value: ["day", [1]],
+  },
+  {
+    label: "1w",
+    value: ["week", [1]],
+  },
+  {
+    label: "1M",
+    value: ["month", [1]],
+  },
+  {
+    label: "1y",
+    value: ["year", [1]],
+  },
+];
+
 export default function TradingView({
   locale,
   hide,
@@ -49,6 +78,7 @@ export default function TradingView({
 }) {
   const chartRef = useRef();
   const [timezone, setTimeZone] = useState(timezoneList[0]);
+  const [dataGroup, setDataGroup] = useState(TIMEFRAMES[0].value);
 
   const symbol = useSelector((state) =>
     state.symbols.find((s) => s.symbol === selectedSymbol)
@@ -106,6 +136,30 @@ export default function TradingView({
       // uniqueNames: false,
       // visible: false,
       // zoomEnabled: false,
+
+      // events: {
+      // setExtremes(e, rest) {
+      // e.preventDefault();
+      // document.getElementById("report").innerHTML =
+      //   "<b>Set extremes:</b> e.min: " +
+      //   Highcharts.dateFormat(null, e.min) +
+      //   " | e.max: " +
+      //   Highcharts.dateFormat(null, e.max) +
+      //   " | e.trigger: " +
+      //   e.trigger;
+      // console.log("extremes => ", e, rest);
+      // },
+      // afterSetExtremes(event) {
+      //   console.log("afterSetExtremes => ", event);
+      //   const chart = this.chart;
+      //   const extremes = chart.xAxis[0].getExtremes(); // Get the visible extremes
+      //   console.log("hello wrld", extremes);
+      // Call your function to load data based on the visible extremes
+      // loadDataDynamically(extremes.min, extremes.max, function (data) {
+      //   chart.series[0].setData(data); // Set the loaded data to the series
+      // });
+      // },
+      // },
     },
 
     rangeSelector: {
@@ -141,7 +195,7 @@ export default function TradingView({
         //   text: "All",
         // },
       ],
-      selected: 1,
+      // selected: 1,
       inputEnabled: false,
     },
 
@@ -176,7 +230,9 @@ export default function TradingView({
 
     series: [
       {
-        type: "candlestick",
+        // id: symbol.id,
+        name: selectedSymbol,
+        type: "candlestick", // ohlc
         color: "#dc3545",
         upColor: "var(--main-numbersc)",
         // pointInterval: 1000 * 60,
@@ -187,14 +243,30 @@ export default function TradingView({
             // backgroundColor: "#FF7F7F",
           },
         },
-        // dataGrouping: {
-        //   enabled: true,
-        //   units: [
-        //     ["day", [1]], // Group by day, include only the open and close values
-        //     ["week", [1]], // Group by week, include only the open and close values
-        //     ["month", [1]], // Group by month, include only the open and close values
-        //   ],
+        // tooltip: {
+        //   valueDecimals: 2,
         // },
+        dataGrouping: {
+          enabled: true,
+          // units: [
+          //   [
+          //     "millisecond", // unit name
+          //     [1, 2, 5, 10, 20, 25, 50, 100, 200, 500], // allowed multiples
+          //   ],
+          //   ["second", [1, 2, 5, 10, 15, 30]],
+          //   ["minute", [10, 20, 30]],
+          // ["hour", [1]],
+          // ["hour", [1, 2, 3, 4, 6, 8, 12]],
+          //   ["day", [1]],
+          //   ["week", [1]],
+          //   ["month", [1, 3, 6]],
+          //   ["year", null],
+          // ],
+          // approximation: "average",
+          // forced: true,
+          units: [dataGroup],
+          // lastAnchor: "lastPoint",
+        },
         // data: [
         //   [1710979260000, 3500, 3500, 3550, 3550],
         //   [1710979270000, 3600, 3600, 3630, 3630],
@@ -265,6 +337,12 @@ export default function TradingView({
       window.document.getElementById("sidebar").style.pointerEvents = "unset";
       window.document.getElementById("nav-buttons").style.pointerEvents =
         "unset";
+      const xAxis = series.xAxis;
+      // xAxis.setExtremes(series.xData.at(-100), xAxis.dataMax);
+      xAxis.setExtremes(
+        xAxis.dataMax - (xAxis.dataMax - xAxis.dataMin) / 30,
+        xAxis.dataMax
+      );
     }
   }, []);
 
@@ -344,6 +422,18 @@ export default function TradingView({
           },
         }}
       />
+      <div id="timeframe" className="float-start flex align-items-center gap-2">
+        <label>Timeframe</label>
+        {TIMEFRAMES.map((timeframe, i) => (
+          <button
+            key={i}
+            className={timeframe.value === dataGroup ? "selected" : ""}
+            onClick={() => setDataGroup(timeframe.value)}
+          >
+            {timeframe.label}
+          </button>
+        ))}
+      </div>
       <select
         id="timezone"
         value={timezone}

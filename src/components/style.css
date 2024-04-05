@@ -1124,4 +1124,24 @@ h4 {
 
 #timezone {
   outline: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#timeframe {
+  color: rgb(51, 51, 51);
+  font-size: 14px;
+  margin-left: 4rem;
+}
+
+#timeframe button {
+  border: none;
+  padding-inline: 4px;
+  margin-inline-start: 4px;
+}
+#timeframe button.selected {
+  background-color: var(--highcharts-neutral-color-20);
+}
+#timeframe button:hover {
+  background-color: var(--highcharts-neutral-color-20);
 }
