@@ -79,14 +79,15 @@ export default function TradingView({
   const chartRef = useRef();
   const [timezone, setTimeZone] = useState(timezoneList[0]);
   const [dataGroup, setDataGroup] = useState(TIMEFRAMES[0].value);
+  const [symbolName] = useState(selectedSymbol);
 
   const symbol = useSelector((state) =>
-    state.symbols.find((s) => s.symbol === selectedSymbol)
+    state.symbols.find((s) => s.symbol === symbolName)
   );
 
   const options = {
     // title: {
-    //   text: selectedSymbol,
+    //   text: symbolName,
     // },
     chart: {
       // height: "100%",
@@ -112,7 +113,7 @@ export default function TradingView({
 
     xAxis: {
       // overscroll: 20000,
-      overscroll: ["EURUSD", "EURUSDT"].includes(selectedSymbol) ? "4%" : "1%",
+      overscroll: ["EURUSD", "EURUSDT"].includes(symbolName) ? "4%" : "1%",
       // range: 4 * 200000,
       gridLineWidth: 1,
       // endOnTick: false,
@@ -230,8 +231,8 @@ export default function TradingView({
 
     series: [
       {
-        // id: symbol.id,
-        name: selectedSymbol,
+        id: symbol.id,
+        name: symbolName,
         type: "candlestick", // ohlc
         color: "#dc3545",
         upColor: "var(--main-numbersc)",
