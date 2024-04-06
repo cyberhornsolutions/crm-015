@@ -1390,7 +1390,7 @@ export default function HomeRu() {
             </div>
           </div>
           {tab === "account" && (
-            <div id="account">
+            <div id="account" className="h-100">
               <div id="account-profile">
                 <img
                   id="acc-img-placeholder"
