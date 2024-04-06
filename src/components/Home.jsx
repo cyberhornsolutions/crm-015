@@ -1034,41 +1034,46 @@ export default function HomeRu() {
         <div id="content">
           <div
             id="trade-div"
-            className={`${!(tab === "trade" || tab === "assets") && "d-none"}`}
+            className={`h-100 p-2  ${
+              tab === "trade" || tab === "assets" ? "" : "d-none"
+            }`}
           >
             <div id="trade" className={showHistoryPanel && "d-none"}>
-              {tab === "assets" && (
-                <div id="assets" className="h-100 px-1 py-2">
-                  <input
-                    type="search"
-                    placeholder="Search..."
-                    className="w-100"
-                    style={{ height: 30 }}
-                    value={quoteSearch}
-                    onChange={(e) => setQuoteSearch(e.target.value)}
-                  />
-                  <DataTable
-                    columns={assetsColumns}
-                    data={fillArrayWithEmptyRows(filteredQuotesSymbols, 10)}
-                    highlightOnHover
-                    pointerOnHover
-                    customStyles={customStylesAssetsTable}
-                    conditionalRowStyles={conditionalRowStyles}
-                    theme={theme}
-                    // onRowDoubleClicked={handleRowDoubleClick}
-                  />
-                  <div className="text-center">
-                    <button
-                      className="newOrderButton btn btn-success border-0"
-                      onClick={() => {
-                        handleTradingModal();
-                      }}
-                    >
-                      + Add Symbol
-                    </button>
-                  </div>
+              <div
+                id="assets"
+                className={`h-100 px-1 py-2 ${
+                  tab === "assets" ? "" : "d-none"
+                }`}
+              >
+                <input
+                  type="search"
+                  placeholder="Search..."
+                  className="w-100"
+                  style={{ height: 30 }}
+                  value={quoteSearch}
+                  onChange={(e) => setQuoteSearch(e.target.value)}
+                />
+                <DataTable
+                  columns={assetsColumns}
+                  data={fillArrayWithEmptyRows(filteredQuotesSymbols, 9)}
+                  highlightOnHover
+                  pointerOnHover
+                  customStyles={customStylesAssetsTable}
+                  conditionalRowStyles={conditionalRowStyles}
+                  theme={theme}
+                  // onRowDoubleClicked={handleRowDoubleClick}
+                />
+                <div className="text-center">
+                  <button
+                    className="newOrderButton btn btn-success border-0"
+                    onClick={() => {
+                      handleTradingModal();
+                    }}
+                  >
+                    + Add Symbol
+                  </button>
                 </div>
-              )}
+              </div>
               <div id="chart" className="rounded">
                 <ul className="nav nav-tabs">
                   {tabs?.map((tab) => (
@@ -1290,7 +1295,7 @@ export default function HomeRu() {
                 </div>
               </div>
             </div>
-            <div id="history-div">
+            <div id="history-div" className="pt-3">
               <div
                 id="nav-buttons"
                 className="d-flex align-items-center justify-content-around"

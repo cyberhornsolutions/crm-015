@@ -323,9 +323,6 @@ button {
 }
 
 #content {
-  display: flex;
-  flex-direction: column;
-  flex: 11;
   border: 2px solid var(--bs-border-color);
   border-radius: 5px;
   background-color: var(--bs-body-bg);
@@ -543,26 +540,15 @@ acc-info-personal h3 {
   width: 50%;
 }
 
-#trade-div {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
 #trade {
   display: flex;
-  flex: 9;
-  padding: 10px;
+  height: 62%;
 }
 
 #newOrder {
-  display: flex;
-  flex-direction: column;
   flex: 1;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
-  /* height: 335px; */
-  /* overflow-y: scroll; */
 }
 
 #newOrderData {
@@ -694,12 +680,6 @@ acc-info-personal h3 {
   border-radius: 5px;
   overflow: auto;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
-}
-
-#history-div {
-  flex: 4;
-  padding: 10px;
-  margin-top: 0;
 }
 
 #nav-buttons button {
