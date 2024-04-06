@@ -75,6 +75,7 @@ export default function TradingView({
   index,
   selectedSymbol,
   theme,
+  plotLine = 0,
 }) {
   const chartRef = useRef();
   const [timezone, setTimeZone] = useState(timezoneList[0]);
@@ -228,6 +229,33 @@ export default function TradingView({
     // time: {
     //   useUTC: false,
     // },
+
+    yAxis: {
+      // title: {
+      //   text: "Value",
+      // },
+      plotLines: [
+        {
+          value: plotLine, // Dynamic value for the indicator line
+          color: "var(--main-numbersc)",
+          // width: 2,
+          // zIndex: 5,
+          // dashStyle: "dash",
+          // labels: {
+          //   clip: true,
+          // },
+          label: {
+            text: plotLine,
+            align: "right",
+            style: {
+              color: "gray",
+            },
+            // y: 12,
+            x: -50,
+          },
+        },
+      ],
+    },
 
     series: [
       {

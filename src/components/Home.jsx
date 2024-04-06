@@ -1126,6 +1126,7 @@ export default function HomeRu() {
                       hide={activeTab !== tab}
                       index={i}
                       selectedSymbol={orderData?.symbol?.value}
+                      plotLine={selectedOrder.symbolValue}
                       theme={theme}
                     />
                   );
