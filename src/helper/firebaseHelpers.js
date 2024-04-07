@@ -367,3 +367,33 @@ export const getSymbolPriceHistory = async (id, setState) => {
     console.error("Error in getting priceHistory document:", error.message);
   }
 };
+
+export const getSymbolPriceHistoryInAir = async (id, date, setState) => {
+  try {
+    const symbolDocRef = doc(db, "symbols", id);
+    const priceHistoryCollectionRef = collection(symbolDocRef, "priceHistory");
+    const daysSnap = await getDocs(
+      query(priceHistoryCollectionRef, orderBy("updatedAt", "desc"))
+    );
+    if (daysSnap.empty) return;
+
+    const prevDates = [];
+    daysSnap.forEach((day) => prevDates.push({ id: day.id, ref: day.ref }));
+
+    const requireDate = prevDates.find((day) => day.id < date);
+
+    let prevDayData = [];
+    if (requireDate && requireDate.ref) {
+      const prevDaySnapshot = await getDocs(
+        collection(requireDate.ref, "hours")
+      );
+      prevDaySnapshot.forEach((snap) => {
+        prevDayData[snap.id] = snap.data()?.data || [];
+      });
+      prevDayData = prevDayData.filter((d) => d);
+    }
+    setState(prevDayData, true);
+  } catch (error) {
+    console.error("Error in getting priceHistory document:", error.message);
+  }
+};

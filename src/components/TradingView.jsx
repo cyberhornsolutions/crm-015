@@ -9,7 +9,10 @@ import annotationsAdvanced from "highcharts/modules/annotations-advanced";
 import priceIndicator from "highcharts/modules/price-indicator";
 import fullScreen from "highcharts/modules/full-screen";
 import { useSelector } from "react-redux";
-import { getSymbolPriceHistory } from "../helper/firebaseHelpers";
+import {
+  getSymbolPriceHistory,
+  getSymbolPriceHistoryInAir,
+} from "../helper/firebaseHelpers";
 // import exporting from "highcharts/modules/exporting";
 import { timezoneList } from "../helper/helpers";
 
@@ -81,6 +84,7 @@ export default function TradingView({
   const [timezone, setTimeZone] = useState(timezoneList[0]);
   const [dataGroup, setDataGroup] = useState(TIMEFRAMES[0].value);
   const [symbolName] = useState(selectedSymbol);
+  const [loading, setLoading] = useState(true);
 
   const symbol = useSelector((state) =>
     state.symbols.find((s) => s.symbol === symbolName)
@@ -139,29 +143,22 @@ export default function TradingView({
       // visible: false,
       // zoomEnabled: false,
 
-      // events: {
-      // setExtremes(e, rest) {
-      // e.preventDefault();
-      // document.getElementById("report").innerHTML =
-      //   "<b>Set extremes:</b> e.min: " +
-      //   Highcharts.dateFormat(null, e.min) +
-      //   " | e.max: " +
-      //   Highcharts.dateFormat(null, e.max) +
-      //   " | e.trigger: " +
-      //   e.trigger;
-      // console.log("extremes => ", e, rest);
-      // },
-      // afterSetExtremes(event) {
-      //   console.log("afterSetExtremes => ", event);
-      //   const chart = this.chart;
-      //   const extremes = chart.xAxis[0].getExtremes(); // Get the visible extremes
-      //   console.log("hello wrld", extremes);
-      // Call your function to load data based on the visible extremes
-      // loadDataDynamically(extremes.min, extremes.max, function (data) {
-      //   chart.series[0].setData(data); // Set the loaded data to the series
-      // });
-      // },
-      // },
+      events: {
+        // setExtremes(e, rest) {
+        //   console.log("extremes => ", e, rest);
+        // },
+        afterSetExtremes(e) {
+          if (!e.dataMin || loading) return;
+          const diff = (e.min - e.dataMin) / (1000 * 60);
+          if (diff && diff > 30) return;
+          if (!loading) setLoading(true);
+          getSymbolPriceHistoryInAir(
+            symbol.id,
+            new Date(e.dataMin).toISOString().slice(0, 10),
+            processChartData
+          );
+        },
+      },
     },
 
     rangeSelector: {
@@ -338,7 +335,7 @@ export default function TradingView({
   //   },
   // };
 
-  const processChartData = useCallback(async (data) => {
+  const processChartData = useCallback(async (data, addPrevDayData) => {
     if (!chartRef.current) return;
     const chart = chartRef.current.chart;
     const series = chart.series[0];
@@ -352,14 +349,31 @@ export default function TradingView({
       .map((d) => [d.time, d.open, d.high, d.low, d.close]);
 
     if (lastPoint) {
-      series.update({
-        data: allData,
-      });
-      // const newData = allData.filter((d) => d[0] > lastPoint[0]);
-      // console.log("new Data => ", newData);
-      // newData.forEach((d) => {
-      //   series.addPoint(d, true, false, true);
-      // });
+      if (addPrevDayData) {
+        // series.update({
+        //   data: allData,
+        // });
+        allData.forEach((d) => {
+          series.addPoint(d, false, false, false);
+        });
+        if (allData.length) chart.redraw();
+        if (loading) setLoading(false);
+      } else {
+        const newData = allData.filter((d) => d[0] > lastPoint[0]);
+        const newLastPoint = allData.at(-1);
+        if (
+          !newData.length &&
+          lastPoint[0] === newLastPoint[0] &&
+          lastPoint[4] !== newLastPoint[4]
+        ) {
+          series.removePoint(series.data.length - 1, false, false);
+          series.addPoint(newLastPoint, true, false, false);
+          // chart.redraw();
+          // series.setData(newData, true, false, true);
+        } else {
+          newData.forEach((d) => series.addPoint(d, true, false, false));
+        }
+      }
     } else {
       series.setData(allData);
       chart.hideLoading();
@@ -372,6 +386,7 @@ export default function TradingView({
         xAxis.dataMax - (xAxis.dataMax - xAxis.dataMin) / 30,
         xAxis.dataMax
       );
+      if (loading) setLoading(false);
     }
   }, []);
 
