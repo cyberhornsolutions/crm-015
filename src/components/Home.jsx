@@ -1038,7 +1038,7 @@ export default function HomeRu() {
               tab === "trade" || tab === "assets" ? "" : "d-none"
             }`}
           >
-            <div id="trade" className={showHistoryPanel && "d-none"}>
+            <div id="trade" className={showHistoryPanel ? "d-none" : ""}>
               <div
                 id="assets"
                 className={`h-100 px-1 py-2 ${
@@ -1133,7 +1133,7 @@ export default function HomeRu() {
                 })}
               </div>
 
-              <div id="newOrder" className={!showNewOrderPanel && "d-none"}>
+              <div id="newOrder" className={showNewOrderPanel ? "" : "d-none"}>
                 <div id="newOrderData">
                   <h6>{t("newDeal")}</h6>
                   <form id="newOrderForm">
@@ -1229,7 +1229,7 @@ export default function HomeRu() {
                         type="number"
                         readOnly={!enableOpenPrice}
                         disabled={!enableOpenPrice}
-                        className={!enableOpenPrice && "disabled"}
+                        className={enableOpenPrice ? "" : "disabled"}
                         value={
                           enableOpenPrice
                             ? openPriceValue
@@ -1303,7 +1303,7 @@ export default function HomeRu() {
               >
                 <button
                   id="newDealButton"
-                  className={showNewOrderPanel && "active"}
+                  className={showNewOrderPanel ? "active" : ""}
                   onClick={() => {
                     openOrderPanel();
                     // let a = document.getElementById("newOrder");
@@ -1316,7 +1316,7 @@ export default function HomeRu() {
                 </button>
                 <button
                   id="ordersHistoryButton"
-                  className={showHistoryPanel && "active"}
+                  className={showHistoryPanel ? "active" : ""}
                   onClick={() => {
                     openOrderHistory();
                   }}
