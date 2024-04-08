@@ -233,7 +233,7 @@ export default function TradingView({
       // },
       plotLines: [
         {
-          value: plotLine, // Dynamic value for the indicator line
+          value: 0, // Dynamic value for the indicator line
           color: "var(--main-numbersc)",
           // width: 2,
           // zIndex: 5,
@@ -256,8 +256,8 @@ export default function TradingView({
 
     series: [
       {
-        id: symbol.id,
-        name: symbolName,
+        // id: symbol.id,
+        // name: symbolName,
         type: "candlestick", // ohlc
         color: "#dc3545",
         upColor: "var(--main-numbersc)",
