@@ -383,7 +383,7 @@ export default function TradingView({
       const xAxis = series.xAxis;
       // xAxis.setExtremes(series.xData.at(-100), xAxis.dataMax);
       xAxis.setExtremes(
-        xAxis.dataMax - (xAxis.dataMax - xAxis.dataMin) / 30,
+        xAxis.dataMax - (xAxis.dataMax - xAxis.dataMin) / 15,
         xAxis.dataMax
       );
       if (loading) setLoading(false);
