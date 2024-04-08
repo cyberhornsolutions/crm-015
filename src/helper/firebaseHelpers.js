@@ -329,15 +329,15 @@ export const getSymbolPriceHistory = async (id, setState) => {
     if (!daysDocs.length) return;
 
     let prevDayData = [];
-    if (daysDocs[1] && daysDocs[1].exists()) {
-      const prevDaySnapshot = await getDocs(
-        collection(daysDocs[1].ref, "hours")
-      );
-      prevDaySnapshot.forEach((snap) => {
-        prevDayData[snap.id] = snap.data()?.data || [];
-      });
-      prevDayData = prevDayData.filter((d) => d);
-    }
+    // if (daysDocs[1] && daysDocs[1].exists()) {
+    //   const prevDaySnapshot = await getDocs(
+    //     collection(daysDocs[1].ref, "hours")
+    //   );
+    //   prevDaySnapshot.forEach((snap) => {
+    //     prevDayData[snap.id] = snap.data()?.data || [];
+    //   });
+    //   prevDayData = prevDayData.filter((d) => d);
+    // }
     let includePrevData = true;
 
     const hourCollectionRef = collection(daysDocs[0].ref, "hours");
