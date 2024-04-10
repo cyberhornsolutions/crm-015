@@ -103,6 +103,7 @@ export default function TradingView({
       // zooming: {
       //   mouseWheel: false,
       // },
+      // marginRight: 50
     },
     time: {
       timezone,
@@ -233,7 +234,7 @@ export default function TradingView({
       // },
       plotLines: [
         {
-          value: 0, // Dynamic value for the indicator line
+          value: plotLine, // Dynamic value for the indicator line
           color: "var(--main-numbersc)",
           // width: 2,
           // zIndex: 5,
@@ -254,10 +255,18 @@ export default function TradingView({
       ],
     },
 
+    // legend: {
+    //   enabled: true,
+    //   layout: "vertical",
+    //   align: "right",
+    //   verticalAlign: "top",
+    //   y: 100,
+    // },
+
     series: [
       {
-        // id: symbol.id,
-        // name: symbolName,
+        id: symbol.id,
+        name: symbolName,
         type: "candlestick", // ohlc
         color: "#dc3545",
         upColor: "var(--main-numbersc)",
@@ -300,6 +309,29 @@ export default function TradingView({
         //   [1710979290000, 3400, 3400, 3450, 3450],
         // ],
       },
+      {
+        type: "column",
+        name: "Volume",
+        // data: [
+        //   194.1,
+        //   95.6,
+        //   {
+        //     dataLabels: {
+        //       enabled: true,
+        //       align: "left",
+        //       style: {
+        //         fontWeight: "bold",
+        //       },
+        //       x: 3,
+        //       verticalAlign: "middle",
+        //       overflow: true,
+        //       crop: false,
+        //     },
+        //     y: 54.4,
+        //   },
+        // ],
+        visible: false,
+      },
     ],
   };
 
@@ -339,6 +371,17 @@ export default function TradingView({
     if (!chartRef.current) return;
     const chart = chartRef.current.chart;
     const series = chart.series[0];
+
+    // chart.addSeries(
+    //   {
+    //     type: "column",
+    //     name: "Volume",
+    //     data: [[Date.now(), 5000]],
+    //   }
+    // true,
+    // false
+    // );
+
 
     const lastPoint = series.options?.data.at(-1);
 

@@ -1358,9 +1358,9 @@ export default function HomeRu() {
                       responsive
                       theme={theme}
                       className="custom-data-table"
-                      // onRowDoubleClicked={handleDoubleClickOnOrders}
-                      // customStyles={customStylesOnDeals}
-                      // conditionalRowStyles={conditionalRowStylesOnOrders}
+                      onRowDoubleClicked={handleDoubleClickOnOrders}
+                      customStyles={customStylesOnDeals}
+                      conditionalRowStyles={conditionalRowStylesOnOrders}
                     />
                   </Tab>
                   <Tab eventKey="delayedTab" title="Delayed">
