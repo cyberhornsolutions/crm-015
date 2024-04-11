@@ -184,11 +184,16 @@ export default function TradingView({
           count: 6,
           text: "6h",
         },
-        // {
-        //   type: "day",
-        //   count: 1,
-        //   text: "1d",
-        // },
+        {
+          type: "day",
+          count: 1,
+          text: "1d",
+        },
+        {
+          type: "week",
+          count: 1,
+          text: "1w",
+        },
         // {
         //   type: "all",
         //   count: 1,
@@ -381,7 +386,6 @@ export default function TradingView({
     // true,
     // false
     // );
-
 
     const lastPoint = series.options?.data.at(-1);
 
