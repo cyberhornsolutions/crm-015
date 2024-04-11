@@ -95,6 +95,7 @@ export default function TradingView({
     //   text: symbolName,
     // },
     chart: {
+      type: "candlestick",
       // height: "100%",
       // width: "100%",
       // backgroundColor: "var(--bs-body-bg)",
@@ -217,17 +218,17 @@ export default function TradingView({
     //   },
     // },
 
-    // plotOptions: {
-    // candlestick: {
-    // color: "pink",
-    // lineColor: "blue",
-    // upColor: "lightgreen",
-    // upLineColor: "green",
-    // pointWidth: 5, // Set the width of the candlestick
-    // lineWidth: 1,
-    // pointInterval: 3600000, // one hour
-    // },
-    // },
+    plotOptions: {
+      candlestick: {
+        color: "#dc3545",
+        lineColor: "#dc3545",
+        upColor: "var(--main-numbersc)",
+        upLineColor: "var(--main-numbersc)",
+        // pointWidth: 5, // Set the width of the candlestick
+        // lineWidth: 1,
+        // pointInterval: 3600000, // one hour
+      },
+    },
 
     // time: {
     //   useUTC: false,
@@ -287,8 +288,10 @@ export default function TradingView({
         id: symbol.id,
         name: symbolName,
         type: "candlestick", // ohlc
-        color: "#dc3545",
-        upColor: "var(--main-numbersc)",
+        // color: "#dc3545",
+        // lineColor: "red",
+        // upColor: "var(--main-numbersc)",
+        // upLineColor: "green",
         // pointInterval: 1000 * 60,
         lastPrice: {
           enabled: true,

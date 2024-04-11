@@ -100,7 +100,7 @@
 }
 
 /* stock tracker */
-.highcharts-series.highcharts-series-0.highcharts-candlestick-series.highcharts-tracker
+/* .highcharts-series.highcharts-series-0.highcharts-candlestick-series.highcharts-tracker
   path {
   stroke: #fff !important;
   stroke-width: 0.75px;
@@ -109,7 +109,7 @@
   .highcharts-series.highcharts-series-0.highcharts-candlestick-series.highcharts-tracker
   path {
   stroke: #000 !important;
-}
+} */
 
 /* toolbar 1st button popup */
 .highcharts-indicator-list button.highcharts-indicator-list-item {
