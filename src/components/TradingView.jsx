@@ -233,32 +233,46 @@ export default function TradingView({
     //   useUTC: false,
     // },
 
-    yAxis: {
-      // title: {
-      //   text: "Value",
-      // },
-      plotLines: [
-        {
-          value: plotLine, // Dynamic value for the indicator line
-          color: "var(--main-numbersc)",
-          // width: 2,
-          // zIndex: 5,
-          // dashStyle: "dash",
-          // labels: {
-          //   clip: true,
-          // },
-          label: {
-            text: plotLine,
-            align: "right",
-            style: {
-              color: "gray",
+    yAxis: [
+      {
+        height: "80%",
+        // title: {
+        //   text: "Value",
+        // },
+        // labels: {
+        //   align: "left",
+        // },
+        // resize: {
+        //   enabled: true,
+        // },
+        plotLines: [
+          {
+            value: plotLine, // Dynamic value for the indicator line
+            color: "var(--main-numbersc)",
+            // width: 2,
+            // zIndex: 5,
+            // dashStyle: "dash",
+            // labels: {
+            //   clip: true,
+            // },
+            label: {
+              text: plotLine,
+              align: "right",
+              style: {
+                color: "gray",
+              },
+              // y: 12,
+              x: -50,
             },
-            // y: 12,
-            x: -50,
           },
-        },
-      ],
-    },
+        ],
+      },
+      {
+        top: "80%",
+        height: "20%",
+        offset: 0,
+      },
+    ],
 
     // legend: {
     //   enabled: true,
@@ -315,8 +329,10 @@ export default function TradingView({
         // ],
       },
       {
+        id: `volume-${symbol.id}`,
         type: "column",
         name: "Volume",
+        yAxis: 1,
         // data: [
         //   194.1,
         //   95.6,
@@ -335,7 +351,7 @@ export default function TradingView({
         //     y: 54.4,
         //   },
         // ],
-        visible: false,
+        // visible: false,
       },
     ],
   };
@@ -376,37 +392,36 @@ export default function TradingView({
     if (!chartRef.current) return;
     const chart = chartRef.current.chart;
     const series = chart.series[0];
-
-    // chart.addSeries(
-    //   {
-    //     type: "column",
-    //     name: "Volume",
-    //     data: [[Date.now(), 5000]],
-    //   }
-    // true,
-    // false
-    // );
+    const volumeSeries = chart.series[1];
 
     const lastPoint = series.options?.data.at(-1);
+    const lastVolumePoint = volumeSeries.options?.data.at(-1);
 
-    const allData = Object.values(data)
-      // .slice(-1)
+    const volumeData = [];
+    const allData = [];
+
+    Object.values(data)
       .map((o) => Object.values(o))
       .flat(2)
-      .map((d) => [d.time, d.open, d.high, d.low, d.close]);
+      .forEach((d) => {
+        allData.push([d.time, d.open, d.high, d.low, d.close]);
+        if (d.volume) volumeData.push([d.time, d.volume]);
+      });
 
     if (lastPoint) {
       if (addPrevDayData) {
         // series.update({
         //   data: allData,
         // });
-        allData.forEach((d) => {
-          series.addPoint(d, false, false, false);
-        });
+        allData.forEach((d) => series.addPoint(d, false, false, false));
+        volumeData.forEach((d) =>
+          volumeSeries.addPoint(d, false, false, false)
+        );
         if (allData.length) chart.redraw();
         if (loading) setLoading(false);
       } else {
         const newData = allData.filter((d) => d[0] > lastPoint[0]);
+        const newVolume = volumeData.filter((d) => d[0] > lastVolumePoint[0]);
         const newLastPoint = allData.at(-1);
         if (
           !newData.length &&
@@ -419,10 +434,14 @@ export default function TradingView({
           // series.setData(newData, true, false, true);
         } else {
           newData.forEach((d) => series.addPoint(d, true, false, false));
+          newVolume.forEach((d) =>
+            volumeSeries.addPoint(d, true, false, false)
+          );
         }
       }
     } else {
-      series.setData(allData);
+      if (allData.length) series.setData(allData);
+      if (volumeData.length) volumeSeries.setData(volumeData);
       chart.hideLoading();
       window.document.getElementById("sidebar").style.pointerEvents = "unset";
       window.document.getElementById("nav-buttons").style.pointerEvents =
