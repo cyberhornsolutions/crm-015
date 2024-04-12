@@ -83,13 +83,14 @@
   stroke-width: 0px;
 }
 
-.highcharts-annotation-shapes * {
-  stroke: rgba(255, 255, 255, 0.75) !important;
-  fill: rgba(255, 255, 255, 0.75) !important;
+.highcharts-annotation-shapes path {
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 1px;
+  /* fill: rgba(255, 255, 255, 0.75); */
 }
-.light .highcharts-annotation-shapes * {
-  stroke: rgba(0, 0, 0, 0.75) !important;
-  fill: rgba(0, 0, 0, 0.75) !important;
+.light .highcharts-annotation-shapes path {
+  stroke: rgba(0, 0, 0, 0.75);
+  /* fill: rgba(0, 0, 0, 0.75); */
 }
 
 .highcharts-label.highcharts-annotation-label.highcharts-no-tooltip {
