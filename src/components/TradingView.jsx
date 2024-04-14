@@ -124,9 +124,13 @@ export default function TradingView({
     //   showDuration: 1000,
     // },
 
+    scrollbar: {
+      liveRedraw: false,
+    },
     xAxis: {
       // overscroll: 20000,
       overscroll: ["EURUSD", "EURUSDT"].includes(symbolName) ? "4%" : "1%",
+      minRange: 3600 * 1000, // one hour
       // range: 4 * 200000,
       gridLineWidth: 1,
       // endOnTick: false,
@@ -156,15 +160,24 @@ export default function TradingView({
         //   console.log("extremes => ", e, rest);
         // },
         afterSetExtremes(e) {
+          console.log("e => ", e);
+          console.log("l => ", loading);
           if (!e.dataMin || loading) return;
           const diff = (e.min - e.dataMin) / (1000 * 60);
+          console.log("diff = ", diff);
           if (diff && diff > 30) return;
-          if (!loading) setLoading(true);
-          getSymbolPriceHistoryInAir(
-            symbol.id,
-            new Date(e.dataMin).toISOString().slice(0, 10),
-            processChartData
-          );
+          // if (!loading) setLoading(true);
+          setLoading((p) => {
+            if (p === false)
+              getSymbolPriceHistoryInAir(
+                symbol.id,
+                new Date(e.dataMin).toISOString().slice(0, 10),
+                processChartData,
+                dataGroup[0],
+                setLoading
+              );
+            return true;
+          });
         },
       },
     },
@@ -212,6 +225,8 @@ export default function TradingView({
     },
 
     navigator: {
+      adaptToUpdatedData: false,
+
       // series: {
       //   color: "#000",
       // },
@@ -219,9 +234,10 @@ export default function TradingView({
     },
 
     // navigation: {
-    //   buttonOptions: {
-    //     enabled: true,
-    //   },
+    // iconsURL: "stock-icons/",
+    // buttonOptions: {
+    //   enabled: true,
+    // },
     // },
 
     stockTools: {
@@ -440,7 +456,7 @@ export default function TradingView({
   //   },
   // };
 
-  const processChartData = useCallback(async (data, addPrevDayData) => {
+  const processChartData = (data, addPrevDayData) => {
     if (!chartRef.current) return;
     const chart = chartRef.current.chart;
     const series = chart.series[0];
@@ -452,13 +468,10 @@ export default function TradingView({
     const volumeData = [];
     const allData = [];
 
-    Object.values(data)
-      .map((o) => Object.values(o))
-      .flat(2)
-      .forEach((d) => {
-        allData.push([d.time, d.open, d.high, d.low, d.close]);
-        if (d.volume) volumeData.push([d.time, d.volume]);
-      });
+    data.forEach((d) => {
+      allData.push([d.time, d.open, d.high, d.low, d.close]);
+      if (d.volume) volumeData.push([d.time, d.volume]);
+    });
 
     if (lastPoint) {
       if (addPrevDayData) {
@@ -470,7 +483,7 @@ export default function TradingView({
           volumeSeries.addPoint(d, false, false, false)
         );
         if (allData.length) chart.redraw();
-        if (loading) setLoading(false);
+        // if (loading) setLoading(false);
       } else {
         const newData = allData.filter((d) => d[0] > lastPoint[0]);
         const newVolume = volumeData.filter((d) => d[0] > lastVolumePoint[0]);
@@ -489,6 +502,7 @@ export default function TradingView({
           newVolume.forEach((d) =>
             volumeSeries.addPoint(d, true, false, false)
           );
+          if (loading) setLoading(false);
         }
       }
     } else {
@@ -506,7 +520,7 @@ export default function TradingView({
       );
       if (loading) setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     if (chartRef.current) {

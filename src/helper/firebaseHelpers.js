@@ -338,7 +338,7 @@ export const getSymbolPriceHistory = async (id, setState) => {
     //   });
     //   prevDayData = prevDayData.filter((d) => d);
     // }
-    let includePrevData = true;
+    let includePrevData = false;
 
     const hourCollectionRef = collection(daysDocs[0].ref, "hours");
     const unsubscribe = onSnapshot(
@@ -355,7 +355,11 @@ export const getSymbolPriceHistory = async (id, setState) => {
           setState([...prevDayData, ...chartData]);
           prevDayData = [];
         } else {
-          setState(chartData);
+          setState(
+            Object.values(chartData)
+              .map((o) => Object.values(o))
+              .flat(2)
+          );
         }
       },
       (error) => {
@@ -368,7 +372,13 @@ export const getSymbolPriceHistory = async (id, setState) => {
   }
 };
 
-export const getSymbolPriceHistoryInAir = async (id, date, setState) => {
+export const getSymbolPriceHistoryInAir = async (
+  id,
+  date,
+  setState,
+  interval,
+  setLoading
+) => {
   try {
     const symbolDocRef = doc(db, "symbols", id);
     const priceHistoryCollectionRef = collection(symbolDocRef, "priceHistory");
@@ -380,19 +390,31 @@ export const getSymbolPriceHistoryInAir = async (id, date, setState) => {
     const prevDates = [];
     daysSnap.forEach((day) => prevDates.push({ id: day.id, ref: day.ref }));
 
-    const requireDate = prevDates.find((day) => day.id < date);
+    // console.log("prevdates => ", prevDates);
+    // const requireDate = prevDates.find((day) => day.id < date);
+    const requireDates = prevDates.filter((day) => day.id < date).slice(0, 3);
+    console.log("requireDates => ", requireDates);
 
-    let prevDayData = [];
-    if (requireDate && requireDate.ref) {
-      const prevDaySnapshot = await getDocs(
-        collection(requireDate.ref, "hours")
-      );
-      prevDaySnapshot.forEach((snap) => {
-        prevDayData[snap.id] = snap.data()?.data || [];
-      });
-      prevDayData = prevDayData.filter((d) => d);
+    let data = [];
+    for (let requireDate of requireDates) {
+      let prevDayData = [];
+      if (requireDate && requireDate.ref) {
+        const prevDaySnapshot = await getDocs(
+          collection(requireDate.ref, "hours")
+        );
+        prevDaySnapshot.forEach((snap) => {
+          prevDayData[snap.id] = snap.data()?.data || [];
+        });
+        data = [
+          ...Object.values(prevDayData.filter((d) => d))
+            .map((o) => Object.values(o))
+            .flat(2),
+          ...data,
+        ];
+      }
     }
-    setState(prevDayData, true);
+    setLoading(false);
+    setState(data, true);
   } catch (error) {
     console.error("Error in getting priceHistory document:", error.message);
   }
