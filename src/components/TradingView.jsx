@@ -240,55 +240,55 @@ export default function TradingView({
     // },
     // },
 
-    stockTools: {
-      gui: {
-        buttons: [
-          "indicators",
-          // "separator",
-          "lines",
-          "measure",
-          "typeChange",
-          "currentPriceIndicator",
-          "zoomChange",
-          "simpleShapes",
-          "crookedLines",
-          "advanced",
-          "toggleAnnotations",
-          // "separator",
-          "verticalLabels",
-          "flags",
-          // "separator",
-          "fullScreen",
-          // "separator",
-          "saveChart",
-        ],
+    // stockTools: {
+    //   gui: {
+    //     buttons: [
+    //       "indicators",
+    //       // "separator",
+    //       "lines",
+    //       "measure",
+    //       "typeChange",
+    //       "currentPriceIndicator",
+    //       "zoomChange",
+    //       "simpleShapes",
+    //       "crookedLines",
+    //       "advanced",
+    //       "toggleAnnotations",
+    //       // "separator",
+    //       "verticalLabels",
+    //       "flags",
+    //       // "separator",
+    //       "fullScreen",
+    //       // "separator",
+    //       "saveChart",
+    //     ],
 
-        definitions: {
-          // indicators: {
-          // className: "highcharts-menu-item-indicators",
-          // text: "Indicators",
-          // symbol: "url(https://www.highcharts.com/samples/graphics/sun.png)",
-          // },
-          typeChange: {
-            items: ["typeCandlestick", "typeOHLC", "typeLine"],
-          },
-          // typeLine: {
-          //   symbol: "series-line.svg",
-          // symbol: "series-ohlc.svg",
-          // symbol: "https://flagsapi.com/BE/flat/64.png",
-          // symbol:
-          //   "url(https://code.highcharts.com/11.4.0/gfx/stock-icons/series-heikin-ashi.svg)",
-          // },
-        },
-      },
-    },
+    //     definitions: {
+    //       // indicators: {
+    //       // className: "highcharts-menu-item-indicators",
+    //       // text: "Indicators",
+    //       // symbol: "url(https://www.highcharts.com/samples/graphics/sun.png)",
+    //       // },
+    //       typeChange: {
+    //         items: ["typeCandlestick", "typeOHLC", "typeLine"],
+    //       },
+    //       // typeLine: {
+    //       //   symbol: "series-line.svg",
+    //       // symbol: "series-ohlc.svg",
+    //       // symbol: "https://flagsapi.com/BE/flat/64.png",
+    //       // symbol:
+    //       //   "url(https://code.highcharts.com/11.4.0/gfx/stock-icons/series-heikin-ashi.svg)",
+    //       // },
+    //     },
+    //   },
+    // },
 
     plotOptions: {
       candlestick: {
         color: "#dc3545",
-        lineColor: "#dc3545",
+        // lineColor: "#dc3545",
         upColor: "var(--main-numbersc)",
-        upLineColor: "var(--main-numbersc)",
+        // upLineColor: "var(--main-numbersc)",
         // pointWidth: 5, // Set the width of the candlestick
         // lineWidth: 1,
         // pointInterval: 3600000, // one hour
@@ -354,9 +354,9 @@ export default function TradingView({
         name: symbolName,
         type: "candlestick", // ohlc
         color: "#dc3545",
-        lineColor: "#dc3545",
+        // lineColor: "#dc3545",
         upColor: "var(--main-numbersc)",
-        upLineColor: "var(--main-numbersc)",
+        // upLineColor: "var(--main-numbersc)",
         // pointInterval: 1000 * 60,
         lastPrice: {
           enabled: true,
