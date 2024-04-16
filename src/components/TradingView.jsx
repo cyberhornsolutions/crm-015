@@ -68,14 +68,14 @@ const TIMEFRAMES = [
     label: "1w",
     value: ["week", [1]],
   },
-  {
-    label: "1M",
-    value: ["month", [1]],
-  },
-  {
-    label: "1y",
-    value: ["year", [1]],
-  },
+  // {
+  //   label: "1M",
+  //   value: ["month", [1]],
+  // },
+  // {
+  //   label: "1y",
+  //   value: ["year", [1]],
+  // },
 ];
 
 export default function TradingView({
@@ -286,9 +286,9 @@ export default function TradingView({
     plotOptions: {
       candlestick: {
         color: "#dc3545",
-        // lineColor: "#dc3545",
+        lineColor: "#dc3545",
         upColor: "var(--main-numbersc)",
-        // upLineColor: "var(--main-numbersc)",
+        upLineColor: "var(--main-numbersc)",
         // pointWidth: 5, // Set the width of the candlestick
         // lineWidth: 1,
         // pointInterval: 3600000, // one hour
@@ -354,9 +354,9 @@ export default function TradingView({
         name: symbolName,
         type: "candlestick", // ohlc
         color: "#dc3545",
-        // lineColor: "#dc3545",
+        lineColor: "#dc3545",
         upColor: "var(--main-numbersc)",
-        // upLineColor: "var(--main-numbersc)",
+        upLineColor: "var(--main-numbersc)",
         // pointInterval: 1000 * 60,
         lastPrice: {
           enabled: true,
