@@ -3,9 +3,10 @@ import Highcharts from "highcharts/highstock";
 import HighchartsMore from "highcharts/highcharts-more";
 import HighchartsReact from "highcharts-react-official";
 import stockTools from "highcharts/modules/stock-tools";
-// import Hollowcandlestick from "highcharts/modules/hollowcandlestick";
+import Hollowcandlestick from "highcharts/modules/hollowcandlestick";
 // import Heikinashi from "highcharts/modules/heikinashi";
 import dragPanes from "highcharts/modules/drag-panes";
+import brokenAxis from "highcharts/modules/broken-axis";
 import accessibility from "highcharts/modules/accessibility";
 import indicatorsAll from "highcharts/indicators/indicators-all";
 import annotationsAdvanced from "highcharts/modules/annotations-advanced";
@@ -21,13 +22,14 @@ import { timezoneList } from "../helper/helpers";
 
 stockTools(Highcharts);
 dragPanes(Highcharts);
+brokenAxis(Highcharts);
 indicatorsAll(Highcharts);
 annotationsAdvanced(Highcharts);
 priceIndicator(Highcharts);
 fullScreen(Highcharts);
 accessibility(Highcharts);
 HighchartsMore(Highcharts);
-// Hollowcandlestick(Highcharts);
+Hollowcandlestick(Highcharts);
 // Heikinashi(Highcharts);
 // exporting(Highcharts);
 
@@ -156,25 +158,38 @@ export default function TradingView({
       // zoomEnabled: false,
 
       events: {
+        // load(e) {
+        //   alert("Chart has loaded");
+        // },
+        // redraw(e) {
+        //   alert("The chart is being redrawn");
+        // },
+        // render(e) {
+        //   alert("The chart is being redered");
+        // },
         // setExtremes(e, rest) {
         //   console.log("extremes => ", e, rest);
         // },
         afterSetExtremes(e) {
-          console.log("e => ", e);
           console.log("l => ", loading);
           if (!e.dataMin || loading) return;
           const diff = (e.min - e.dataMin) / (1000 * 60);
           console.log("diff = ", diff);
           if (diff && diff > 30) return;
           // if (!loading) setLoading(true);
+          this.chart.showLoading();
+          const loadingCallback = () => {
+            this.chart.hideLoading();
+            setLoading(false);
+          };
           setLoading((p) => {
             if (p === false)
               getSymbolPriceHistoryInAir(
                 symbol.id,
                 new Date(e.dataMin).toISOString().slice(0, 10),
                 processChartData,
-                dataGroup[0],
-                setLoading
+                dataGroup,
+                loadingCallback
               );
             return true;
           });
@@ -240,48 +255,59 @@ export default function TradingView({
     // },
     // },
 
-    // stockTools: {
-    //   gui: {
-    //     buttons: [
-    //       "indicators",
-    //       // "separator",
-    //       "lines",
-    //       "measure",
-    //       "typeChange",
-    //       "currentPriceIndicator",
-    //       "zoomChange",
-    //       "simpleShapes",
-    //       "crookedLines",
-    //       "advanced",
-    //       "toggleAnnotations",
-    //       // "separator",
-    //       "verticalLabels",
-    //       "flags",
-    //       // "separator",
-    //       "fullScreen",
-    //       // "separator",
-    //       "saveChart",
-    //     ],
+    stockTools: {
+      gui: {
+        buttons: [
+          "indicators",
+          "lines",
+          // "separator",
+          "measure",
+          "typeChange",
+          "currentPriceIndicator",
+          "zoomChange",
+          "simpleShapes",
+          "crookedLines",
+          "toggleAnnotations",
+          "flags",
+          "fullScreen",
+          "advanced",
+          // "separator",
+          // "verticalLabels",
+          // "separator",
+          // "separator",
+          // "saveChart",
+        ],
 
-    //     definitions: {
-    //       // indicators: {
-    //       // className: "highcharts-menu-item-indicators",
-    //       // text: "Indicators",
-    //       // symbol: "url(https://www.highcharts.com/samples/graphics/sun.png)",
-    //       // },
-    //       typeChange: {
-    //         items: ["typeCandlestick", "typeOHLC", "typeLine"],
-    //       },
-    //       // typeLine: {
-    //       //   symbol: "series-line.svg",
-    //       // symbol: "series-ohlc.svg",
-    //       // symbol: "https://flagsapi.com/BE/flat/64.png",
-    //       // symbol:
-    //       //   "url(https://code.highcharts.com/11.4.0/gfx/stock-icons/series-heikin-ashi.svg)",
-    //       // },
-    //     },
-    //   },
-    // },
+        definitions: {
+          // indicators: {
+          // className: "highcharts-menu-item-indicators",
+          // text: "Indicators",
+          // symbol: "url(https://www.highcharts.com/samples/graphics/sun.png)",
+          // },
+          typeChange: {
+            items: [
+              "typeOHLC",
+              "typeLine",
+              "typeCandlestick",
+              "typeHollowCandlestick",
+            ],
+            // events: {
+            //   typeChange: function (e) {
+            //     console.log("Chart type changed to: " + e.newType);
+            //     // Perform actions when the chart type changes
+            //   },
+            // },
+          },
+          // typeLine: {
+          //   symbol: "series-line.svg",
+          // symbol: "series-ohlc.svg",
+          // symbol: "https://flagsapi.com/BE/flat/64.png",
+          // symbol:
+          //   "url(https://code.highcharts.com/11.4.0/gfx/stock-icons/series-heikin-ashi.svg)",
+          // },
+        },
+      },
+    },
 
     plotOptions: {
       candlestick: {
@@ -358,6 +384,7 @@ export default function TradingView({
         upColor: "var(--main-numbersc)",
         upLineColor: "var(--main-numbersc)",
         // pointInterval: 1000 * 60,
+        // gapSize: 0,
         lastPrice: {
           enabled: true,
           label: {
@@ -456,7 +483,12 @@ export default function TradingView({
   //   },
   // };
 
-  const processChartData = (data, addPrevDayData) => {
+  const processChartData = (
+    data,
+    addPrevDayData,
+    timeframe,
+    isTimeframeClick
+  ) => {
     if (!chartRef.current) return;
     const chart = chartRef.current.chart;
     const series = chart.series[0];
@@ -474,15 +506,35 @@ export default function TradingView({
     });
 
     if (lastPoint) {
+      const xAxis = series.xAxis;
+      const dataMin = xAxis.dataMin;
+      const dataMax = xAxis.dataMax;
       if (addPrevDayData) {
         // series.update({
         //   data: allData,
         // });
-        allData.forEach((d) => series.addPoint(d, false, false, false));
-        volumeData.forEach((d) =>
-          volumeSeries.addPoint(d, false, false, false)
-        );
+        if (allData.length)
+          series.setData(
+            allData.concat(series.options.data),
+            false,
+            false,
+            false
+          );
+        if (volumeData.length)
+          volumeSeries.setData(
+            volumeData.concat(volumeSeries.options.data),
+            false,
+            false,
+            false
+          );
+        // allData.forEach((d) => series.addPoint(d, false, false, false));
+        // volumeData.forEach((d) =>
+        //   volumeSeries.addPoint(d, false, false, false)
+        // );
+        // if (timeframe !== "1minute") xAxis.setExtremes(dataMin, xAxis.dataMax);
         if (allData.length) chart.redraw();
+        if (isTimeframeClick && timeframe !== "1minute")
+          xAxis.setExtremes(dataMin, xAxis.dataMax);
         // if (loading) setLoading(false);
       } else {
         const newData = allData.filter((d) => d[0] > lastPoint[0]);
@@ -506,9 +558,11 @@ export default function TradingView({
         }
       }
     } else {
-      if (allData.length) series.setData(allData);
-      if (volumeData.length) volumeSeries.setData(volumeData);
+      if (allData.length) series.setData(allData, false, false, false);
+      if (volumeData.length)
+        volumeSeries.setData(volumeData, false, false, false);
       chart.hideLoading();
+      chart.redraw();
       window.document.getElementById("sidebar").style.pointerEvents = "unset";
       window.document.getElementById("nav-buttons").style.pointerEvents =
         "unset";
@@ -537,6 +591,28 @@ export default function TradingView({
         if (unsub) unsub();
       });
   }, []);
+
+  const handleTimeFrame = (timeframe) => {
+    const timeFrameLabel = timeframe.value.flat().reverse().join("");
+    if (dataGroup.flat().reverse().join("") === timeFrameLabel) return;
+    if (!chartRef.current) return;
+    setDataGroup(timeframe.value);
+    if (timeFrameLabel === "1minute") return;
+    const chart = chartRef.current.chart;
+    chart.showLoading();
+    const xAxis = chart.xAxis[0];
+    const loadingCallback = () => {
+      chart.hideLoading();
+    };
+    getSymbolPriceHistoryInAir(
+      symbol.id,
+      new Date(xAxis.dataMin).toISOString().slice(0, 10),
+      processChartData,
+      timeframe.value,
+      loadingCallback,
+      true
+    );
+  };
 
   // useEffect(() => {
   // console.log("2nd useEffect Called");
@@ -604,7 +680,7 @@ export default function TradingView({
           <button
             key={i}
             className={timeframe.value === dataGroup ? "selected" : ""}
-            onClick={() => setDataGroup(timeframe.value)}
+            onClick={() => handleTimeFrame(timeframe)}
           >
             {timeframe.label}
           </button>

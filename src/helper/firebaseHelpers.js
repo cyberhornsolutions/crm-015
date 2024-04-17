@@ -376,8 +376,9 @@ export const getSymbolPriceHistoryInAir = async (
   id,
   date,
   setState,
-  interval,
-  setLoading
+  dataGroup,
+  setLoading,
+  isTimeframeClick
 ) => {
   try {
     const symbolDocRef = doc(db, "symbols", id);
@@ -392,29 +393,47 @@ export const getSymbolPriceHistoryInAir = async (
 
     // console.log("prevdates => ", prevDates);
     // const requireDate = prevDates.find((day) => day.id < date);
-    const requireDates = prevDates.filter((day) => day.id < date).slice(0, 3);
-    console.log("requireDates => ", requireDates);
-
+    const timeframe = dataGroup.flat().reverse().join("");
+    const daysSlice =
+      timeframe === "1minute"
+        ? 2
+        : timeframe === "15minute"
+        ? 3
+        : timeframe === "1hour"
+        ? 4
+        : timeframe === "4hour"
+        ? 6
+        : timeframe === "1day"
+        ? 8
+        : timeframe === "1week"
+        ? 16
+        : 3;
+    const requireDates = prevDates
+      .filter((day) => day.id < date)
+      .slice(0, daysSlice);
+    console.log("requireDates", requireDates);
     let data = [];
-    for (let requireDate of requireDates) {
-      let prevDayData = [];
+    const promises = requireDates.map((requireDate) => {
+      console.log("getting", requireDate);
       if (requireDate && requireDate.ref) {
-        const prevDaySnapshot = await getDocs(
-          collection(requireDate.ref, "hours")
-        );
-        prevDaySnapshot.forEach((snap) => {
-          prevDayData[snap.id] = snap.data()?.data || [];
-        });
-        data = [
-          ...Object.values(prevDayData.filter((d) => d))
-            .map((o) => Object.values(o))
-            .flat(2),
-          ...data,
-        ];
+        return getDocs(collection(requireDate.ref, "hours"));
       }
-    }
+    });
+    const prevDaySnapshot = await Promise.all(promises);
+    prevDaySnapshot.forEach((prevDaySnapshot) => {
+      let prevDayData = [];
+      prevDaySnapshot.forEach((snap) => {
+        prevDayData[snap.id] = snap.data()?.data || [];
+      });
+      data = [
+        ...Object.values(prevDayData.filter((d) => d))
+          .map((o) => Object.values(o))
+          .flat(2),
+        ...data,
+      ];
+    });
     setLoading(false);
-    setState(data, true);
+    setState(data, true, timeframe, isTimeframeClick);
   } catch (error) {
     console.error("Error in getting priceHistory document:", error.message);
   }
