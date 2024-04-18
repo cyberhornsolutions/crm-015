@@ -199,11 +199,11 @@ export default function TradingView({
 
     rangeSelector: {
       buttons: [
-        {
-          type: "minute",
-          count: 30,
-          text: "30m",
-        },
+        // {
+        //   type: "minute",
+        //   count: 30,
+        //   text: "30m",
+        // },
         {
           type: "hour",
           count: 1,
