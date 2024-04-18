@@ -378,7 +378,7 @@ export default function TradingView({
       {
         id: symbol.id,
         name: symbolName,
-        type: "candlestick", // ohlc
+        // type: "candlestick", // ohlc
         color: "#dc3545",
         lineColor: "#dc3545",
         upColor: "var(--main-numbersc)",
