@@ -449,6 +449,9 @@ export default function TradingView({
         // visible: false,
       },
     ],
+    navigation: {
+      iconsURL: 'https://crm-015.vercel.app/stock-icons/'
+    }
   };
 
   // On load, start the interval that adds points
