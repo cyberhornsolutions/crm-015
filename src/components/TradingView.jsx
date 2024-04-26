@@ -171,22 +171,22 @@ export default function TradingView({
         //   console.log("extremes => ", e, rest);
         // },
         afterSetExtremes(e) {
-          console.log("E.MIN => ", e.min);
-          console.log("E.MAX => ", e.max);
-          console.log("MIN MAX DIFF => ", e.max - e.min);
-          if (
-            e.max - e.min >= 15000000 &&
-            (dataGroup === TIMEFRAMES[0].value ||
-              dataGroup === TIMEFRAMES[1].value ||
-              dataGroup === TIMEFRAMES[2].value)
-          ) {
-            //const newMin = 1714107781000;
-            const newMax = e.min + 14000000;
-            this.setExtremes(e.min, newMax);
-            setLoading(false);
+          // console.log("E.MIN => ", e.min);
+          // console.log("E.MAX => ", e.max);
+          // console.log("MIN MAX DIFF => ", e.max - e.min);
+          // if (
+          //   e.max - e.min >= 15000000 &&
+          //   (dataGroup === TIMEFRAMES[0].value ||
+          //     dataGroup === TIMEFRAMES[1].value ||
+          //     dataGroup === TIMEFRAMES[2].value)
+          // ) {
+          //   //const newMin = 1714107781000;
+          //   const newMax = e.min + 14000000;
+          //   this.setExtremes(e.min, newMax);
+          //   setLoading(false);
 
-            return;
-          }
+          //   return;
+          // }
           console.log("l => ", loading);
           if (!e.dataMin || loading) return;
           const diff = (e.min - e.dataMin) / (1000 * 60);
@@ -430,8 +430,6 @@ export default function TradingView({
           // approximation: "average",
           // forced: true,
           units: [dataGroup],
-          forced: true,
-          groupPixelWidth: 10000,
           // lastAnchor: "lastPoint",
         },
         // data: [
