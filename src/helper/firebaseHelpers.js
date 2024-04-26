@@ -234,7 +234,7 @@ export const getAllSymbols = (setState) => {
         })
         .flat();
 
-      setState(symbolsData);
+      setState(realSymbols);
     },
     (error) => {
       console.error("Error fetching data:", error);
