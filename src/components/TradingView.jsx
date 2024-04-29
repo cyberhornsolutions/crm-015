@@ -132,8 +132,11 @@ export default function TradingView({
     xAxis: {
       // overscroll: 20000,
       overscroll: ["EURUSD", "EURUSDT"].includes(symbolName) ? "4%" : "1%",
-      minRange: 3600 * 1000, // one hour
+      // minRange: 3600 * 1000, // one hour
       // range: 4 * 200000,
+      // range: 60 * 24 * 3600 * 1000,
+      // min: 2000, // Minimum value on the x-axis
+      // max: 8, // Maximum value on the x-axis
       gridLineWidth: 1,
       // endOnTick: false,
       // gridLineColor: "green",
@@ -145,6 +148,7 @@ export default function TradingView({
       // panningEnabled: false,
       // minRange: 50000,
       // maxRange: 500,
+      // minRange: 60 * 24 * 3600 * 1000, chart displays a minimum of 60 candles when zoomed in
       // softMax: 50,
       // startOnTick: true,
       // title: "Hello world",
@@ -224,27 +228,57 @@ export default function TradingView({
           type: "hour",
           count: 1,
           text: "1h",
+          events: {
+            click: function () {
+              document.querySelectorAll("#timeframe button")[0].click();
+            },
+          },
         },
         {
           type: "hour",
           count: 2,
           text: "2h",
+          events: {
+            click: function () {
+              document.querySelectorAll("#timeframe button")[0].click();
+            },
+          },
         },
         {
           type: "hour",
           count: 6,
           text: "6h",
+          // events: {
+          //   click: function () {
+          //     document.querySelectorAll("#timeframe button")[1].click();
+          //   },
+          // },
         },
         {
           type: "day",
           count: 1,
           text: "1d",
+          events: {
+            click: function () {
+              document.querySelectorAll("#timeframe button")[2].click();
+            },
+          },
         },
         {
           type: "week",
           count: 1,
           text: "1w",
+          events: {
+            click: function () {
+              document.querySelectorAll("#timeframe button")[4].click();
+            },
+          },
         },
+        // {
+        //   type: "month",
+        //   count: 1,
+        //   text: "1m",
+        // },
         // {
         //   type: "all",
         //   count: 1,
@@ -253,6 +287,7 @@ export default function TradingView({
       ],
       // selected: 1,
       inputEnabled: false,
+      allButtonsEnabled: true,
     },
 
     navigator: {
@@ -334,6 +369,10 @@ export default function TradingView({
         // pointWidth: 5, // Set the width of the candlestick
         // lineWidth: 1,
         // pointInterval: 3600000, // one hour
+        // gapSize: 1,
+        // gapUnit: 'relative'
+        // groupPadding: 0, //0.2 defaults
+        // grouping: false,
       },
     },
 
@@ -413,6 +452,7 @@ export default function TradingView({
         // },
         dataGrouping: {
           enabled: true,
+          smoothed: true,
           // units: [
           //   [
           //     "millisecond", // unit name
@@ -428,8 +468,9 @@ export default function TradingView({
           //   ["year", null],
           // ],
           // approximation: "average",
-          // forced: true,
           units: [dataGroup],
+          forced: true,
+          // groupPixelWidth: 10000,
           // lastAnchor: "lastPoint",
         },
         // data: [
@@ -438,6 +479,14 @@ export default function TradingView({
         //   [1710979280000, 3700, 3700, 3750, 3750],
         //   [1710979290000, 3400, 3400, 3450, 3450],
         // ],
+        // gapSize: 1,
+        // pointStart: Date.UTC(2020, 0, 1),
+        // pointInterval: 36e5, // one hour
+        // pointInterval: 1000 * 60,
+        // relativeXValue: true,
+        // pointWidth: 20,
+        // maxPointWidth: 50,
+        // pointPadding: 1
       },
       {
         id: `volume-${symbol.id}`,
@@ -466,7 +515,7 @@ export default function TradingView({
       },
     ],
     navigation: {
-      iconsURL: "https://crm-015.vercel.app/stock-icons/",
+      iconsURL: "stock-icons/",
     },
   };
 
@@ -552,8 +601,24 @@ export default function TradingView({
         // );
         // if (timeframe !== "1minute") xAxis.setExtremes(dataMin, xAxis.dataMax);
         if (allData.length) chart.redraw();
-        if (isTimeframeClick && timeframe !== "1minute")
-          xAxis.setExtremes(dataMin, xAxis.dataMax);
+        if (isTimeframeClick && timeframe !== "1minute") {
+          const buttons = chart.rangeSelector.buttons;
+          const clickEvent = new MouseEvent("click", {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+          });
+          if (timeframe === "1day" || timeframe === "4hour") {
+            const button1w = buttons[4].element;
+            button1w.dispatchEvent(clickEvent);
+          }
+          // else if (timeframe === "1week") {
+          //   xAxis.setExtremes(0, xAxis.dataMax);
+          // }
+          else {
+            xAxis.setExtremes(dataMin, xAxis.dataMax);
+          }
+        }
         // if (loading) setLoading(false);
       } else {
         const newData = allData.filter((d) => d[0] > lastPoint[0]);
@@ -616,8 +681,18 @@ export default function TradingView({
     if (dataGroup.flat().reverse().join("") === timeFrameLabel) return;
     if (!chartRef.current) return;
     setDataGroup(timeframe.value);
-    if (timeFrameLabel === "1minute") return;
     const chart = chartRef.current.chart;
+    if (timeFrameLabel === "1minute") {
+      const buttons = chart.rangeSelector.buttons;
+      const clickEvent = new MouseEvent("click", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+      });
+      const button1h = buttons[0].element;
+      button1h.dispatchEvent(clickEvent);
+      return;
+    }
     chart.showLoading();
     const xAxis = chart.xAxis[0];
     const loadingCallback = () => {

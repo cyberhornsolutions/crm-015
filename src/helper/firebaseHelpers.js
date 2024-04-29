@@ -413,13 +413,15 @@ export const getSymbolPriceHistoryInAir = async (
       .slice(0, daysSlice);
     console.log("requireDates", requireDates);
     let data = [];
-    const promises = requireDates.map((requireDate) => {
-      console.log("getting", requireDate);
+    const promises = requireDates.map(async (requireDate) => {
       if (requireDate && requireDate.ref) {
+        console.log("getting", requireDate);
         return getDocs(collection(requireDate.ref, "hours"));
       }
     });
+    console.log("start promises executing");
     const prevDaySnapshot = await Promise.all(promises);
+    console.log("end promises executing");
     prevDaySnapshot.forEach((prevDaySnapshot) => {
       let prevDayData = [];
       prevDaySnapshot.forEach((snap) => {
@@ -435,6 +437,7 @@ export const getSymbolPriceHistoryInAir = async (
     setLoading(false);
     setState(data, true, timeframe, isTimeframeClick);
   } catch (error) {
-    console.error("Error in getting priceHistory document:", error.message);
+    setLoading(false);
+    console.log("Error in getting priceHistory document:", error);
   }
 };
