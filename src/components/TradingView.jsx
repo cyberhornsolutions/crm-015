@@ -80,6 +80,8 @@ const TIMEFRAMES = [
   // },
 ];
 
+// const mySeries = [];
+
 export default function TradingView({
   locale,
   hide,
@@ -93,10 +95,24 @@ export default function TradingView({
   const [dataGroup, setDataGroup] = useState(TIMEFRAMES[0].value);
   const [symbolName] = useState(selectedSymbol);
   const [loading, setLoading] = useState(true);
+  const mySeries = useRef({});
 
   const symbol = useSelector((state) =>
     state.symbols.find((s) => s.symbol === symbolName)
   );
+
+  useEffect(() => {
+    const chart = chartRef.current.chart;
+    if (!mySeries.current || !Object.keys(mySeries.current).length || !chart)
+      return;
+    console.log("mySeries hrere ----------", mySeries.current);
+    for (let key in mySeries.current) {
+      // setTimeout(() => {
+      chart.addSeries(mySeries.current[key], true, false);
+      // }, 500);
+    }
+    // chart.redraw(false);
+  });
 
   const options = {
     // title: {
@@ -112,7 +128,50 @@ export default function TradingView({
       // zooming: {
       //   mouseWheel: false,
       // },
-      // marginRight: 50
+      // marginRight: 50,
+
+      events: {
+        remove: function () {
+          console.log("Indicator removed from series");
+        },
+        addSeries: function (e) {
+          // e.preventDefault();
+          // return;
+          // newAddedSeries.push(e.options);
+          // series.current = [...this.series];
+          // series.current = this.series;
+          console.log("New series added:", e);
+          console.log("Highchart series => ", this.series);
+          if (e.options.type) {
+            mySeries.current[e.options.type] = { ...e.options };
+            console.log(" mySeries.current", mySeries.current);
+          }
+          // mySeries.push(e.series);
+          // setMySeries(e.series);
+          // mySeries.current.push({ ...e.series });
+          // console.log(" mySeries.current", mySeries.current);
+          // setSeries(this.series);
+          // setSeries(p=> [...p]);
+          // setTimeout(() => {
+          //   setSeries((p) => [...p, e.series]);
+          // }, 5000);
+          // console.log("newAddedSeries:", newAddedSeries);
+        },
+        // afterAddSeries: function (e) {},
+        // beforeAddSeries: function (e) {},
+        // render: function (e) {
+        // newAddedSeries.push(e.options);
+        //   console.log("New series added:", e);
+        //   console.log("newAddedSeries:", newAddedSeries);
+        //   console.log("render event => ", e);
+        // },
+        // redraw: function (e) {
+        // newAddedSeries.push(e.options);
+        //   console.log("New series added:", e);
+        //   console.log("newAddedSeries:", newAddedSeries);
+        //   console.log("Redraw event => ", e);
+        // },
+      },
     },
     time: {
       timezone,
@@ -358,6 +417,11 @@ export default function TradingView({
           // },
         },
       },
+      events: {
+        remove: function (e) {
+          console.log("Indicator removed from StockTools menu:", e.indicator);
+        },
+      },
     },
 
     plotOptions: {
@@ -487,6 +551,11 @@ export default function TradingView({
         // pointWidth: 20,
         // maxPointWidth: 50,
         // pointPadding: 1
+        events: {
+          remove: function () {
+            console.log("Indicator removed from series");
+          },
+        },
       },
       {
         id: `volume-${symbol.id}`,
@@ -608,7 +677,7 @@ export default function TradingView({
             bubbles: true,
             cancelable: true,
           });
-          if (timeframe === "1day" || timeframe === "4hour") {
+          if (timeframe === "1day") {
             const button1w = buttons[4].element;
             button1w.dispatchEvent(clickEvent);
           }
