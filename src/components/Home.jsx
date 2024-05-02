@@ -82,7 +82,18 @@ import {
 // const RD3Component = rd3.BarChart;
 
 export default function HomeRu() {
-  const [tab, setTab] = useState("trade");
+  const [gameConfigs] = useState(() => {
+    const obj = localStorage.getItem("GAME_CONFIGS");
+    return obj
+      ? JSON.parse(obj)
+      : {
+          showNewOrderPanel: false,
+          tab: "trade",
+          activeTab: "",
+          tabs: [],
+        };
+  });
+  const [tab, setTab] = useState(gameConfigs.tab || "trade");
   const [dealsTab, setDealsTab] = useState("activeTab");
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
@@ -106,9 +117,11 @@ export default function HomeRu() {
   const [depositSuccessModal, setDepositSuccessModal] = useState(false);
   const [withdrawlSuccessModal, setWithdrawlSuccessModal] = useState(false);
   const [passwordShown, setPasswordShown] = useState(false);
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState(gameConfigs.activeTab || "Gold");
   const [tabs, setTabs] = useState([]);
-  const [showNewOrderPanel, setShowNewOrderPanel] = useState(false);
+  const [showNewOrderPanel, setShowNewOrderPanel] = useState(
+    gameConfigs.showNewOrderPanel || false
+  );
   const [showHistoryPanel, setShowHistoryPanel] = useState(false);
   const [theme, setTheme] = useState(
     () => localStorage.getItem("THEME") || "dark"
@@ -275,18 +288,37 @@ export default function HomeRu() {
   }, []);
 
   useEffect(() => {
+    localStorage.setItem(
+      "GAME_CONFIGS",
+      JSON.stringify({
+        showNewOrderPanel,
+        tab: tab === "assets" ? "assets" : "trade",
+        activeTab,
+        tabs,
+      })
+    );
+  }, [showNewOrderPanel, tab, activeTab, tabs]);
+
+  useEffect(() => {
     if (!dbSymbols.length) return;
     if (!orderData.symbol) {
-      setTabs([dbSymbols[0]?.symbol]);
-      setActiveTab(dbSymbols[0]?.symbol);
-      getValue({
-        value: dbSymbols[0]?.symbol,
-        label: dbSymbols[0]?.symbol,
-      });
+      setTabs(
+        gameConfigs?.tabs?.length ? gameConfigs.tabs : [dbSymbols[0]?.symbol]
+      );
+      if (gameConfigs.activeTab)
+        getValue({
+          value: gameConfigs.activeTab,
+          label: gameConfigs.activeTab,
+        });
+      else
+        getValue({
+          value: dbSymbols[0]?.symbol,
+          label: dbSymbols[0]?.symbol,
+        });
     } else {
       getValue(orderData.symbol);
     }
-  }, [dbSymbols]);
+  }, [dbSymbols.length]);
 
   useEffect(() => {
     if (!currentUserId) return;
@@ -1125,7 +1157,7 @@ export default function HomeRu() {
                       locale="en"
                       hide={activeTab !== tab}
                       index={i}
-                      selectedSymbol={orderData?.symbol?.value}
+                      selectedSymbol={tab}
                       plotLine={selectedOrder.symbolValue}
                       theme={theme}
                     />
