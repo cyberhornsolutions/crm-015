@@ -17,8 +17,8 @@ const depositsColumns = [
   },
   { name: "Type", selector: (row) => row.type },
   {
-    name: "Player",
-    selector: (row) => row.player,
+    name: "Comment",
+    selector: (row) => row.comment,
   },
 ];
 
