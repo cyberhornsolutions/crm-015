@@ -372,14 +372,14 @@ export const getSymbolPriceHistory = async (id, setState) => {
   }
 };
 
-export const getSymbolPriceHistoryInAir = async (
+export const getSymbolPriceHistoryInAir = async ({
   id,
   date,
   setState,
   dataGroup,
   setLoading,
-  isTimeframeClick
-) => {
+  isTimeframeClick,
+}) => {
   try {
     const symbolDocRef = doc(db, "symbols", id);
     const priceHistoryCollectionRef = collection(symbolDocRef, "priceHistory");

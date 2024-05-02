@@ -263,13 +263,14 @@ export default function TradingView({
           };
           setLoading((p) => {
             if (p === false)
-              getSymbolPriceHistoryInAir(
-                symbol.id,
-                new Date(e.dataMin).toISOString().slice(0, 10),
-                processChartData,
+              getSymbolPriceHistoryInAir({
+                id: symbol.id,
+                date: new Date(e.dataMin).toISOString().slice(0, 10),
+                setState: processChartData,
                 dataGroup,
-                loadingCallback
-              );
+                setLoading: loadingCallback,
+                isTimeframeClick: false,
+              });
             return true;
           });
         },
@@ -767,14 +768,14 @@ export default function TradingView({
     const loadingCallback = () => {
       chart.hideLoading();
     };
-    getSymbolPriceHistoryInAir(
-      symbol.id,
-      new Date(xAxis.dataMin).toISOString().slice(0, 10),
-      processChartData,
-      timeframe.value,
-      loadingCallback,
-      true
-    );
+    getSymbolPriceHistoryInAir({
+      id: symbol.id,
+      date: new Date(xAxis.dataMin).toISOString().slice(0, 10),
+      setState: processChartData,
+      dataGroup: timeframe.value,
+      setLoading: loadingCallback,
+      isTimeframeClick: true,
+    });
   };
 
   // useEffect(() => {
