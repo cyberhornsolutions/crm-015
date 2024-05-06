@@ -98,7 +98,7 @@ label {
 }
 
 #newOrderForm label {
-  margin-top: 12px;
+  margin-top: 6px;
 }
 
 input {
@@ -546,32 +546,26 @@ acc-info-personal h3 {
 }
 
 #newOrder {
-  flex: 1;
+  /* flex: 1; */
+  width: 320px;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
+  overflow: auto;
 }
 
 #newOrderData {
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin-top: 7%;
+  padding-top: 0.5rem;
   height: 100%;
 }
 
 #newOrderForm {
   display: flex;
   flex-direction: column;
-  text-align: center;
-  width: 90%;
-  justify-content: center;
   align-items: center;
-  margin: 0;
-  margin-left: 5%;
-  /* margin-top: 5%; */
-  /* height: 88%; */
   border-top: 2px solid var(--bs-border-color);
-  /* padding-top: 12px; */
 }
 .custom-caret-up-icon,
 .custom-caret-down-icon {

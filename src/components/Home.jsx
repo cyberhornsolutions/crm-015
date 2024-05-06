@@ -553,7 +553,8 @@ export default function HomeRu() {
           </div>
         ),
       compact: true,
-      grow: 0.5,
+      // grow: 0.5,
+      minWidth: "40px",
     },
   ];
   const conditionalRowStyles = [
@@ -1324,7 +1325,7 @@ export default function HomeRu() {
                       Potential: {+parseFloat(potentialTP)?.toFixed(2)}
                     </label>
                     <button
-                      className="newOrderButton btn btn-success mt-3 rounded border-0"
+                      className="newOrderButton btn btn-success mt-1 rounded border-0"
                       onClick={(e) => {
                         placeOrder(e, "Buy");
                       }}
