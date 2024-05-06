@@ -91,6 +91,8 @@ export default function HomeRu() {
           tab: "trade",
           activeTab: "",
           tabs: [],
+          isReportModalOpen: false,
+          showHistoryPanel: false,
         };
   });
   const [tab, setTab] = useState(gameConfigs.tab || "trade");
@@ -122,7 +124,9 @@ export default function HomeRu() {
   const [showNewOrderPanel, setShowNewOrderPanel] = useState(
     gameConfigs.showNewOrderPanel || false
   );
-  const [showHistoryPanel, setShowHistoryPanel] = useState(false);
+  const [showHistoryPanel, setShowHistoryPanel] = useState(
+    gameConfigs.showHistoryPanel || false
+  );
   const [theme, setTheme] = useState(
     () => localStorage.getItem("THEME") || "dark"
   );
@@ -148,7 +152,9 @@ export default function HomeRu() {
     isUserEdited: false,
     allowTrading: false,
   });
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(
+    gameConfigs.isReportModalOpen || false
+  );
   const [messageModal, setMessageModal] = useState({
     show: false,
     title: "",
@@ -292,12 +298,21 @@ export default function HomeRu() {
       "GAME_CONFIGS",
       JSON.stringify({
         showNewOrderPanel,
-        tab: tab === "assets" ? "assets" : "trade",
+        tab,
         activeTab,
         tabs,
+        showNewOrderPanel,
+        showHistoryPanel,
       })
     );
-  }, [showNewOrderPanel, tab, activeTab, tabs]);
+  }, [
+    showNewOrderPanel,
+    tab,
+    activeTab,
+    tabs,
+    showNewOrderPanel,
+    showHistoryPanel,
+  ]);
 
   useEffect(() => {
     if (!dbSymbols.length) return;
