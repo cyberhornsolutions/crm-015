@@ -1243,14 +1243,24 @@ export default function HomeRu() {
                         type="number"
                         id="symbol-current-value"
                         name="symbolValue"
-                        readOnly={true}
-                        value={+orderData?.symbolValue}
+                        readOnly={!enableOpenPrice}
+                        disabled={!enableOpenPrice}
+                        className={enableOpenPrice ? "" : "disabled"}
+                        value={
+                          enableOpenPrice
+                            ? openPriceValue
+                            : +orderData?.symbolValue
+                        }
+                        onChange={(e) => setOpenPriceValue(e.target.value)}
                       />
                       <FontAwesomeIcon
                         cursor="pointer"
                         className="position-absolute ms-2"
                         style={{ top: 3 }}
-                        onClick={() => getValue(orderData?.symbol)}
+                        onClick={() => {
+                          getValue(orderData?.symbol);
+                          setOpenPriceValue(+orderData?.symbolValue);
+                        }}
                         icon={faRefresh}
                       />
                     </div>
@@ -1273,29 +1283,40 @@ export default function HomeRu() {
                     <label className="mt-1">
                       Total: {+calculatedSum?.toFixed(2)} USDT
                     </label>
-                    <label htmlFor="symbol-current-value">Open Price</label>
-                    <div className="position-relative">
-                      <input
-                        type="number"
-                        readOnly={!enableOpenPrice}
-                        disabled={!enableOpenPrice}
-                        className={enableOpenPrice ? "" : "disabled"}
-                        value={
-                          enableOpenPrice
-                            ? openPriceValue
-                            : +orderData?.symbolValue
-                        }
-                        onChange={(e) => setOpenPriceValue(e.target.value)}
-                      />
-                      <input
-                        className="position-absolute ms-2"
-                        type="checkbox"
-                        checked={enableOpenPrice}
-                        onChange={(e) => {
-                          setOpenPriceValue(parseFloat(orderData.symbolValue));
-                          setEnableOpenPrice(e.target.checked);
-                        }}
-                      />
+                    <div className="d-flex gap-3 mt-3 mb-1">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          id="market"
+                          checked={!enableOpenPrice}
+                          onClick={(e) => setEnableOpenPrice(false)}
+                        />
+                        <label
+                          className="form-check-label m-0"
+                          htmlFor="market"
+                        >
+                          Market
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          id="limit"
+                          checked={enableOpenPrice}
+                          onClick={(e) => {
+                            if (openPriceValue !== orderData.symbolValue)
+                              setOpenPriceValue(
+                                parseFloat(orderData.symbolValue)
+                              );
+                            setEnableOpenPrice(true);
+                          }}
+                        />
+                        <label className="form-check-label m-0" htmlFor="limit">
+                          Limit
+                        </label>
+                      </div>
                     </div>
 
                     <label htmlFor="stop-loss">SL</label>
