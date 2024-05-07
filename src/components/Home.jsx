@@ -303,6 +303,7 @@ export default function HomeRu() {
         tabs,
         showNewOrderPanel,
         showHistoryPanel,
+        isReportModalOpen,
       })
     );
   }, [
@@ -312,6 +313,7 @@ export default function HomeRu() {
     tabs,
     showNewOrderPanel,
     showHistoryPanel,
+    isReportModalOpen,
   ]);
 
   useEffect(() => {
