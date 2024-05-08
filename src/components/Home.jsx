@@ -604,17 +604,19 @@ export default function HomeRu() {
 
   const calculateTotalSum = () => {
     let sum = 0.0;
+    const settings = orderData?.symbolSettings || {};
     const leverage = userProfile?.settings?.leverage || 1;
+    const lot = settings.group === "commodities" ? +settings.lot || 1 : 1;
     if (orderData.symbol) {
       if (orderData.volume) {
         if (enableOpenPrice) {
-          sum = orderData.volume * openPriceValue;
+          sum = orderData.volume * lot * openPriceValue;
         } else {
-          sum = orderData.volume * orderData.symbolValue;
+          sum = orderData.volume * lot * orderData.symbolValue;
         }
       }
     }
-    const maintenanceMargin = orderData?.symbolSettings?.maintenanceMargin;
+    const maintenanceMargin = settings.maintenanceMargin;
     if (leverage > 1 && maintenanceMargin > 0) {
       return (sum / leverage) * (maintenanceMargin / 100);
     }
@@ -656,7 +658,13 @@ export default function HomeRu() {
       group,
       closedMarket,
       maintenanceMargin,
+      lot,
     } = orderData.symbolSettings;
+
+    const volume =
+      group === "commodities" && +lot >= 1
+        ? +orderData.volume * +lot
+        : +orderData.volume;
 
     if (group === "commodities" && !closedMarket) {
       const today = moment();
@@ -705,13 +713,13 @@ export default function HomeRu() {
     if (type === "Buy") {
       spread =
         bidSpreadUnit === "$"
-          ? orderData.volume * bidSpread
-          : orderData.volume * orderData.symbolValue * (bidSpread / 100);
+          ? volume * bidSpread
+          : volume * orderData.symbolValue * (bidSpread / 100);
     } else {
       spread =
         askSpreadUnit === "$"
-          ? orderData.volume * askSpread
-          : orderData.volume * orderData.symbolValue * (askSpread / 100);
+          ? volume * askSpread
+          : volume * orderData.symbolValue * (askSpread / 100);
     }
 
     const feeValue =
@@ -722,7 +730,7 @@ export default function HomeRu() {
         type,
         closedPrice,
         orderData.symbolValue,
-        orderData.volume
+        volume
       ) - feeValue;
 
     const leverage = userProfile?.settings?.leverage;
@@ -750,7 +758,7 @@ export default function HomeRu() {
       currentPrice: closedPrice,
       currentMarketPrice: parseFloat(orderData?.symbolValue),
       symbol: orderData?.symbol.value,
-      volume: orderData.volume, // * parseFloat(leverage),
+      volume,
       sum: calculatedSum,
       fee: feeValue,
       swap: 0,
@@ -791,6 +799,7 @@ export default function HomeRu() {
     }
 
     try {
+      console.log("dealPayload", dealPayload);
       await addDoc(ordersCollectionRef, dealPayload);
       await updateUserById(currentUserId, userPayload);
       toastify("Order added to Database", "success");
@@ -864,10 +873,12 @@ export default function HomeRu() {
   let potentialSL = 0,
     potentialTP = 0;
   if (orderData.symbolValue) {
+    const settings = orderData?.symbolSettings || {};
+    const lot = settings.group === "commodities" ? +settings.lot || 1 : 1;
     if (orderData.sl)
-      potentialSL = orderData.volume * orderData.sl - orderData.fee;
+      potentialSL = orderData.volume * lot * orderData.sl - orderData.fee;
     if (orderData.tp)
-      potentialTP = orderData.volume * orderData.tp - orderData.fee;
+      potentialTP = orderData.volume * lot * orderData.tp - orderData.fee;
   }
 
   return (
