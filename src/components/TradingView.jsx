@@ -91,6 +91,7 @@ export default function TradingView({
   plotLine = 0,
 }) {
   const chartRef = useRef();
+  const timeFrameRef = useRef();
   const [timezone, setTimeZone] = useState(timezoneList[0]);
   const [dataGroup, setDataGroup] = useState(TIMEFRAMES[0].value);
   const [symbolName] = useState(selectedSymbol);
@@ -290,7 +291,8 @@ export default function TradingView({
           text: "1h",
           events: {
             click: function () {
-              document.querySelectorAll("#timeframe button")[0].click();
+              timeFrameRef.current.querySelectorAll("button")[0].click();
+              localStorage.setItem("zoom-" + symbolName, JSON.stringify("1h"));
             },
           },
         },
@@ -300,7 +302,8 @@ export default function TradingView({
           text: "2h",
           events: {
             click: function () {
-              document.querySelectorAll("#timeframe button")[0].click();
+              timeFrameRef.current.querySelectorAll("button")[0].click();
+              localStorage.setItem("zoom-" + symbolName, JSON.stringify("2h"));
             },
           },
         },
@@ -308,11 +311,12 @@ export default function TradingView({
           type: "hour",
           count: 6,
           text: "6h",
-          // events: {
-          //   click: function () {
-          //     document.querySelectorAll("#timeframe button")[1].click();
-          //   },
-          // },
+          events: {
+            click: function () {
+              localStorage.setItem("zoom-" + symbolName, JSON.stringify("6h"));
+              // document.querySelectorAll("#timeframe button")[1].click();
+            },
+          },
         },
         {
           type: "day",
@@ -320,7 +324,8 @@ export default function TradingView({
           text: "1d",
           events: {
             click: function () {
-              document.querySelectorAll("#timeframe button")[2].click();
+              timeFrameRef.current.querySelectorAll("button")[2].click();
+              localStorage.setItem("zoom-" + symbolName, JSON.stringify("1d"));
             },
           },
         },
@@ -330,7 +335,8 @@ export default function TradingView({
           text: "1w",
           events: {
             click: function () {
-              document.querySelectorAll("#timeframe button")[4].click();
+              timeFrameRef.current.querySelectorAll("button")[4].click();
+              localStorage.setItem("zoom-" + symbolName, JSON.stringify("1w"));
             },
           },
         },
@@ -727,6 +733,32 @@ export default function TradingView({
         xAxis.dataMax
       );
       if (loading) setLoading(false);
+
+      const buttons = chart.rangeSelector.buttons;
+      const clickEvent = new MouseEvent("click", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+      });
+      const range = JSON.parse(localStorage.getItem("zoom-" + symbolName));
+      if (range) {
+        const idx =
+          range === "1h"
+            ? 0
+            : range === "2h"
+            ? 1
+            : range === "6h"
+            ? 2
+            : range === "1d"
+            ? 3
+            : range === "1w"
+            ? 4
+            : null;
+        if (idx !== null) {
+          const button1h = buttons[idx].element;
+          button1h.dispatchEvent(clickEvent);
+        }
+      }
     }
   };
 
@@ -838,7 +870,11 @@ export default function TradingView({
           },
         }}
       />
-      <div id="timeframe" className="float-start flex align-items-center gap-2">
+      <div
+        id="timeframe"
+        ref={timeFrameRef}
+        className="float-start flex align-items-center gap-2"
+      >
         <label>Timeframe</label>
         {TIMEFRAMES.map((timeframe, i) => (
           <button
