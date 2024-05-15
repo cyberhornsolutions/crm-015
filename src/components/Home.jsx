@@ -620,7 +620,7 @@ export default function HomeRu() {
     if (leverage > 1 && maintenanceMargin > 0) {
       return (sum / leverage) * (maintenanceMargin / 100);
     }
-    return sum;
+    return +parseFloat(sum)?.toFixed(6);
   };
   const calculatedSum = calculateTotalSum();
 
@@ -722,16 +722,13 @@ export default function HomeRu() {
           : volume * orderData.symbolValue * (askSpread / 100);
     }
 
-    const feeValue =
+    let feeValue =
       feeUnit === "$" ? parseFloat(fee) : (calculatedSum / 100) * fee;
+    feeValue = +parseFloat(feeValue)?.toFixed(6);
 
     let profit =
-      calculateProfit(
-        type,
-        closedPrice,
-        orderData.symbolValue,
-        volume
-      ) - feeValue;
+      calculateProfit(type, closedPrice, orderData.symbolValue, volume) -
+      feeValue;
 
     const leverage = userProfile?.settings?.leverage;
     if (leverage > 1 && maintenanceMargin > 0) {
