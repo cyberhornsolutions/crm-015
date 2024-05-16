@@ -46,6 +46,10 @@
   /* font-family: sans-serif; */
 }
 
+html {
+  font-size: 11px;
+}
+
 body {
   position: relative;
   height: 100vh;
@@ -93,7 +97,7 @@ h6 {
 
 label {
   font-weight: 500;
-  font-size: 14px;
+  /* font-size: 14px; */
   color: var(--main-textc);
 }
 
@@ -121,17 +125,23 @@ input:focus-visible {
 
 #header {
   display: flex;
-  flex-direction: row;
-  flex: 1;
+  height: 10%;
+  /* flex-direction: row; */
+  /* flex: 1; */
   /* height: 100%; */
-  border-radius: 5px;
-  margin: 0;
-  padding: 0;
+  /* border-radius: 5px; */
+  /* margin: 0; */
+  /* padding: 0; */
+}
+
+#main-container {
+  display: flex;
+  height: 90%;
 }
 
 #logo {
   display: flex;
-  max-width: 120px;
+  width: 100px;
   border: 2px solid var(--bs-border-color); /* Example border style */
   border-radius: 5px;
   justify-content: center;
@@ -165,9 +175,15 @@ input:focus-visible {
 }
 
 .balance-item {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+  /* height: 100%; */
+  /* margin: 0; */
+  /* padding: 0; */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   flex: 1;
   border-right: 2px solid var(--bs-border-color);
 }
@@ -177,9 +193,9 @@ input:focus-visible {
 }
 
 .balance-nums {
-  margin-block: 2%;
+  /* margin-block: 2%; */
   width: 44%;
-  font-size: 12px;
+  /* font-size: 12px; */
   color: var(--main-numbersc);
   text-align: center !important;
   outline: none;
@@ -187,8 +203,8 @@ input:focus-visible {
 
 .balance-title {
   margin: 0;
-  margin-top: 3%;
-  font-size: 16px;
+  /* margin-top: 3%; */
+  font-size: 1rem;
   color: var(--main-textc);
 }
 
@@ -210,7 +226,7 @@ input:focus-visible {
 #sidebar {
   display: flex;
   flex-direction: column;
-  max-width: 120px;
+  /* max-width: 120px; */
   border: 2px solid var(--bs-border-color);
   border-radius: 3px;
   justify-content: center;
@@ -218,8 +234,8 @@ input:focus-visible {
   text-align: center;
   margin: 2px;
   background-color: var(--bs-body-bg);
-  width: 120px;
-  min-width: 120px;
+  width: 100px;
+  /* min-width: 100px; */
 }
 
 #side-main-menu {
@@ -326,7 +342,7 @@ button {
   border: 2px solid var(--bs-border-color);
   border-radius: 5px;
   background-color: var(--bs-body-bg);
-  width: calc(100% - 120px);
+  width: calc(100% - 100px);
 }
 
 #account {
@@ -547,7 +563,7 @@ acc-info-personal h3 {
 
 #newOrder {
   /* flex: 1; */
-  width: 320px;
+  width: 300px;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
   overflow: auto;
@@ -680,8 +696,8 @@ acc-info-personal h3 {
   color: var(--main-textc);
   border-radius: 10px;
   border: 1px solid var(--bs-border-color);
-  height: 40px;
-  width: 155px;
+  height: 34px;
+  width: 140px;
   background-color: var(--bs-body-bg);
   box-shadow: 0px 0px 4px var(--seco-grayc);
   cursor: pointer;
@@ -749,7 +765,7 @@ table {
   padding: 0;
   margin: 0;
   table-layout: auto;
-  font-size: 14px;
+  /* font-size: 14px; */
 }
 
 orders-table {
@@ -1098,13 +1114,13 @@ h4 {
 
 #timezone {
   outline: none;
-  font-size: 14px;
+  /* font-size: 14px; */
   font-weight: 500;
 }
 
 #timeframe {
   color: rgb(51, 51, 51);
-  font-size: 14px;
+  /* font-size: 14px; */
   margin-left: 4rem;
 }
 
@@ -1119,3 +1135,11 @@ h4 {
 #timeframe button:hover {
   background-color: var(--highcharts-neutral-color-20);
 }
+
+/* button,
+input,
+optgroup,
+select,
+textarea {
+  font-size: 0.9rem;
+} */

@@ -383,6 +383,11 @@ export default function HomeRu() {
   };
 
   const customStylesAssetsTable = {
+    headCells: {
+      style: {
+        fontSize: "0.9rem",
+      },
+    },
     rows: {
       style: {
         userSelect: "none",
@@ -390,17 +395,41 @@ export default function HomeRu() {
           backgroundColor: "unset",
           color: "unset",
         },
+        fontSize: "0.9rem",
+        // minHeight: 36,
+        // height: 36,
       },
     },
   };
 
   const customStylesOnDeals = {
+    headCells: {
+      style: {
+        fontSize: "0.9rem",
+      },
+    },
     rows: {
       style: {
         "*": {
           backgroundColor: "unset",
           color: "unset",
         },
+        fontSize: "0.9rem",
+        // minHeight: 36,
+        // height: 36,
+      },
+    },
+    pagination: {
+      // pageButtonsStyle: {
+      //   border: "thin solid red",
+      // },
+      style: {
+        fontSize: "1rem",
+        minHeight: "min-content",
+        height: "min-content",
+        // button: {
+        //   border: "thin solid blue",
+        // },
       },
     },
   };
@@ -971,7 +1000,7 @@ export default function HomeRu() {
                   <img
                     src={languages[selectedLanguage]}
                     alt={selectedLanguage}
-                    width={40}
+                    width={28}
                   />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
@@ -996,7 +1025,7 @@ export default function HomeRu() {
           </div>
         </div>
       </div>
-      <div className="d-flex h-100">
+      <div id="main-container">
         <div id="sidebar">
           <div id="side-main-menu">
             <div className="side-btn" onClick={() => setTab("trade")}>
@@ -1099,26 +1128,25 @@ export default function HomeRu() {
             <div id="trade" className={showHistoryPanel ? "d-none" : ""}>
               <div
                 id="assets"
-                className={`h-100 px-1 py-2 ${
-                  tab === "assets" ? "" : "d-none"
-                }`}
+                className={`h-100 px-1 ${tab === "assets" ? "" : "d-none"}`}
               >
                 <input
                   type="search"
                   placeholder="Search..."
                   className="w-100"
-                  style={{ height: 30 }}
+                  // style={{ height: 30 }}
                   value={quoteSearch}
                   onChange={(e) => setQuoteSearch(e.target.value)}
                 />
                 <DataTable
                   columns={assetsColumns}
-                  data={fillArrayWithEmptyRows(filteredQuotesSymbols, 9)}
+                  data={fillArrayWithEmptyRows(filteredQuotesSymbols, 10)}
                   highlightOnHover
                   pointerOnHover
                   customStyles={customStylesAssetsTable}
                   conditionalRowStyles={conditionalRowStyles}
                   theme={theme}
+                  dense
                   // onRowDoubleClicked={handleRowDoubleClick}
                 />
                 <div className="text-center">
@@ -1140,7 +1168,6 @@ export default function HomeRu() {
                         className={`nav-link ${activeTab === tab && "active"}`}
                         data-bs-toggle="tab"
                         style={{
-                          fontSize: "14px",
                           cursor: "pointer",
                           position: "relative",
                         }}
@@ -1206,7 +1233,11 @@ export default function HomeRu() {
                       styles={{
                         container: (provided, state) => ({
                           ...provided,
-                          minWidth: 193,
+                          minWidth: 130,
+                        }),
+                        dropdownIndicator: (provided, state) => ({
+                          ...provided,
+                          paddingBlock: 0,
                         }),
                         option: (provided, state) => ({
                           ...provided,
@@ -1230,6 +1261,7 @@ export default function HomeRu() {
                         control: (provided) => ({
                           ...provided,
                           backgroundColor: "inherit",
+                          minHeight: 24,
                         }),
                       }}
                       theme={(theme) => {
@@ -1291,7 +1323,7 @@ export default function HomeRu() {
                     <label className="mt-1">
                       Total: {+calculatedSum?.toFixed(2)} USDT
                     </label>
-                    <div className="d-flex gap-3 mt-3 mb-1">
+                    <div className="d-flex gap-3 mt-2">
                       <div className="form-check">
                         <input
                           className="form-check-input"
@@ -1375,7 +1407,11 @@ export default function HomeRu() {
                 </div>
               </div>
             </div>
-            <div id="history-div" className="pt-3">
+            <div
+              id="history-div"
+              className="pt-3"
+              style={{ height: "38%", overflow: "auto" }}
+            >
               <div
                 id="nav-buttons"
                 className="d-flex align-items-center justify-content-around"
@@ -1430,13 +1466,19 @@ export default function HomeRu() {
                       })}
                       data={fillArrayWithEmptyRows(activeOrders, 3)}
                       pagination
+                      paginationTotalRows={activeOrders.length}
+                      paginationComponentOptions={{
+                        noRowsPerPage: 1,
+                        // rowsPerPageText: "ok",
+                        // rangeSeparatorText: "ok"
+                      }}
                       paginationPerPage={5}
-                      paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                      // paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
                       highlightOnHover
                       pointerOnHover
                       responsive
+                      dense
                       theme={theme}
-                      className="custom-data-table"
                       onRowDoubleClicked={handleDoubleClickOnOrders}
                       customStyles={customStylesOnDeals}
                       conditionalRowStyles={conditionalRowStylesOnOrders}
@@ -1453,15 +1495,19 @@ export default function HomeRu() {
                       data={fillArrayWithEmptyRows(delayedOrders, 3)}
                       pagination
                       paginationPerPage={5}
-                      paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                      paginationTotalRows={delayedOrders.length}
+                      paginationComponentOptions={{
+                        noRowsPerPage: 1,
+                      }}
+                      // paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
                       highlightOnHover
                       pointerOnHover
                       responsive
+                      dense
                       theme={theme}
-                      className="custom-data-table"
                       // onRowDoubleClicked={handleDoubleClickOnOrders}
-                      // customStyles={customStylesOnDeals}
-                      // conditionalRowStyles={conditionalRowStylesOnOrders}
+                      customStyles={customStylesOnDeals}
+                      conditionalRowStyles={conditionalRowStylesOnOrders}
                     />
                   </Tab>
                 </Tabs>
