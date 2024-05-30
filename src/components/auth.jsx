@@ -27,8 +27,8 @@ export default function Auth() {
   const handleLogin = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        updateOnlineStatus(userCredential?.user?.uid, true);
+      .then(async (userCredential) => {
+        await updateOnlineStatus(userCredential?.user?.uid, true);
         localStorage.setItem("USER", JSON.stringify(userCredential));
         window.location.href = "/";
       })
