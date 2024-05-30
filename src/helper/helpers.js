@@ -176,3 +176,36 @@ export const timezoneList = [
   "Pacific/Norfolk",
   "US/Mountain",
 ];
+
+export function getIPRange(startIP, endIP) {
+  if (!startIP || !endIP) {
+    return []; // or throw an error, depending on your requirements
+  }
+  let start = startIP.split(".").map(Number);
+  let end = endIP.split(".").map(Number);
+  let range = [];
+
+  for (let i = start[0]; i <= end[0]; i++) {
+    for (
+      let j = i === start[0] ? start[1] : 0;
+      j <= (i === end[0] ? end[1] : 255);
+      j++
+    ) {
+      for (
+        let k = i === start[0] && j === start[1] ? start[2] : 0;
+        k <= (i === end[0] && j === end[1] ? end[2] : 255);
+        k++
+      ) {
+        for (
+          let l =
+            i === start[0] && j === start[1] && k === start[2] ? start[3] : 0;
+          l <= (i === end[0] && j === end[1] && k === end[2] ? end[3] : 255);
+          l++
+        ) {
+          range.push(`${i}.${j}.${k}.${l}`);
+        }
+      }
+    }
+  }
+  return range;
+}
