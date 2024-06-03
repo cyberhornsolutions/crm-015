@@ -73,6 +73,7 @@ export const getUserData = async (userId) => {
       return;
     }
 
+
     snapshot.forEach((doc) => {
       console.log(doc.id, "=>", doc.data());
       data = doc.data;
@@ -225,11 +226,11 @@ export const getAllSymbols = (setState) => {
         .map((s) => {
           return s.duplicates?.length
             ? [
-                s,
-                ...s.duplicates.map((d) =>
-                  duplicateSymbols.find(({ id }) => id === d)
-                ),
-              ]
+              s,
+              ...s.duplicates.map((d) =>
+                duplicateSymbols.find(({ id }) => id === d)
+              ),
+            ]
             : s;
         })
         .flat();
@@ -398,16 +399,16 @@ export const getSymbolPriceHistoryInAir = async ({
       timeframe === "1minute"
         ? 2
         : timeframe === "15minute"
-        ? 3
-        : timeframe === "1hour"
-        ? 4
-        : timeframe === "4hour"
-        ? 6
-        : timeframe === "1day"
-        ? 8
-        : timeframe === "1week"
-        ? 16
-        : 3;
+          ? 3
+          : timeframe === "1hour"
+            ? 4
+            : timeframe === "4hour"
+              ? 6
+              : timeframe === "1day"
+                ? 8
+                : timeframe === "1week"
+                  ? 16
+                  : 3;
     const requireDates = prevDates
       .filter((day) => day.id < date)
       .slice(0, daysSlice);
@@ -454,5 +455,34 @@ export const getBlockedIPs = async () => {
     return blockedIPs;
   } catch (error) {
     console.log("Error while getting blocked ips");
+  }
+};
+
+
+export const fetchLastAccountNo = async () => {
+  try {
+    const configQuerySnapshot = await getDocs(collection(db, "configs"));
+    if (!configQuerySnapshot.empty) {
+      const configDoc = configQuerySnapshot.docs[0];
+      return configDoc.data().lastAccountNo;
+    } else {
+      throw new Error("Configs collection is empty");
+    }
+  } catch (error) {
+    console.error("Error fetching last account number:", error);
+    throw error;
+  }
+};
+
+export const updateLastAccountNo = async (newLastAccountNo) => {
+  try {
+    const configQuerySnapshot = await getDocs(collection(db, "configs"));
+    const configDoc = configQuerySnapshot.docs[0];
+    const configDocRef = doc(db, "configs", "8VaY8WzBNUl6Ca8KbpWD");
+    await updateDoc(configDocRef, { lastAccountNo: newLastAccountNo });
+
+  } catch (error) {
+    console.error("Error updating last account number:", error);
+    throw error;
   }
 };

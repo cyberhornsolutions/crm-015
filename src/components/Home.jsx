@@ -76,6 +76,7 @@ import {
   getAskValue,
   getBidValue,
 } from "../helper/helpers.js";
+import AccountModal from "./AccountModal.jsx";
 
 // import rd3 from "react-d3-library";
 // const BarChart = rd3.BarChart;
@@ -87,13 +88,13 @@ export default function HomeRu() {
     return obj
       ? JSON.parse(obj)
       : {
-          showNewOrderPanel: false,
-          tab: "trade",
-          activeTab: "",
-          tabs: [],
-          isReportModalOpen: false,
-          showHistoryPanel: false,
-        };
+        showNewOrderPanel: false,
+        tab: "trade",
+        activeTab: "",
+        tabs: [],
+        isReportModalOpen: false,
+        showHistoryPanel: false,
+      };
   });
   const [tab, setTab] = useState(gameConfigs.tab || "trade");
   const [dealsTab, setDealsTab] = useState("activeTab");
@@ -175,6 +176,14 @@ export default function HomeRu() {
     profit: true,
     action: true,
   });
+  const [showModal, setShowModal] = useState(false);
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseAccountModal = () => {
+    setShowModal(false);
+  };
 
   const handleEditModal = (row) => {
     setSelectedOrder(row);
@@ -268,9 +277,8 @@ export default function HomeRu() {
   const setOrders = useCallback((data) => {
     const mappedOrders = data.map((order) => ({
       ...order,
-      sltp: `${+parseFloat(order?.sl)?.toFixed(2) || ""} / ${
-        +parseFloat(order?.tp)?.toFixed(2) || ""
-      }`,
+      sltp: `${+parseFloat(order?.sl)?.toFixed(2) || ""} / ${+parseFloat(order?.tp)?.toFixed(2) || ""
+        }`,
     }));
     dispatch(setOrdersState(mappedOrders));
   }, []);
@@ -487,8 +495,8 @@ export default function HomeRu() {
     .filter((s) => s);
   const filteredQuotesSymbols = quoteSearch
     ? userQuotesSymbols.filter(({ symbol }) =>
-        symbol.toUpperCase().includes(quoteSearch.toUpperCase())
-      )
+      symbol.toUpperCase().includes(quoteSearch.toUpperCase())
+    )
     : userQuotesSymbols;
 
   // const crypto = [],
@@ -927,9 +935,8 @@ export default function HomeRu() {
               <h2 className="balance-title">{t("Equity")}:</h2>
               <input
                 type="number"
-                className={`balance-nums ${
-                  equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
-                }`}
+                className={`balance-nums ${equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
+                  }`}
                 readOnly={true}
                 value={+parseFloat(equity)?.toFixed(2)}
               />
@@ -938,13 +945,12 @@ export default function HomeRu() {
               <h2 className="balance-title">{t("profit")}:</h2>
               <input
                 type="number"
-                className={`balance-nums ${
-                  activeOrdersProfit < 0
-                    ? "text-danger"
-                    : activeOrdersProfit == 0
+                className={`balance-nums ${activeOrdersProfit < 0
+                  ? "text-danger"
+                  : activeOrdersProfit == 0
                     ? "text-muted"
                     : ""
-                }`}
+                  }`}
                 readOnly={true}
                 value={+parseFloat(activeOrdersProfit)?.toFixed(2)}
               />
@@ -953,13 +959,12 @@ export default function HomeRu() {
               <h2 className="balance-title">{t("freeMargin")}:</h2>
               <input
                 type="number"
-                className={`balance-nums ${
-                  freeMargin < 0
-                    ? "text-danger"
-                    : freeMargin == 0
+                className={`balance-nums ${freeMargin < 0
+                  ? "text-danger"
+                  : freeMargin == 0
                     ? "text-muted"
                     : ""
-                }`}
+                  }`}
                 readOnly={true}
                 value={+parseFloat(freeMargin)?.toFixed(2)}
               />
@@ -968,13 +973,12 @@ export default function HomeRu() {
               <h2 className="balance-title">Margin:</h2>
               <input
                 type="number"
-                className={`balance-nums ${
-                  totalMargin < 0
-                    ? "text-danger"
-                    : totalMargin == 0
+                className={`balance-nums ${totalMargin < 0
+                  ? "text-danger"
+                  : totalMargin == 0
                     ? "text-muted"
                     : ""
-                }`}
+                  }`}
                 readOnly={true}
                 value={+parseFloat(totalMargin)?.toFixed(2)}
               />
@@ -983,9 +987,8 @@ export default function HomeRu() {
               <h2 className="balance-title">Level:</h2>
               <input
                 type="text"
-                className={`balance-nums ${
-                  level < 0 ? "text-danger" : level == 0 ? "text-muted" : ""
-                }`}
+                className={`balance-nums ${level < 0 ? "text-danger" : level == 0 ? "text-muted" : ""
+                  }`}
                 readOnly={true}
                 value={`${+parseFloat(level)?.toFixed(2)}%`}
               />
@@ -1033,8 +1036,8 @@ export default function HomeRu() {
                   tab === "trade"
                     ? "var(--main-numbersc)"
                     : theme === "dark"
-                    ? "#fff"
-                    : "#000"
+                      ? "#fff"
+                      : "#000"
                 }
               />
               <button
@@ -1056,8 +1059,8 @@ export default function HomeRu() {
                   tab === "assets"
                     ? "var(--main-numbersc)"
                     : theme === "dark"
-                    ? "#fff"
-                    : "#000"
+                      ? "#fff"
+                      : "#000"
                 }
               />
               <button
@@ -1074,8 +1077,8 @@ export default function HomeRu() {
                   tab === "account"
                     ? "var(--main-numbersc)"
                     : theme === "dark"
-                    ? "#fff"
-                    : "#000"
+                      ? "#fff"
+                      : "#000"
                 }
               />
               <button
@@ -1097,8 +1100,8 @@ export default function HomeRu() {
                   tab === "help"
                     ? "var(--main-numbersc)"
                     : theme === "dark"
-                    ? "#fff"
-                    : "#000"
+                      ? "#fff"
+                      : "#000"
                 }
               />
               <button
@@ -1120,9 +1123,8 @@ export default function HomeRu() {
         <div id="content">
           <div
             id="trade-div"
-            className={`h-100 p-2  ${
-              tab === "trade" || tab === "assets" ? "" : "d-none"
-            }`}
+            className={`h-100 p-2  ${tab === "trade" || tab === "assets" ? "" : "d-none"
+              }`}
           >
             <div id="trade" className={showHistoryPanel ? "d-none" : ""}>
               <div
@@ -1146,7 +1148,7 @@ export default function HomeRu() {
                   conditionalRowStyles={conditionalRowStyles}
                   theme={theme}
                   dense
-                  // onRowDoubleClicked={handleRowDoubleClick}
+                // onRowDoubleClicked={handleRowDoubleClick}
                 />
                 <div className="text-center">
                   <button
@@ -1529,6 +1531,30 @@ export default function HomeRu() {
                 >
                   {t("referralCode")} : {userProfile?.refCode}
                 </p>
+                {/* <button
+                  id="create-account-button"
+                  style={{ margin: "10px 0", padding: "10px 20px", border: "2px slod white", color: "white", border: "none", borderRadius: "5px" }}
+                >
+                  {t("createAccount")}
+                </button> */}
+
+
+                <div>
+                  <button
+                    id="create-account-button"
+                    style={{ margin: "10px 0", padding: "10px 20px", border: "2px solid white", color: "white", border: "none", borderRadius: "5px" }}
+                    onClick={handleOpenModal}
+                  >
+                    Create Account
+                  </button>
+                  <AccountModal
+                    show={showModal}
+                    onClose={handleCloseAccountModal}
+                    currentUserId={currentUserId} // Pass currentUserId as a prop
+                  />
+                </div>
+
+
                 <div id="acc-profile-main">
                   <div className="acc-profile-main-item">
                     <h6>{t("balance")} (USD):</h6>
