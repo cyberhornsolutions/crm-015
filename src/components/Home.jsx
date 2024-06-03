@@ -359,13 +359,12 @@ export default function HomeRu() {
     };
   }, [currentUserId]);
 
-  const hanldeLogout = () => {
-    signOut(auth)
+  const hanldeLogout = async () => {
+    await updateOnlineStatus(currentUserId, false);
+    await signOut(auth)
       .then(async () => {
-        await updateOnlineStatus(currentUserId, false);
-        console.log("User signed out.");
         localStorage.clear();
-        window.location.href = "/";
+        // window.location.href = "/";
       })
       .catch((error) => {
         console.log("Error", error);

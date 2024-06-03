@@ -441,3 +441,18 @@ export const getSymbolPriceHistoryInAir = async ({
     console.log("Error in getting priceHistory document:", error);
   }
 };
+
+export const getBlockedIPs = async () => {
+  try {
+    const snapshot = await getDocs(
+      query(collection(db, "blockedIps"), where("isBlocked", "==", true))
+    );
+    const blockedIPs = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return blockedIPs;
+  } catch (error) {
+    console.log("Error while getting blocked ips");
+  }
+};
