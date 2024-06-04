@@ -73,7 +73,6 @@ export const getUserData = async (userId) => {
       return;
     }
 
-
     snapshot.forEach((doc) => {
       console.log(doc.id, "=>", doc.data());
       data = doc.data;
@@ -226,11 +225,11 @@ export const getAllSymbols = (setState) => {
         .map((s) => {
           return s.duplicates?.length
             ? [
-              s,
-              ...s.duplicates.map((d) =>
-                duplicateSymbols.find(({ id }) => id === d)
-              ),
-            ]
+                s,
+                ...s.duplicates.map((d) =>
+                  duplicateSymbols.find(({ id }) => id === d)
+                ),
+              ]
             : s;
         })
         .flat();
@@ -399,16 +398,16 @@ export const getSymbolPriceHistoryInAir = async ({
       timeframe === "1minute"
         ? 2
         : timeframe === "15minute"
-          ? 3
-          : timeframe === "1hour"
-            ? 4
-            : timeframe === "4hour"
-              ? 6
-              : timeframe === "1day"
-                ? 8
-                : timeframe === "1week"
-                  ? 16
-                  : 3;
+        ? 3
+        : timeframe === "1hour"
+        ? 4
+        : timeframe === "4hour"
+        ? 6
+        : timeframe === "1day"
+        ? 8
+        : timeframe === "1week"
+        ? 16
+        : 3;
     const requireDates = prevDates
       .filter((day) => day.id < date)
       .slice(0, daysSlice);
@@ -443,6 +442,25 @@ export const getSymbolPriceHistoryInAir = async ({
   }
 };
 
+export async function getDocument(collectionPath, documentId) {
+  try {
+    const docRef = doc(db, collectionPath, documentId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) return { id: docSnap.id, ...docSnap.data() };
+  } catch (error) {
+    console.error("Error fetching document:", error.message);
+  }
+}
+
+export async function updateDocument(id, collectionPath, payload) {
+  try {
+    const docRef = doc(db, collectionPath, id);
+    await updateDoc(docRef, payload);
+  } catch (error) {
+    console.error("Error updating document:", error.message);
+  }
+}
+
 export const getBlockedIPs = async () => {
   try {
     const snapshot = await getDocs(
@@ -458,31 +476,12 @@ export const getBlockedIPs = async () => {
   }
 };
 
-
-export const fetchLastAccountNo = async () => {
-  try {
-    const configQuerySnapshot = await getDocs(collection(db, "configs"));
-    if (!configQuerySnapshot.empty) {
-      const configDoc = configQuerySnapshot.docs[0];
-      return configDoc.data().lastAccountNo;
-    } else {
-      throw new Error("Configs collection is empty");
-    }
-  } catch (error) {
-    console.error("Error fetching last account number:", error);
-    throw error;
-  }
-};
-
-export const updateLastAccountNo = async (newLastAccountNo) => {
-  try {
-    const configQuerySnapshot = await getDocs(collection(db, "configs"));
-    const configDoc = configQuerySnapshot.docs[0];
-    const configDocRef = doc(db, "configs", "8VaY8WzBNUl6Ca8KbpWD");
-    await updateDoc(configDocRef, { lastAccountNo: newLastAccountNo });
-
-  } catch (error) {
-    console.error("Error updating last account number:", error);
-    throw error;
-  }
+export const incrementLastAccountNo = async () => {
+  const { lastAccountNo } = await getDocument(
+    "configs",
+    "8VaY8WzBNUl6Ca8KbpWD"
+  );
+  await updateDocument("8VaY8WzBNUl6Ca8KbpWD", "configs", {
+    lastAccountNo: +lastAccountNo + 1,
+  });
 };

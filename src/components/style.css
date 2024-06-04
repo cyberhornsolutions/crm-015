@@ -404,14 +404,14 @@ button {
   font-size: 13px;
 }
 .acc-info-personal-item h6 {
-  font-size: 15px;
+  /* font-size: 15px; */
 }
 
 .acc-profile-main-item {
   font-size: 13px;
 }
 .acc-profile-main-item h6 {
-  font-size: 15px;
+  /* font-size: 15px; */
 }
 
 #documents-button {
