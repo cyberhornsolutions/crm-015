@@ -88,13 +88,13 @@ export default function HomeRu() {
     return obj
       ? JSON.parse(obj)
       : {
-          showNewOrderPanel: false,
-          tab: "trade",
-          activeTab: "",
-          tabs: [],
-          isReportModalOpen: false,
-          showHistoryPanel: false,
-        };
+        showNewOrderPanel: false,
+        tab: "trade",
+        activeTab: "",
+        tabs: [],
+        isReportModalOpen: false,
+        showHistoryPanel: false,
+      };
   });
   const [tab, setTab] = useState(gameConfigs.tab || "trade");
   const [dealsTab, setDealsTab] = useState("activeTab");
@@ -122,6 +122,9 @@ export default function HomeRu() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [activeTab, setActiveTab] = useState(gameConfigs.activeTab || "Gold");
   const [tabs, setTabs] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState("");
+
+
   const [showNewOrderPanel, setShowNewOrderPanel] = useState(
     gameConfigs.showNewOrderPanel || false
   );
@@ -142,6 +145,8 @@ export default function HomeRu() {
   const [enableOpenPrice, setEnableOpenPrice] = useState(false);
   const [openPriceValue, setOpenPriceValue] = useState(null);
   const [isTradingModal, setIsTradingModal] = useState(false);
+  const [activeAccountNo, setActiveAccountNo] = useState(null);
+
   const [userProfile, setUserProfile] = useState({
     name: "",
     surname: "",
@@ -249,6 +254,8 @@ export default function HomeRu() {
       console.error("Error saving data to Firestore:", error);
     }
   };
+  const [selectedKey, setSelectedKey] = useState(null);
+
   const getUserDataByUID = () => {
     try {
       const userRef = doc(db, "users", auth.currentUser.uid);
@@ -256,6 +263,7 @@ export default function HomeRu() {
         if (userDoc.exists()) {
           const userData = userDoc.data();
           setUserProfile(userData);
+          console.log(userData.accounts)
         } else {
           console.log("User document does not exist.");
           setUserProfile(null);
@@ -270,9 +278,8 @@ export default function HomeRu() {
   const setOrders = useCallback((data) => {
     const mappedOrders = data.map((order) => ({
       ...order,
-      sltp: `${+parseFloat(order?.sl)?.toFixed(2) || ""} / ${
-        +parseFloat(order?.tp)?.toFixed(2) || ""
-      }`,
+      sltp: `${+parseFloat(order?.sl)?.toFixed(2) || ""} / ${+parseFloat(order?.tp)?.toFixed(2) || ""
+        }`,
     }));
     dispatch(setOrdersState(mappedOrders));
   }, []);
@@ -383,6 +390,8 @@ export default function HomeRu() {
     }
   };
 
+
+
   const customStylesAssetsTable = {
     headCells: {
       style: {
@@ -489,8 +498,8 @@ export default function HomeRu() {
     .filter((s) => s);
   const filteredQuotesSymbols = quoteSearch
     ? userQuotesSymbols.filter(({ symbol }) =>
-        symbol.toUpperCase().includes(quoteSearch.toUpperCase())
-      )
+      symbol.toUpperCase().includes(quoteSearch.toUpperCase())
+    )
     : userQuotesSymbols;
 
   // const crypto = [],
@@ -907,6 +916,56 @@ export default function HomeRu() {
     if (orderData.tp)
       potentialTP = orderData.volume * lot * orderData.tp - orderData.fee;
   }
+  const accountOptions = userProfile && userProfile.accounts ? Object.keys(userProfile.accounts).map((type) => ({
+    value: userProfile.accounts[type].account_no,
+    label: userProfile.accounts[type].account_no,
+  })) : [];
+
+
+
+  const handleAccountChange = async (e) => {
+    const selectedAccount = e.value;
+    setSelectedAccount(selectedAccount);
+    setActiveAccountNo(selectedAccount);
+
+
+    const updatedAccounts = Object.keys(userProfile.accounts).reduce((acc, type) => {
+      const account = userProfile.accounts[type];
+      acc[type] = {
+        ...account,
+        active: account.account_no === selectedAccount,
+      };
+      return acc;
+    }, {});
+
+    const updatedUserProfile = { ...userProfile, accounts: updatedAccounts };
+    setUserProfile(updatedUserProfile);
+
+    try {
+      await updateUserById(userProfile.id, { accounts: updatedAccounts });
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (!selectedAccount && accountOptions.length > 0) {
+      setSelectedAccount(accountOptions[0].value);
+    }
+  }, [accountOptions, selectedAccount]);
+
+  useEffect(() => {
+    if (accountOptions.length > 0) {
+      const activeAccount = Object.values(userProfile.accounts).find(account => account.active);
+      const defaultAccount = activeAccount ? activeAccount.account_no : accountOptions[0].value;
+      setSelectedAccount(defaultAccount);
+      setActiveAccountNo(defaultAccount);
+    }
+  }, [accountOptions, userProfile.accounts]);
+
+  const selectedValue = accountOptions.find(option => option.value === selectedAccount) || accountOptions[0];
+
+
 
   return (
     <>
@@ -929,9 +988,8 @@ export default function HomeRu() {
               <h2 className="balance-title">{t("Equity")}:</h2>
               <input
                 type="number"
-                className={`balance-nums ${
-                  equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
-                }`}
+                className={`balance-nums ${equity < 0 ? "text-danger" : equity == 0 ? "text-muted" : ""
+                  }`}
                 readOnly={true}
                 value={+parseFloat(equity)?.toFixed(2)}
               />
@@ -940,13 +998,12 @@ export default function HomeRu() {
               <h2 className="balance-title">{t("profit")}:</h2>
               <input
                 type="number"
-                className={`balance-nums ${
-                  activeOrdersProfit < 0
-                    ? "text-danger"
-                    : activeOrdersProfit == 0
+                className={`balance-nums ${activeOrdersProfit < 0
+                  ? "text-danger"
+                  : activeOrdersProfit == 0
                     ? "text-muted"
                     : ""
-                }`}
+                  }`}
                 readOnly={true}
                 value={+parseFloat(activeOrdersProfit)?.toFixed(2)}
               />
@@ -955,13 +1012,12 @@ export default function HomeRu() {
               <h2 className="balance-title">{t("freeMargin")}:</h2>
               <input
                 type="number"
-                className={`balance-nums ${
-                  freeMargin < 0
-                    ? "text-danger"
-                    : freeMargin == 0
+                className={`balance-nums ${freeMargin < 0
+                  ? "text-danger"
+                  : freeMargin == 0
                     ? "text-muted"
                     : ""
-                }`}
+                  }`}
                 readOnly={true}
                 value={+parseFloat(freeMargin)?.toFixed(2)}
               />
@@ -970,13 +1026,12 @@ export default function HomeRu() {
               <h2 className="balance-title">Margin:</h2>
               <input
                 type="number"
-                className={`balance-nums ${
-                  totalMargin < 0
-                    ? "text-danger"
-                    : totalMargin == 0
+                className={`balance-nums ${totalMargin < 0
+                  ? "text-danger"
+                  : totalMargin == 0
                     ? "text-muted"
                     : ""
-                }`}
+                  }`}
                 readOnly={true}
                 value={+parseFloat(totalMargin)?.toFixed(2)}
               />
@@ -985,9 +1040,8 @@ export default function HomeRu() {
               <h2 className="balance-title">Level:</h2>
               <input
                 type="text"
-                className={`balance-nums ${
-                  level < 0 ? "text-danger" : level == 0 ? "text-muted" : ""
-                }`}
+                className={`balance-nums ${level < 0 ? "text-danger" : level == 0 ? "text-muted" : ""
+                  }`}
                 readOnly={true}
                 value={`${+parseFloat(level)?.toFixed(2)}%`}
               />
@@ -1035,8 +1089,8 @@ export default function HomeRu() {
                   tab === "trade"
                     ? "var(--main-numbersc)"
                     : theme === "dark"
-                    ? "#fff"
-                    : "#000"
+                      ? "#fff"
+                      : "#000"
                 }
               />
               <button
@@ -1058,8 +1112,8 @@ export default function HomeRu() {
                   tab === "assets"
                     ? "var(--main-numbersc)"
                     : theme === "dark"
-                    ? "#fff"
-                    : "#000"
+                      ? "#fff"
+                      : "#000"
                 }
               />
               <button
@@ -1076,8 +1130,8 @@ export default function HomeRu() {
                   tab === "account"
                     ? "var(--main-numbersc)"
                     : theme === "dark"
-                    ? "#fff"
-                    : "#000"
+                      ? "#fff"
+                      : "#000"
                 }
               />
               <button
@@ -1099,8 +1153,8 @@ export default function HomeRu() {
                   tab === "help"
                     ? "var(--main-numbersc)"
                     : theme === "dark"
-                    ? "#fff"
-                    : "#000"
+                      ? "#fff"
+                      : "#000"
                 }
               />
               <button
@@ -1122,9 +1176,8 @@ export default function HomeRu() {
         <div id="content">
           <div
             id="trade-div"
-            className={`h-100 p-2  ${
-              tab === "trade" || tab === "assets" ? "" : "d-none"
-            }`}
+            className={`h-100 p-2  ${tab === "trade" || tab === "assets" ? "" : "d-none"
+              }`}
           >
             <div id="trade" className={showHistoryPanel ? "d-none" : ""}>
               <div
@@ -1148,7 +1201,7 @@ export default function HomeRu() {
                   conditionalRowStyles={conditionalRowStyles}
                   theme={theme}
                   dense
-                  // onRowDoubleClicked={handleRowDoubleClick}
+                // onRowDoubleClicked={handleRowDoubleClick}
                 />
                 <div className="text-center">
                   <button
@@ -1524,7 +1577,7 @@ export default function HomeRu() {
                   alt="avatar"
                 />
                 <h4 style={{ margin: "0", "margin-bottom": "15px" }}>
-                  Test Lead #0001
+                  {selectedAccount || "Test Lead #0001"}
                 </h4>
                 <p
                   style={{ margin: "0", "margin-bottom": "15px", color: "red" }}
@@ -1538,6 +1591,62 @@ export default function HomeRu() {
                 >
                   Create Account
                 </button>
+
+
+                <div>
+                  <label className="m-4" htmlFor="symbol-input">Chose Account</label>
+                  <Select
+                    id="account-input"
+                    options={accountOptions}
+                    onChange={handleAccountChange}
+                    value={selectedValue}
+
+                    styles={{
+                      container: (provided, state) => ({
+                        ...provided,
+                        minWidth: 130,
+                      }),
+                      dropdownIndicator: (provided, state) => ({
+                        ...provided,
+                        paddingBlock: 0,
+                      }),
+                      option: (provided, state) => ({
+                        ...provided,
+                        cursor: "pointer",
+                        backgroundColor: state.isSelected
+                          ? "var(--main-numbersc)"
+                          : "unset",
+                        color: state.isSelected
+                          ? "black"
+                          : "var(--main-input-textc)",
+                        "&:hover": {
+                          backgroundColor: state.isSelected
+                            ? ""
+                            : "var(--bs-body-bg)",
+                        },
+                      }),
+                      singleValue: (provided) => ({
+                        ...provided,
+                        color: "var(--main-input-textc)",
+                      }),
+                      control: (provided) => ({
+                        ...provided,
+                        backgroundColor: "inherit",
+                        minHeight: 24,
+                      }),
+                    }}
+                    theme={(theme) => {
+                      return {
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary: "var(--main-input-textc)",
+                        },
+                      };
+                    }}
+                    isSearchable={false}
+                  />
+                </div>
 
                 <div id="acc-profile-main">
                   <div className="acc-profile-main-item">
