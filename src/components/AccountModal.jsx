@@ -27,22 +27,19 @@ const AccountModal = ({ onClose, userProfile }) => {
 
     const createNewAccount = async () => {
 
-        if (Object.keys(userProfile?.accounts || {})?.length === 2)
-
+        if (userProfile?.accounts?.length === 2)
             return toast.error("You already have max accounts limit");
         try {
             setIsLoading(true);
-            const existingAccountIds = Object.keys(userProfile.accounts || {}).map(key => parseInt(key, 2));
-            const newAccountId = existingAccountIds.length === 0 ? 1 : Math.max(...existingAccountIds) + 1;
 
-            const accounts = {
-                ...userProfile.accounts,
-                [newAccountId]: {
+            const accounts = [
+                ...userProfile.accounts || [],
+                {
                     account_type: accountType,
                     account_no: accountNo,
                     active: false
                 },
-            };
+            ];
             await updateUserById(userProfile.id, { accounts });
             await incrementLastAccountNo();
             toast.success("Account created successfully");
