@@ -1590,7 +1590,7 @@ export default function HomeRu() {
                   Create Account
                 </button>
 
-                {userProfile?.accounts &&
+                {userProfile?.accounts && userProfile?.accounts.length > 0 &&
 
                   <div>
                     <label className="m-4" htmlFor="symbol-input">Chose Account</label>
