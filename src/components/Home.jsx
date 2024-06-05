@@ -1590,62 +1590,63 @@ export default function HomeRu() {
                   Create Account
                 </button>
 
+                {userProfile?.accounts &&
 
-                <div>
-                  <label className="m-4" htmlFor="symbol-input">Chose Account</label>
-                  <Select
-                    id="account-input"
-                    options={accountOptions}
-                    onChange={handleAccountChange}
-                    value={selectedValue}
+                  <div>
+                    <label className="m-4" htmlFor="symbol-input">Chose Account</label>
+                    <Select
+                      id="account-input"
+                      options={accountOptions}
+                      onChange={handleAccountChange}
+                      value={selectedValue}
 
-                    styles={{
-                      container: (provided, state) => ({
-                        ...provided,
-                        minWidth: 130,
-                      }),
-                      dropdownIndicator: (provided, state) => ({
-                        ...provided,
-                        paddingBlock: 0,
-                      }),
-                      option: (provided, state) => ({
-                        ...provided,
-                        cursor: "pointer",
-                        backgroundColor: state.isSelected
-                          ? "var(--main-numbersc)"
-                          : "unset",
-                        color: state.isSelected
-                          ? "black"
-                          : "var(--main-input-textc)",
-                        "&:hover": {
+                      styles={{
+                        container: (provided, state) => ({
+                          ...provided,
+                          minWidth: 130,
+                        }),
+                        dropdownIndicator: (provided, state) => ({
+                          ...provided,
+                          paddingBlock: 0,
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          cursor: "pointer",
                           backgroundColor: state.isSelected
-                            ? ""
-                            : "var(--bs-body-bg)",
-                        },
-                      }),
-                      singleValue: (provided) => ({
-                        ...provided,
-                        color: "var(--main-input-textc)",
-                      }),
-                      control: (provided) => ({
-                        ...provided,
-                        backgroundColor: "inherit",
-                        minHeight: 24,
-                      }),
-                    }}
-                    theme={(theme) => {
-                      return {
-                        ...theme,
-                        colors: {
-                          ...theme.colors,
-                          primary: "var(--main-input-textc)",
-                        },
-                      };
-                    }}
-                    isSearchable={false}
-                  />
-                </div>
-
+                            ? "var(--main-numbersc)"
+                            : "unset",
+                          color: state.isSelected
+                            ? "black"
+                            : "var(--main-input-textc)",
+                          "&:hover": {
+                            backgroundColor: state.isSelected
+                              ? ""
+                              : "var(--bs-body-bg)",
+                          },
+                        }),
+                        singleValue: (provided) => ({
+                          ...provided,
+                          color: "var(--main-input-textc)",
+                        }),
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "inherit",
+                          minHeight: 24,
+                        }),
+                      }}
+                      theme={(theme) => {
+                        return {
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary: "var(--main-input-textc)",
+                          },
+                        };
+                      }}
+                      isSearchable={false}
+                    />
+                  </div>
+                }
                 <div id="acc-profile-main">
                   <div className="acc-profile-main-item">
                     <h6>{t("balance")} (USD):</h6>
