@@ -916,11 +916,12 @@ export default function HomeRu() {
     if (orderData.tp)
       potentialTP = orderData.volume * lot * orderData.tp - orderData.fee;
   }
-  const accountOptions = userProfile && userProfile.accounts ? Object.keys(userProfile.accounts).map((type) => ({
-    value: userProfile.accounts[type].account_no,
-    label: userProfile.accounts[type].account_no,
-  })) : [];
 
+
+  const accountOptions = userProfile && userProfile?.accounts ? userProfile?.accounts.map(account => ({
+    value: account?.account_no,
+    label: account?.account_no,
+  })) : [];
 
 
   const handleAccountChange = async (e) => {
@@ -929,14 +930,11 @@ export default function HomeRu() {
     setActiveAccountNo(selectedAccount);
 
 
-    const updatedAccounts = Object.keys(userProfile.accounts).reduce((acc, type) => {
-      const account = userProfile.accounts[type];
-      acc[type] = {
-        ...account,
-        active: account.account_no === selectedAccount,
-      };
-      return acc;
-    }, {});
+
+    const updatedAccounts = userProfile?.accounts?.map(account => ({
+      ...account,
+      active: account?.account_no === selectedAccount,
+    }));
 
     const updatedUserProfile = { ...userProfile, accounts: updatedAccounts };
     setUserProfile(updatedUserProfile);
