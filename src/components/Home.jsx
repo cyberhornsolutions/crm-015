@@ -182,6 +182,7 @@ export default function HomeRu() {
     action: true,
   });
   const [showAccountModal, setShowAccountModal] = useState(false);
+  const activeAccount = userProfile?.accounts?.find(account => account.account_no === selectedAccount);
 
   const handleEditModal = (row) => {
     setSelectedOrder(row);
@@ -798,6 +799,7 @@ export default function HomeRu() {
       sum: calculatedSum,
       fee: feeValue,
       swap: 0,
+      account_no: selectedAccount,
       spread,
       enableOpenPrice,
       createdAt: formattedDate,
@@ -811,9 +813,15 @@ export default function HomeRu() {
     }
 
     const userPayload = {
-      totalBalance: parseFloat(userProfile?.totalBalance - feeValue - spread),
-      totalMargin: +totalMargin + +calculatedSum,
-      activeOrdersProfit: +activeOrdersProfit + +dealPayload.profit,
+      accounts: userProfile.accounts.map(account => {
+        if (account.account_no !== selectedAccount) return account;
+        return {
+          ...account,
+          totalBalance: parseFloat(account.totalBalance - feeValue - spread),
+          totalMargin: +totalMargin + +calculatedSum,
+          activeOrdersProfit: +activeOrdersProfit + +dealPayload.profit,
+        }
+      })
     };
 
     if (
@@ -873,8 +881,8 @@ export default function HomeRu() {
   const activeOrders = pendingOrders.filter((order) => !order.enableOpenPrice);
   const delayedOrders = pendingOrders.filter((order) => order.enableOpenPrice);
 
-  const activeOrdersProfit = parseFloat(userProfile?.activeOrdersProfit) || 0;
-  const activeOrdersSwap = parseFloat(userProfile?.activeOrdersSwap) || 0;
+  const activeOrdersProfit = parseFloat(activeAccount?.activeOrdersProfit) || 0;
+  const activeOrdersSwap = parseFloat(activeAccount?.activeOrdersSwap) || 0;
 
   const bonus = parseFloat(userProfile?.bonus);
   const bonusSpent = parseFloat(userProfile?.bonusSpent) || 0;
@@ -882,7 +890,7 @@ export default function HomeRu() {
 
   const calculateEquity = () => {
     let equity =
-      parseFloat(userProfile?.totalBalance) +
+      parseFloat(activeAccount?.totalBalance) +
       activeOrdersProfit -
       activeOrdersSwap;
     if (allowBonus) equity += bonus;
@@ -898,7 +906,7 @@ export default function HomeRu() {
 
   const freeMargin = calculateFreeMargin();
 
-  const totalMargin = parseFloat(userProfile?.totalMargin);
+  const totalMargin = parseFloat(activeAccount?.totalMargin);
 
   const userLevel = parseFloat(userProfile?.settings?.level) || 100;
   const level =
@@ -2234,8 +2242,10 @@ export default function HomeRu() {
           show={isDelModalOpen}
           onClose={handleCloseModal}
           selectedOrder={selectedOrder}
+          selectedAccount={selectedAccount}
           symbols={dbSymbols}
           userProfile={userProfile}
+          activeAccount={activeAccount}
         />
       )}
       {showCancelOrderModal && (

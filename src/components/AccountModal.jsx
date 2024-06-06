@@ -37,7 +37,13 @@ const AccountModal = ({ onClose, userProfile }) => {
                 {
                     account_type: accountType,
                     account_no: accountNo,
-                    active: false
+                    active: false,
+                    totalBalance: 0,
+                    activeOrdersProfit: 0,
+                    activeOrdersSwap: 0,
+                    totalMargin: 0,
+
+
                 },
             ];
             await updateUserById(userProfile.id, { accounts });
