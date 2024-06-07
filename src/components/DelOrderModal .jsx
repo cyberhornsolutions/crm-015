@@ -13,17 +13,18 @@ import { db } from "../firebase";
 import { toast } from "react-toastify";
 import { updateUserById } from "../helper/firebaseHelpers";
 
-const DelOrderModal = ({ onClose, show, selectedOrder, userProfile }) => {
+const DelOrderModal = ({ onClose, show, selectedOrder, userProfile, selectedAccount }) => {
   const [isPartial, setIsPartial] = useState(false);
   const [volume, setVolume] = useState(selectedOrder.volume);
   const [isLoading, setIsLoading] = useState(false);
 
   const closedPrice = selectedOrder?.currentPrice;
+  const selectedOrderAccNo = selectedOrder.account_no;
+  const activeAccount = userProfile?.accounts?.find(account => account.account_no === selectedOrderAccNo);
 
   const updateOrderStatus = async (orderId, newStatus, newVolume) => {
     const orderRef = doc(db, "orders", orderId);
     const docSnapshot = await getDoc(orderRef);
-
     const newData = {
       status: newStatus,
       closedDate: serverTimestamp(),
@@ -43,35 +44,40 @@ const DelOrderModal = ({ onClose, show, selectedOrder, userProfile }) => {
     }
 
     const userPayload = {
-      totalBalance:
-        userProfile?.totalBalance + selectedOrder.profit - selectedOrder.swap,
-      totalMargin,
-      activeOrdersProfit: +parseFloat(
-        userProfile?.activeOrdersProfit - selectedOrder.profit
-      ).toFixed(2),
-      activeOrdersSwap: +parseFloat(
-        userProfile?.activeOrdersSwap - selectedOrder.swap
-      )?.toFixed(2),
+      accounts: userProfile.accounts.map(account => {
+        if (account.account_no !== selectedOrder.account) return account;
+        return {
+          ...account,
+          totalBalance: account.totalBalance + selectedOrder.profit - selectedOrder.swap,
+          totalMargin,
+          activeOrdersProfit: +parseFloat(
+            account?.activeOrdersProfit - selectedOrder.profit
+          ).toFixed(2),
+          activeOrdersSwap: +parseFloat(
+            account?.activeOrdersSwap - selectedOrder.swap
+          )?.toFixed(2),
+        }
+      }),
     };
 
     if (
       userProfile?.settings?.allowBonus &&
-      userPayload.totalBalance < 0 &&
-      userProfile.bonus - Math.abs(userPayload.totalBalance) >= 0
+      activeAccount.totalBalance < 0 &&
+      activeAccount.bonus - Math.abs(activeAccount.totalBalance) >= 0
     ) {
-      const spentBonus = Math.abs(userPayload.totalBalance);
-      if (userProfile.bonus < spentBonus)
+      const spentBonus = Math.abs(activeAccount.totalBalance);
+      if (activeAccount.bonus < spentBonus)
         return toast.error("Not enough bonus to cover the loss");
-      userPayload.totalBalance = userPayload.totalBalance + spentBonus;
-      userPayload.bonus = +parseFloat(userProfile.bonus - spentBonus)?.toFixed(
+      activeAccount.totalBalance = activeAccount.totalBalance + spentBonus;
+      activeAccount.bonus = +parseFloat(activeAccount.bonus - spentBonus)?.toFixed(
         2
       );
       userPayload.bonusSpent = +parseFloat(
-        userProfile.bonusSpent + spentBonus
+        activeAccount.bonusSpent + spentBonus
       )?.toFixed(2);
     }
 
-    newData.balance = +parseFloat(userPayload.totalBalance)?.toFixed(2);
+    newData.balance = +parseFloat(activeAccount.totalBalance)?.toFixed(2);
 
     if (docSnapshot.exists()) {
       await updateDoc(orderRef, newData);
@@ -87,7 +93,7 @@ const DelOrderModal = ({ onClose, show, selectedOrder, userProfile }) => {
     const userRef = doc(db, "users", selectedOrder.userId);
     const userSnapshot = await getDoc(userRef);
     if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
+      const userData = userSnapshot.data().find(account => account.account_no === selectedOrderAccNo);
       await updateDoc(userRef, {
         totalBalance: userData?.totalBalance - orderPrice,
       });

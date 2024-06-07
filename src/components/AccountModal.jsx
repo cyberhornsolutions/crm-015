@@ -42,6 +42,8 @@ const AccountModal = ({ onClose, userProfile }) => {
                     activeOrdersProfit: 0,
                     activeOrdersSwap: 0,
                     totalMargin: 0,
+                    bonus: 0,
+                    bonusSpent: 0
 
 
                 },
