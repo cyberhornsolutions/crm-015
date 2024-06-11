@@ -3,16 +3,31 @@ import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { deleteDocument, updateUserById } from "../helper/firebaseHelpers";
 
-const CancelOrderModal = ({ setShow, selectedOrder, userProfile }) => {
+const CancelOrderModal = ({
+  setShow,
+  selectedOrder,
+  userProfile,
+  defaultAccount,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const closeModal = () => setShow(false);
   const handleCancelOrder = async () => {
     setIsLoading(true);
     try {
+      const accounts = userProfile.accounts?.map((ac) => {
+        if (ac.account_no !== defaultAccount?.account_no) return ac;
+        return {
+          ...ac,
+          totalMargin: +(
+            +defaultAccount?.totalMargin - selectedOrder.sum
+          ).toFixed(2),
+        };
+      });
+
       await deleteDocument("orders", selectedOrder.id);
       await updateUserById(userProfile.id, {
-        totalMargin: +(userProfile?.totalMargin - selectedOrder.sum).toFixed(2),
+        accounts,
       });
       toast.success("Order cancelled");
       closeModal();
