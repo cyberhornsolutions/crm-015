@@ -182,7 +182,7 @@ export default function HomeRu() {
   const [showAccountModal, setShowAccountModal] = useState(false);
 
   const accounts = userProfile.accounts || [];
-  const defaultAccount = accounts.find((account) => account.isDefault);
+  const defaultAccount = accounts.find((account) => account.isDefault) || {};
 
   const handleEditModal = (row) => {
     setSelectedOrder(row);
@@ -1591,8 +1591,8 @@ export default function HomeRu() {
                       }))}
                       onChange={handleAccountChange}
                       value={{
-                        value: defaultAccount.account_no,
-                        label: defaultAccount.account_no,
+                        value: defaultAccount?.account_no,
+                        label: defaultAccount?.account_no,
                       }}
                       styles={{
                         container: (provided, state) => ({

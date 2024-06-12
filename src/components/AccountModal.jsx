@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 const AccountModal = ({ onClose, userProfile }) => {
   const [accountType, setAccountType] = useState("Standard");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [accountNo, setAccountNo] = useState("");
 
   useEffect(() => {
@@ -21,6 +21,7 @@ const AccountModal = ({ onClose, userProfile }) => {
       if (!lastAccountNo)
         return toast.error("Error fetching last account number");
       setAccountNo(+lastAccountNo + 1);
+      setIsLoading(false);
     };
     fetchLastAccount();
   }, []);
