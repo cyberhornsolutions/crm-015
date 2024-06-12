@@ -70,7 +70,7 @@ const DelOrderModal = ({
     const accounts = userProfile.accounts.map((ac) => {
       if (ac.account_no !== defaultAccount.account_no) return ac;
       ac = { ...defaultAccount };
-      return {
+      defaultAccount = {
         ...ac,
         totalBalance:
           ac.totalBalance + selectedOrder.profit - selectedOrder.swap,
@@ -82,6 +82,7 @@ const DelOrderModal = ({
           ac?.activeOrdersSwap - selectedOrder.swap
         )?.toFixed(2),
       };
+      return defaultAccount;
     });
 
     newData.balance = +parseFloat(defaultAccount.totalBalance)?.toFixed(2);
