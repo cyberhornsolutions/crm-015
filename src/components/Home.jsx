@@ -263,7 +263,7 @@ export default function HomeRu() {
       const unsubscribe = onSnapshot(userRef, (userDoc) => {
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setUserProfile(userData);
+          setUserProfile({id: userDoc.id,  ...userData});
           console.log(userData.accounts);
         } else {
           console.log("User document does not exist.");

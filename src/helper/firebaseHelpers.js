@@ -92,8 +92,6 @@ export const getColumnsById = async (id, setState) => {
     if (columnDocSnapshot.exists()) {
       const columnData = columnDocSnapshot.data();
       setState(columnData.dealsColumns);
-    } else {
-      throw new Error("Column ID does not exist in the database.");
     }
   } catch (error) {
     console.error("Error fetching column:", error);
