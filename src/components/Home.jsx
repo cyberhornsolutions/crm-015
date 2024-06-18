@@ -1582,7 +1582,7 @@ export default function HomeRu() {
                 >
                   Create Account
                 </button>
-                {userProfile?.accounts && userProfile?.accounts.length > 0 && (
+                {userProfile?.accounts?.length > 0 && (
                   <div>
                     <label className="m-4" htmlFor="symbol-input">
                       Select Account
@@ -1643,6 +1643,10 @@ export default function HomeRu() {
                       }}
                       isSearchable={false}
                     />
+                    <div className="d-flex align-items-center justify-content-center gap-3 mt-2">
+                      <h6>Type: </h6>
+                      <h6>{defaultAccount?.account_type}</h6>
+                    </div>
                   </div>
                 )}
                 <div id="acc-profile-main">
