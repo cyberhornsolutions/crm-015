@@ -184,6 +184,10 @@ export default function HomeRu() {
   const accounts = userProfile.accounts || [];
   const defaultAccount = accounts.find((account) => account.isDefault) || {};
 
+  const accountDeposits = deposits.filter(
+    ({ account_no }) => account_no === defaultAccount?.account_no
+  );
+
   const handleEditModal = (row) => {
     setSelectedOrder(row);
     setIsModalOpen(true);
@@ -263,7 +267,7 @@ export default function HomeRu() {
       const unsubscribe = onSnapshot(userRef, (userDoc) => {
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setUserProfile({id: userDoc.id,  ...userData});
+          setUserProfile({ id: userDoc.id, ...userData });
           console.log(userData.accounts);
         } else {
           console.log("User document does not exist.");
@@ -1657,7 +1661,7 @@ export default function HomeRu() {
                   <div className="acc-profile-main-item">
                     <h6>{t("deposited")} (USD):</h6>
                     <h6>
-                      {deposits
+                      {accountDeposits
                         .filter(({ type }) => type === "Deposit")
                         .reduce((p, { sum }) => p + +sum, 0)}
                     </h6>
@@ -1665,7 +1669,7 @@ export default function HomeRu() {
                   <div className="acc-profile-main-item">
                     <h6>{t("withdrawn")} (USD):</h6>
                     <h6>
-                      {deposits
+                      {accountDeposits
                         .filter(({ type }) => type === "Withdraw")
                         .reduce((p, { sum }) => p + +sum, 0)}
                     </h6>
@@ -1924,7 +1928,7 @@ export default function HomeRu() {
                 <div className="transactions-table">
                   <DataTable
                     columns={depositsColumns}
-                    data={fillArrayWithEmptyRows(deposits, 5)}
+                    data={fillArrayWithEmptyRows(accountDeposits, 5)}
                     customStyles={{
                       table: {
                         style: {
