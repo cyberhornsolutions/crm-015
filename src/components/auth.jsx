@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import axios from "axios";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -12,9 +11,9 @@ import { toastify } from "../helper/toastHelper";
 import {
   addUserNewBalance,
   updateOnlineStatus,
-  getBlockedIPs,
 } from "../helper/firebaseHelpers";
-import { getIPRange } from "../helper/helpers";
+// import "./style.css";
+// import { toastify } from "react-toastify";
 
 export default function Auth() {
   const [tab, setTab] = useState(1);
@@ -25,23 +24,11 @@ export default function Auth() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [referralCode, setReferralCode] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    const [ip, blockedIps] = await Promise.all([
-      axios.get("https://api.ipify.org").then((res) => res.data),
-      getBlockedIPs(),
-    ]);
-    console.log("ip ====> ", ip);
-    for (let { firstIp, secondIp } of blockedIps) {
-      if (ip === firstIp || ip === secondIp)
-        return toastify("You are blocked to login");
-      const ipRange = getIPRange(firstIp, secondIp);
-      if (ipRange.includes(ip)) return toastify("You are blocked to login");
-    }
-
     signInWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        await updateOnlineStatus(userCredential?.user?.uid, true);
+      .then((userCredential) => {
+        updateOnlineStatus(userCredential?.user?.uid, true);
         localStorage.setItem("USER", JSON.stringify(userCredential));
         window.location.href = "/";
       })
@@ -121,7 +108,7 @@ export default function Auth() {
           if (message.includes("email-already-in-use")) {
             toastify("Email already exists.");
           } else if (message.includes("weak-password")) {
-            toastify("Password must be at least 6 characters.");
+            toastify("Password must be atleast 6 characters.");
           } else {
             toastify(message);
           }
