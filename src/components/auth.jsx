@@ -86,7 +86,6 @@ export default function Auth() {
           setDoc(userRef, {
             name: userName, // Replace with the actual user's name
             email: user.email,
-            totalBalance: 100,
             status: "New",
             createdAt: serverTimestamp(),
             refCode: generateRandomCode(8),
@@ -96,11 +95,6 @@ export default function Auth() {
             isUserEdited: false,
           })
             .then(() => {
-              addUserNewBalance(user.uid, 100)
-                .then((data) => {
-                  console.log("Balance added");
-                })
-                .catch((error) => console.log(error));
               console.log("User data added to Firestore");
               signOut(auth)
                 .then(() => {

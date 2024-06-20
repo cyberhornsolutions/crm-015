@@ -271,7 +271,6 @@ export default function HomeRu() {
           console.log(userData.accounts);
         } else {
           console.log("User document does not exist.");
-          setUserProfile(null);
         }
       });
       return unsubscribe;
