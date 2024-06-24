@@ -927,17 +927,6 @@ export default function HomeRu() {
 
   const totalBalance = freeMargin + totalMargin + bonus;
 
-  let potentialSL = 0,
-    potentialTP = 0;
-  if (orderData.symbolValue) {
-    const settings = orderData?.symbolSettings || {};
-    const lot = settings.group === "commodities" ? +settings.lot || 1 : 1;
-    if (orderData.sl)
-      potentialSL = orderData.volume * lot * orderData.sl - orderData.fee;
-    if (orderData.tp)
-      potentialTP = orderData.volume * lot * orderData.tp - orderData.fee;
-  }
-
   const handleAccountChange = async (e) => {
     const updatedAccounts = userProfile?.accounts?.map((account) => ({
       ...account,
@@ -1414,9 +1403,6 @@ export default function HomeRu() {
                       }
                       value={orderData?.sl}
                     />
-                    <label className="mt-1">
-                      Potential: {+parseFloat(potentialSL)?.toFixed(2)}
-                    </label>
                     <label htmlFor="take-profit">TP</label>
                     <input
                       type="number"
@@ -1428,11 +1414,8 @@ export default function HomeRu() {
                       }
                       value={orderData?.tp}
                     />
-                    <label className="mt-1">
-                      Potential: {+parseFloat(potentialTP)?.toFixed(2)}
-                    </label>
                     <button
-                      className="newOrderButton btn btn-success mt-1 rounded border-0"
+                      className="newOrderButton btn btn-success mt-3 rounded border-0"
                       onClick={(e) => {
                         placeOrder(e, "Buy");
                       }}

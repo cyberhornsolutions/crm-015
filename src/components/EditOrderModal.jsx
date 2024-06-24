@@ -53,8 +53,18 @@ const EditOrderModal = ({ onClose, selectedOrder, theme }) => {
   let potentialSL = 0,
     potentialTP = 0;
   if (selectedOrder.symbolValue) {
-    if (newSl) potentialSL = selectedOrder.volume * newSl - selectedOrder.fee;
-    if (newTp) potentialTP = selectedOrder.volume * newTp - selectedOrder.fee;
+    if (newSl) {
+      potentialSL =
+        selectedOrder.volume * (newSl - selectedOrder.symbolValue) -
+        selectedOrder.fee;
+      if (selectedOrder.type === "Sell") potentialSL = -potentialSL;
+    }
+    if (newTp) {
+      potentialTP =
+        selectedOrder.volume * (newTp - selectedOrder.symbolValue) -
+        selectedOrder.fee;
+      if (selectedOrder.type === "Sell") potentialTP = -potentialTP;
+    }
   }
 
   return (
