@@ -630,7 +630,7 @@ export default function HomeRu() {
 
   const getValue = (s) => {
     if (!s) return toast.error("No symbol");
-    const symbol = dbSymbols?.find((el) => el.symbol == s.value);
+    const symbol = dbSymbols?.find((el) => el.symbol === s.value);
     if (!symbol) return;
     const { fee = 0, feeUnit } = symbol.settings;
     const symbolFee = feeUnit === "$" ? fee : (symbol?.price / 100) * fee;
@@ -855,16 +855,6 @@ export default function HomeRu() {
       await addDoc(ordersCollectionRef, dealPayload);
       await updateUserById(currentUserId, userPayload);
       toastify("Order added to Database", "success");
-      setOrderData({
-        symbol: null,
-        symbolValue: null,
-        symbolId: null,
-        symbolSettings: null,
-        volume: 0,
-        sl: null,
-        tp: null,
-        fee: null,
-      });
       form.reset();
     } catch (error) {
       console.error("Error adding order: ", error);
@@ -1204,7 +1194,13 @@ export default function HomeRu() {
                           cursor: "pointer",
                           position: "relative",
                         }}
-                        onClick={() => setActiveTab(tab)}
+                        onClick={() => {
+                          getValue({
+                            value: tab,
+                            label: tab,
+                          });
+                          setActiveTab(tab);
+                        }}
                       >
                         {tab}
                         <CloseCircleOutline
