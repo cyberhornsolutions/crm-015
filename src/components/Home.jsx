@@ -1432,8 +1432,8 @@ export default function HomeRu() {
             </div>
             <div
               id="nav-buttons"
-              className="d-flex align-items-center justify-content-around my-2"
-              style={{ height: "3%" }}
+              className="d-flex align-items-center justify-content-around py-4"
+              style={{ height: "4%" }}
             >
               <button
                 id="newDealButton"

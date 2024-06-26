@@ -695,7 +695,7 @@ acc-info-personal h3 {
   color: var(--main-textc);
   border-radius: 10px;
   border: 1px solid var(--bs-border-color);
-  height: 30px;
+  height: 28px;
   width: 140px;
   background-color: var(--bs-body-bg);
   box-shadow: 0px 0px 4px var(--seco-grayc);
