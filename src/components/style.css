@@ -557,7 +557,7 @@ acc-info-personal h3 {
 
 #trade {
   display: flex;
-  height: 62%;
+  height: 60%;
 }
 
 #newOrder {
@@ -695,7 +695,7 @@ acc-info-personal h3 {
   color: var(--main-textc);
   border-radius: 10px;
   border: 1px solid var(--bs-border-color);
-  height: 34px;
+  height: 30px;
   width: 140px;
   background-color: var(--bs-body-bg);
   box-shadow: 0px 0px 4px var(--seco-grayc);
@@ -725,16 +725,13 @@ acc-info-personal h3 {
   flex: 2;
   border: 1px solid var(--bs-border-color); /* Example border style */
   border-radius: 1px;
-  background-color: var(--bs-body-bg);
   /* max-height: 150px; Set the maximum height of the container */
   overflow: auto; /* Add a scrolling bar when content overflows */
   position: relative;
-  margin-top: 5px;
   /* height: 100%; */
   box-shadow: 0px 0px 10px rgba(55, 60, 75, 0.5);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 #orders nav {
   background-color: transparent !important;
