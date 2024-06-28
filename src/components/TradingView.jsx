@@ -854,6 +854,41 @@ export default function TradingView({
   // return () => clearInterval(id);
   // }, [chartData]);
 
+  useEffect(() => {
+    const stockToolsMenuWrapper = document.querySelector(
+      ".highcharts-menu-wrapper"
+    );
+    if (stockToolsMenuWrapper) {
+      const stockToolsToolBar = stockToolsMenuWrapper.children;
+      if (stockToolsToolBar) {
+        const liElements = stockToolsToolBar[0].children;
+        if (liElements) {
+          Array.from(liElements).forEach((li) => {
+            if (li.children.length > 1) {
+              const liChild = li.children;
+              const liChildButton = liChild[0];
+              const liChildUl = liChild[2];
+              if (liChildButton && liChildUl) {
+                liChildButton.addEventListener("click", () => {
+                  stockToolsMenuWrapper.style.width = "113px";
+                  li.classList.add("highcharts-current");
+                  liChildUl.style.display = "block";
+                  liChildUl.style.left = "43px";
+                  liChildUl.style.top = "0px";
+                });
+                liChildUl.addEventListener("click", () => {
+                  stockToolsMenuWrapper.style.removeProperty("width");
+                  li.classList.remove("highcharts-current");
+                  liChildUl.style.display = "none";
+                });
+              }
+            }
+          });
+        }
+      }
+    }
+  });
+
   return (
     <div className={hide ? "d-none" : "h-100"}>
       <HighchartsReact
