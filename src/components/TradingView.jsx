@@ -863,7 +863,7 @@ export default function TradingView({
       if (stockToolsToolBar) {
         const liElements = stockToolsToolBar[0].children;
         if (liElements) {
-          Array.from(liElements).forEach((li) => {
+          Array.from(liElements).forEach((li, index) => {
             if (li.children.length > 1) {
               const liChild = li.children;
               const liChildButton = liChild[0];
@@ -874,7 +874,13 @@ export default function TradingView({
                   li.classList.add("highcharts-current");
                   liChildUl.style.display = "block";
                   liChildUl.style.left = "43px";
-                  liChildUl.style.top = "0px";
+                  if (index === 11) {
+                    liChildUl.style.top = "-172px";
+                  } else if (index === 9) {
+                    liChildUl.style.top = "-129px";
+                  } else {
+                    liChildUl.style.top = "0px";
+                  }
                 });
                 liChildUl.addEventListener("click", () => {
                   stockToolsMenuWrapper.style.removeProperty("width");
