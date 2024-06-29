@@ -115,6 +115,18 @@ export default function TradingView({
     // chart.redraw(false);
   });
 
+  useEffect(() => {
+    const stockToolbar = document.querySelector(
+      "#chart > .h-100 .highcharts-stocktools-toolbar.stocktools-toolbar"
+    );
+    if (!stockToolbar) return;
+    stockToolbar.childNodes.forEach((li) => {
+      if (li.childElementCount !== 3) return;
+      const [btn, btn2, submenu] = li.childNodes;
+      btn.addEventListener("click", () => btn2.click());
+    });
+  });
+
   const options = {
     // title: {
     //   text: symbolName,
@@ -853,47 +865,6 @@ export default function TradingView({
   // const id = setInterval(updateChart, 1000 * 60);
   // return () => clearInterval(id);
   // }, [chartData]);
-
-  useEffect(() => {
-    const stockToolsMenuWrapper = document.querySelector(
-      ".highcharts-menu-wrapper"
-    );
-    if (stockToolsMenuWrapper) {
-      const stockToolsToolBar = stockToolsMenuWrapper.children;
-      if (stockToolsToolBar) {
-        const liElements = stockToolsToolBar[0].children;
-        if (liElements) {
-          Array.from(liElements).forEach((li, index) => {
-            if (li.children.length > 1) {
-              const liChild = li.children;
-              const liChildButton = liChild[0];
-              const liChildUl = liChild[2];
-              if (liChildButton && liChildUl) {
-                liChildButton.addEventListener("click", () => {
-                  stockToolsMenuWrapper.style.width = "113px";
-                  li.classList.add("highcharts-current");
-                  liChildUl.style.display = "block";
-                  liChildUl.style.left = "43px";
-                  if (index === 11) {
-                    liChildUl.style.top = "-172px";
-                  } else if (index === 9) {
-                    liChildUl.style.top = "-129px";
-                  } else {
-                    liChildUl.style.top = "0px";
-                  }
-                });
-                liChildUl.addEventListener("click", () => {
-                  stockToolsMenuWrapper.style.removeProperty("width");
-                  li.classList.remove("highcharts-current");
-                  liChildUl.style.display = "none";
-                });
-              }
-            }
-          });
-        }
-      }
-    }
-  });
 
   return (
     <div className={hide ? "d-none" : "h-100"}>
