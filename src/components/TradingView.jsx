@@ -115,17 +115,17 @@ export default function TradingView({
     // chart.redraw(false);
   });
 
-  useEffect(() => {
-    const stockToolbar = document.querySelector(
-      "#chart > .h-100 .highcharts-stocktools-toolbar.stocktools-toolbar"
-    );
-    if (!stockToolbar) return;
-    stockToolbar.childNodes.forEach((li) => {
-      if (li.childElementCount !== 3) return;
-      const [btn, btn2, submenu] = li.childNodes;
-      btn.addEventListener("click", () => btn2.click());
-    });
-  });
+  // useEffect(() => {
+  //   const stockToolbar = document.querySelector(
+  //     "#chart > .h-100 .highcharts-stocktools-toolbar.stocktools-toolbar"
+  //   );
+  //   if (!stockToolbar) return;
+  //   stockToolbar.childNodes.forEach((li) => {
+  //     if (li.childElementCount !== 3) return;
+  //     const [btn, btn2, submenu] = li.childNodes;
+  //     btn.addEventListener("click", () => btn2.click());
+  //   });
+  // });
 
   const options = {
     // title: {
