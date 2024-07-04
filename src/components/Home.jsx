@@ -715,7 +715,7 @@ export default function HomeRu() {
         : +orderData.volume;
 
     if (group === "commodities" && !closedMarket) {
-      const today = moment();
+      const today = moment().utc();
       const weekDay = today.weekday();
       const hour = today.hour();
       if (weekDay == 0 || weekDay == 6 || hour < 9 || hour >= 23) {
