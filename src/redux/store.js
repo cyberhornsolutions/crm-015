@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import symbolSlicer from "./slicer/symbolSlicer";
 import orderSlicer from "./slicer/orderSlicer";
 import transactionSlicer from "./slicer/transactionSlicer";
+import assetGroupsSlicer from "./slicer/assetGroupsSlicer";
 
 // const persistConfig = {
 //   key: "root",
@@ -25,6 +26,7 @@ export const store = configureStore({
     symbols: symbolSlicer,
     orders: orderSlicer,
     deposits: transactionSlicer,
+    assetGroups: assetGroupsSlicer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([]),
 });

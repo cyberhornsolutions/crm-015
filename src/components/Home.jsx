@@ -62,6 +62,7 @@ import {
   getDepositsByUser,
   getColumnsById,
   updateUserById,
+  getAssetGroups,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import MyBarChart from "./BarChart.js";
@@ -69,6 +70,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSymbolsState } from "../redux/slicer/symbolSlicer.js";
 import { setOrdersState } from "../redux/slicer/orderSlicer.js";
 import { setDepositsState } from "../redux/slicer/transactionSlicer.js";
+import { setAssetGroupsState } from "../redux/slicer/assetGroupsSlicer.js";
 import AddTradingSymbolModal from "./AddTradingSymbolModal.jsx";
 import {
   calculateProfit,
@@ -297,6 +299,10 @@ export default function HomeRu() {
     dispatch(setDepositsState(data));
   }, []);
 
+  const setGroups = useCallback((data) => {
+    dispatch(setAssetGroupsState(data));
+  }, []);
+
   useEffect(() => {
     if (theme !== "dark") {
       const root = document.querySelector("html");
@@ -366,10 +372,13 @@ export default function HomeRu() {
 
     getColumnsById(currentUserId, setShowColumns);
 
+    const unSubGroup = getAssetGroups(setGroups);
+
     return () => {
       unsubUserData();
       if (unsubOrderData) unsubOrderData();
       unsubDeposits();
+      unSubGroup();
     };
   }, [currentUserId]);
 
