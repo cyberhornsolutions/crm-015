@@ -557,7 +557,6 @@ acc-info-personal h3 {
 
 #trade {
   display: flex;
-  height: 60%;
 }
 
 #newOrder {
@@ -1139,3 +1138,11 @@ select,
 textarea {
   font-size: 0.9rem;
 } */
+
+#resize-bar {
+  background-color: var(--main-textc);
+  border-radius: 2px;
+  cursor: n-resize;
+  height: 4px;
+  width: 10%;
+}

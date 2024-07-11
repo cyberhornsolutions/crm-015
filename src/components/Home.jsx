@@ -122,7 +122,7 @@ export default function HomeRu() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [activeTab, setActiveTab] = useState(gameConfigs.activeTab || "Gold");
   const [tabs, setTabs] = useState([]);
-
+  const [isHidden, setIsHidden] = useState(false);
   const [showNewOrderPanel, setShowNewOrderPanel] = useState(
     gameConfigs.showNewOrderPanel || false
   );
@@ -930,6 +930,42 @@ export default function HomeRu() {
     }
   };
 
+  useEffect(() => {
+    if (isHidden) return;
+    const maxHeightPercentage = 92;
+    const minHeightPercentage = 58.5;
+    const ordersDiv = document.getElementById("orders");
+    const resizeBar = document.getElementById("resize-bar");
+    const tradeDiv = document.getElementById("trade");
+    const handleMouseDown = (e) => {
+      e.preventDefault();
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    };
+    const handleMouseMove = (e) => {
+      const windowHeight = window.innerHeight;
+      let currentHeightPercentage = (e.clientY / windowHeight) * 100;
+      currentHeightPercentage = Math.min(
+        currentHeightPercentage,
+        maxHeightPercentage
+      );
+      currentHeightPercentage = Math.max(
+        currentHeightPercentage,
+        minHeightPercentage
+      );
+      tradeDiv.style.height = `${currentHeightPercentage}%`;
+      ordersDiv.style.height = `${96 - currentHeightPercentage}%`;
+    };
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+    resizeBar.addEventListener("mousedown", handleMouseDown);
+    return () => {
+      resizeBar.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, [isHidden]);
+
   return (
     <>
       {/* <div>
@@ -1148,7 +1184,13 @@ export default function HomeRu() {
               tab === "trade" || tab === "assets" ? "" : "d-none"
             }`}
           >
-            <div id="trade" className={showHistoryPanel ? "d-none" : ""}>
+            <div
+              className={showHistoryPanel ? "d-none" : ""}
+              id="trade"
+              style={{
+                height: isHidden ? "92%" : "58.5%",
+              }}
+            >
               <div
                 id="assets"
                 className={`h-100 px-1 ${tab === "assets" ? "" : "d-none"}`}
@@ -1470,79 +1512,100 @@ export default function HomeRu() {
               id="orders"
               className="rounded"
               style={{
-                height: "36%",
+                height: isHidden ? "" : "37.5%",
                 overflow: "auto",
               }}
             >
-              <Tabs
-                activeKey={dealsTab}
-                onSelect={(k) => setDealsTab(k)}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  setShowColumnsModal(true);
+              <div
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                  height: isHidden ? "" : "16px",
+                  justifyContent: "space-between",
                 }}
               >
-                <Tab eventKey="activeTab" title="Active">
-                  <DataTable
-                    columns={dealsColumns({
-                      t,
-                      handleEditModal,
-                      handleCloseBtn,
-                      showColumns,
-                    })}
-                    data={fillArrayWithEmptyRows(
-                      activeOrders,
-                      5 - (activeOrders.length % 5) + activeOrders.length
-                    )}
-                    pagination
-                    paginationTotalRows={activeOrders.length}
-                    paginationComponentOptions={{
-                      noRowsPerPage: 1,
-                      // rowsPerPageText: "ok",
-                      // rangeSeparatorText: "ok"
-                    }}
-                    paginationPerPage={5}
-                    // paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
-                    highlightOnHover
-                    pointerOnHover
-                    responsive
-                    dense
-                    theme={theme}
-                    onRowDoubleClicked={handleDoubleClickOnOrders}
-                    customStyles={customStylesOnDeals}
-                    conditionalRowStyles={conditionalRowStylesOnOrders}
-                  />
-                </Tab>
-                <Tab eventKey="delayedTab" title="Delayed">
-                  <DataTable
-                    columns={dealsColumns({
-                      t,
-                      handleEditModal,
-                      handleCloseBtn,
-                      showColumns,
-                    }).filter(({ name }) => name !== "Profit")}
-                    data={fillArrayWithEmptyRows(
-                      delayedOrders,
-                      5 - (delayedOrders.length % 5) + delayedOrders.length
-                    )}
-                    pagination
-                    paginationPerPage={5}
-                    paginationTotalRows={delayedOrders.length}
-                    paginationComponentOptions={{
-                      noRowsPerPage: 1,
-                    }}
-                    // paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
-                    highlightOnHover
-                    pointerOnHover
-                    responsive
-                    dense
-                    theme={theme}
-                    // onRowDoubleClicked={handleDoubleClickOnOrders}
-                    customStyles={customStylesOnDeals}
-                    conditionalRowStyles={conditionalRowStylesOnOrders}
-                  />
-                </Tab>
-              </Tabs>
+                <div style={{ visibility: "hidden" }}></div>
+                {!isHidden && <div id="resize-bar"></div>}
+                <button
+                  className="btn btn-secondary btn-sm px-4"
+                  onClick={() => {
+                    setIsHidden(!isHidden);
+                  }}
+                >
+                  {isHidden ? "Show deals" : "Hide deals"}
+                </button>
+              </div>
+              {!isHidden && (
+                <Tabs
+                  activeKey={dealsTab}
+                  onSelect={(k) => setDealsTab(k)}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setShowColumnsModal(true);
+                  }}
+                >
+                  <Tab eventKey="activeTab" title="Active">
+                    <DataTable
+                      columns={dealsColumns({
+                        t,
+                        handleEditModal,
+                        handleCloseBtn,
+                        showColumns,
+                      })}
+                      data={fillArrayWithEmptyRows(
+                        activeOrders,
+                        5 - (activeOrders.length % 5) + activeOrders.length
+                      )}
+                      pagination
+                      paginationTotalRows={activeOrders.length}
+                      paginationComponentOptions={{
+                        noRowsPerPage: 1,
+                        // rowsPerPageText: "ok",
+                        // rangeSeparatorText: "ok"
+                      }}
+                      paginationPerPage={5}
+                      // paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                      highlightOnHover
+                      pointerOnHover
+                      responsive
+                      dense
+                      theme={theme}
+                      onRowDoubleClicked={handleDoubleClickOnOrders}
+                      customStyles={customStylesOnDeals}
+                      conditionalRowStyles={conditionalRowStylesOnOrders}
+                    />
+                  </Tab>
+                  <Tab eventKey="delayedTab" title="Delayed">
+                    <DataTable
+                      columns={dealsColumns({
+                        t,
+                        handleEditModal,
+                        handleCloseBtn,
+                        showColumns,
+                      }).filter(({ name }) => name !== "Profit")}
+                      data={fillArrayWithEmptyRows(
+                        delayedOrders,
+                        5 - (delayedOrders.length % 5) + delayedOrders.length
+                      )}
+                      pagination
+                      paginationPerPage={5}
+                      paginationTotalRows={delayedOrders.length}
+                      paginationComponentOptions={{
+                        noRowsPerPage: 1,
+                      }}
+                      // paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
+                      highlightOnHover
+                      pointerOnHover
+                      responsive
+                      dense
+                      theme={theme}
+                      // onRowDoubleClicked={handleDoubleClickOnOrders}
+                      customStyles={customStylesOnDeals}
+                      conditionalRowStyles={conditionalRowStylesOnOrders}
+                    />
+                  </Tab>
+                </Tabs>
+              )}
             </div>
           </div>
           {tab === "account" && (
