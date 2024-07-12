@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { addQuotesToUser } from "../helper/firebaseHelpers";
+import { useSelector } from "react-redux";
 
-const groups = [
+let groups = [
   {
     key: "Crypto",
     value: "crypto",
@@ -29,6 +30,7 @@ const AddTradingSymbol = ({
   userQuotes,
   userId,
 }) => {
+  const assetGroups = useSelector((state) => state.assetGroups);
   const [formData, setFormData] = useState({ symbol: "" });
   const [group, setGroup] = useState("crypto");
   const { symbol } = formData;
@@ -69,6 +71,14 @@ const AddTradingSymbol = ({
   };
 
   const filteredSymbols = symbols.filter((s) => s?.settings?.group === group);
+
+  useEffect(() => {
+    if (assetGroups.length > 0) {
+      assetGroups.forEach((g) => {
+        groups.push({ key: g.title, value: g.title });
+      });
+    }
+  }, []);
 
   return (
     <div>
