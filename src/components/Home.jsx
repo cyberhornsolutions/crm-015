@@ -113,6 +113,7 @@ export default function HomeRu() {
     tp: null,
     fee: null,
   });
+  const assetGroups = useSelector((state) => state.assetGroups);
   const orders = useSelector((state) => state.orders);
   const deposits = useSelector((state) => state.deposits);
   const [uploadModal, setUploadModal] = useState(false);
@@ -675,6 +676,12 @@ export default function HomeRu() {
   };
   const calculatedSum = calculateTotalSum();
 
+  const checkClosedMarketStatus = (t) => {
+    const group = assetGroups.find((g) => g.title === t);
+    if (!group) return false;
+    return group.closedMarket;
+  };
+
   const placeOrder = async (e, type) => {
     e.preventDefault();
     if (!defaultAccount)
@@ -723,12 +730,19 @@ export default function HomeRu() {
         ? +orderData.volume * +lot
         : +orderData.volume;
 
-    if (group === "commodities" && !closedMarket) {
+    if (
+      (group === "commodities" && !closedMarket) ||
+      (checkClosedMarketStatus(group) && !closedMarket)
+    ) {
       const today = moment().utc();
       const weekDay = today.weekday();
       const hour = today.hour();
       if (weekDay == 0 || weekDay == 6 || hour < 9 || hour >= 23) {
-        return toast.error("Commodities Market open on Mon-Fri: 9AM-23PM");
+        return toast.error(
+          `${
+            group === "commodities" ? "Commodities" : group
+          } Market open on Mon-Fri: 9AM-23PM`
+        );
       }
     }
 
