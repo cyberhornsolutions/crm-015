@@ -27,7 +27,10 @@ const AccountModal = ({ onClose, userProfile }) => {
   }, []);
 
   const createNewAccount = async () => {
-    if (userProfile?.accounts?.length === 2)
+    if (
+      userProfile?.accounts?.length === 2 &&
+      userProfile?.accounts?.find((a) => !a?.isDeleted)
+    )
       return toast.error("You have reached max account limit");
     try {
       setIsLoading(true);
@@ -37,15 +40,16 @@ const AccountModal = ({ onClose, userProfile }) => {
           isDefault: false,
         })) || [];
       accounts.push({
-        account_type: accountType,
         account_no: accountNo,
-        isDefault: true,
-        totalBalance: 0,
+        account_type: accountType,
         activeOrdersProfit: 0,
         activeOrdersSwap: 0,
-        totalMargin: 0,
         bonus: 0,
         bonusSpent: 0,
+        isDefault: true,
+        isDeleted: false,
+        totalBalance: 0,
+        totalMargin: 0,
       });
       await updateUserById(userProfile.id, { accounts });
       await incrementLastAccountNo();

@@ -185,7 +185,10 @@ export default function HomeRu() {
   const [showAccountModal, setShowAccountModal] = useState(false);
 
   const accounts = userProfile.accounts || [];
-  const defaultAccount = accounts.find((account) => account.isDefault) || {};
+  const defaultAccount =
+    accounts
+      .filter((acc) => !acc?.isDeleted)
+      ?.find((account) => account.isDefault) || {};
 
   const accountDeposits = deposits.filter(
     ({ account_no }) => account_no === defaultAccount?.account_no
@@ -1661,10 +1664,12 @@ export default function HomeRu() {
                     </label>
                     <Select
                       id="account-input"
-                      options={accounts.map((account) => ({
-                        value: account.account_no,
-                        label: account.account_no,
-                      }))}
+                      options={accounts
+                        .filter((acc) => !acc?.isDeleted)
+                        ?.map((account) => ({
+                          value: account.account_no,
+                          label: account.account_no,
+                        }))}
                       onChange={handleAccountChange}
                       value={{
                         value: defaultAccount?.account_no,
