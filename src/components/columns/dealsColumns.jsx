@@ -12,12 +12,12 @@ const dealsColumns = ({
   handleCloseBtn,
   showColumns = {},
 } = {}) => [
-  {
-    name: "Id",
-    selector: (row, i) => row && i + 1,
-    grow: 0.5,
-    omit: !showColumns.id,
-  },
+  // {
+  //   name: "Id",
+  //   selector: (row, i) => row && i + 1,
+  //   grow: 0.5,
+  //   omit: !showColumns.id,
+  // },
   {
     name: t("date"), // Translate the header using your t function
     selector: (row) => row.createdTime && row.createdTime,

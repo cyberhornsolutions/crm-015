@@ -147,6 +147,7 @@ export default function HomeRu() {
   const [openPriceValue, setOpenPriceValue] = useState(null);
   const [isTradingModal, setIsTradingModal] = useState(false);
   const [activeAccountNo, setActiveAccountNo] = useState(null);
+  const [dealsRow, setDealsRow] = useState(5);
 
   const [userProfile, setUserProfile] = useState({
     name: "",
@@ -981,6 +982,18 @@ export default function HomeRu() {
       );
       tradeDiv.style.height = `${currentHeightPercentage}%`;
       ordersDiv.style.height = `${96 - currentHeightPercentage}%`;
+      let rows = 5;
+      if (currentHeightPercentage > 58.5) rows = 4;
+      if (currentHeightPercentage > 60) rows = 3;
+      if (currentHeightPercentage > 65) rows = 2;
+      if (currentHeightPercentage > 70) rows = 1;
+      if (currentHeightPercentage > 75) {
+        setIsHidden(true);
+        ordersDiv.style.height = "4%";
+        tradeDiv.style.height = "92%";
+        rows = 5;
+      }
+      setDealsRow(rows);
     };
     const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);
@@ -1572,6 +1585,7 @@ export default function HomeRu() {
                 >
                   <Tab eventKey="activeTab" title="Active">
                     <DataTable
+                      key={dealsRow}
                       columns={dealsColumns({
                         t,
                         handleEditModal,
@@ -1580,7 +1594,9 @@ export default function HomeRu() {
                       })}
                       data={fillArrayWithEmptyRows(
                         activeOrders,
-                        5 - (activeOrders.length % 5) + activeOrders.length
+                        dealsRow -
+                          (activeOrders.length % dealsRow) +
+                          activeOrders.length
                       )}
                       pagination
                       paginationTotalRows={activeOrders.length}
@@ -1589,7 +1605,7 @@ export default function HomeRu() {
                         // rowsPerPageText: "ok",
                         // rangeSeparatorText: "ok"
                       }}
-                      paginationPerPage={5}
+                      paginationPerPage={dealsRow}
                       // paginationRowsPerPageOptions={[5, 10, 15, 20, 50]}
                       highlightOnHover
                       pointerOnHover
@@ -1603,6 +1619,7 @@ export default function HomeRu() {
                   </Tab>
                   <Tab eventKey="delayedTab" title="Delayed">
                     <DataTable
+                      key={dealsRow}
                       columns={dealsColumns({
                         t,
                         handleEditModal,
@@ -1611,10 +1628,12 @@ export default function HomeRu() {
                       }).filter(({ name }) => name !== "Profit")}
                       data={fillArrayWithEmptyRows(
                         delayedOrders,
-                        5 - (delayedOrders.length % 5) + delayedOrders.length
+                        dealsRow -
+                          (delayedOrders.length % dealsRow) +
+                          delayedOrders.length
                       )}
                       pagination
-                      paginationPerPage={5}
+                      paginationPerPage={dealsRow}
                       paginationTotalRows={delayedOrders.length}
                       paginationComponentOptions={{
                         noRowsPerPage: 1,
