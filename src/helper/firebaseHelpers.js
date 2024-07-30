@@ -13,7 +13,7 @@ import {
   setDoc,
   orderBy,
   getDocs,
-} from "firebase/firestore";
+  } from "firebase/firestore";
 import { db } from "../firebase";
 import { convertTimestamptToDate } from "./helpers";
 
@@ -508,4 +508,12 @@ export const getAssetGroups = (setState) => {
   } catch (error) {
     console.error("Error: ", error);
   }
+};
+
+export const addPlayerLogs = async (action, userId) => {
+  return await addDoc(collection(db, "playerLogs"), {
+    action: action,
+    date: serverTimestamp(),
+    userId: userId,
+  });
 };

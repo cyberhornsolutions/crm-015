@@ -13,6 +13,7 @@ import {
   addUserNewBalance,
   updateOnlineStatus,
   getBlockedIPs,
+  addPlayerLogs,
 } from "../helper/firebaseHelpers";
 import { getIPRange } from "../helper/helpers";
 
@@ -42,6 +43,7 @@ export default function Auth() {
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         await updateOnlineStatus(userCredential?.user?.uid, true);
+        await addPlayerLogs("Logged in", userCredential?.user?.uid);
         localStorage.setItem("USER", JSON.stringify(userCredential));
         window.location.href = "/";
       })

@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { toast } from "react-toastify";
-import { updateUserById } from "../helper/firebaseHelpers";
+import { addPlayerLogs, updateUserById } from "../helper/firebaseHelpers";
 
 const DelOrderModal = ({
   onClose,
@@ -148,6 +148,7 @@ const DelOrderModal = ({
           // const orderPrice = volume * closedPrice;
           // await updateUserBalance(orderPrice);
           onClose();
+          await addPlayerLogs("Closed deal partially", userProfile?.id);
         } catch (error) {
           console.log(error);
           toast.error(error.message);
@@ -161,6 +162,7 @@ const DelOrderModal = ({
         // const orderPrice = volume * closedPrice;
         // await updateUserBalance(orderPrice);
         onClose();
+        await addPlayerLogs("Closed deal", userProfile?.id);
       } catch (error) {
         console.log(error);
         toast.error(error.message);

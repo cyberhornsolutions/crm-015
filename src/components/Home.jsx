@@ -63,6 +63,7 @@ import {
   getColumnsById,
   updateUserById,
   getAssetGroups,
+  addPlayerLogs,
 } from "../helper/firebaseHelpers.js";
 import { toast } from "react-toastify";
 import MyBarChart from "./BarChart.js";
@@ -262,6 +263,7 @@ export default function HomeRu() {
       const user = auth.currentUser;
       const userRef = doc(db, "users", user.uid);
       await setDoc(userRef, newProfile);
+      await addPlayerLogs("Personal information updated", user.uid);
     } catch (error) {
       console.error("Error saving data to Firestore:", error);
     }
@@ -389,6 +391,7 @@ export default function HomeRu() {
 
   const hanldeLogout = async () => {
     await updateOnlineStatus(currentUserId, false);
+    await addPlayerLogs("Logged out", currentUserId);
     await signOut(auth)
       .then(async () => {
         localStorage.clear();
@@ -882,6 +885,7 @@ export default function HomeRu() {
       await addDoc(ordersCollectionRef, dealPayload);
       await updateUserById(currentUserId, userPayload);
       toastify("Order added to Database", "success");
+      await addPlayerLogs(`Opened new deal: ${type}`, currentUserId);
       form.reset();
     } catch (error) {
       console.error("Error adding order: ", error);
