@@ -1,43 +1,53 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  addPlayerLogs,
+  getBlockedIPs,
+  updateOnlineStatus,
+} from "../helper/firebaseHelpers";
 import { auth, db } from "../firebase";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import axios from "axios";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { toastify } from "../helper/toastHelper";
-import {
-  addUserNewBalance,
-  updateOnlineStatus,
-  getBlockedIPs,
-  addPlayerLogs,
-} from "../helper/firebaseHelpers";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { getIPRange } from "../helper/helpers";
+import { signOut } from "firebase/auth";
+import { toastify } from "../helper/toastHelper";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import React, { useState } from "react";
 
 export default function Auth() {
-  const [tab, setTab] = useState(1);
-  const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [referralCode, setReferralCode] = useState("");
+  const [tab, setTab] = useState(1);
+  const [userName, setUserName] = useState("");
+  const navigate = useNavigate();
+
+  function generateRandomCode(length) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let code = "";
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      code += characters.charAt(randomIndex);
+    }
+    return code;
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     const [ip, blockedIps] = await Promise.all([
       axios.get("https://api.ipify.org").then((res) => res.data),
       getBlockedIPs(),
     ]);
-    console.log("ip ====> ", ip);
+
     for (let { firstIp, secondIp } of blockedIps) {
-      if (ip === firstIp || ip === secondIp)
-        return toastify("You are blocked to login");
+      if (ip === firstIp || ip === secondIp) return toastify("Unable to login");
       const ipRange = getIPRange(firstIp, secondIp);
-      if (ipRange.includes(ip)) return toastify("You are blocked to login");
+      if (ipRange.includes(ip)) return toastify("Unable to login");
     }
 
     signInWithEmailAndPassword(auth, email, password)
@@ -59,182 +69,206 @@ export default function Auth() {
         }
       });
   };
-  function generateRandomCode(length) {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let code = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      code += characters.charAt(randomIndex);
-    }
-    return code;
-  }
+
   const handleSignUp = (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
-      toastify("Passwords do not match.");
+      toastify("Password does not match");
     } else {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-
-          console.log("User ==>", user);
-
-          // Create a formatted date string
-          const formattedDate = new Date().toLocaleDateString("en-US");
-
-          // Add user data to Firestore
           const userRef = doc(db, "users", user.uid);
           setDoc(userRef, {
-            name: userName, // Replace with the actual user's name
-            email: user.email,
-            status: "New",
             createdAt: serverTimestamp(),
-            refCode: generateRandomCode(8),
-            useRefCode: referralCode,
-            onlineStatus: false,
-            role: "user",
+            email: user.email,
             isUserEdited: false,
+            name: userName,
+            onlineStatus: false,
+            refCode: generateRandomCode(8),
+            role: "user",
+            status: "Xsd9VUhM2geOW8w8HDsI",
+            useRefCode: referralCode,
           })
             .then(() => {
-              console.log("User data added to Firestore");
               signOut(auth)
                 .then(() => {
-                  console.log("Signout The User");
                   navigate("/");
                 })
                 .catch((error) => {
-                  console.log("Signout The User Exception");
+                  console.error("Failed to sign out: ", error);
                 });
             })
             .catch((error) => {
-              console.error("Error adding user data to Firestore:", error);
+              console.error("Failed to create user: ", error);
             });
         })
         .catch((error) => {
           let { message } = error;
           console.error(message);
           if (message.includes("email-already-in-use")) {
-            toastify("Email already exists.");
+            toastify("Email already exists");
           } else if (message.includes("weak-password")) {
-            toastify("Password must be at least 6 characters.");
+            toastify("Password must be at least 6 characters");
           } else {
             toastify(message);
           }
         });
     }
   };
+
   return (
     <>
       {tab === 1 ? (
         <form className="login_form" id="loginForm" onSubmit={handleLogin}>
-          <div id="logo_wrapper" className="logo_wrapper">
-            <img
-              className="logo"
-              src={require("../assets/images/logo.png")}
-              alt="logo"
-            />
-          </div>
-
+          <h1>Log in</h1>
           <div className="fields">
             <input
               className="email_input"
-              type="email"
-              placeholder="Электронная почта"
               name="email"
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Username or Email"
               required
+              type="email"
             />
             <input
               className="psw_input"
-              type="password"
-              placeholder="Пароль"
               name="psw"
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
               required
+              type="password"
             />
           </div>
-
           <button className="button" type="submit">
-            Войти
+            Log in
           </button>
-
-          <div className="signup_wrapper">
-            <p className="sign_up">Нет аккаунта?</p>
-            <a
-              className="sign_up_link cursor-pointer"
-              onClick={() => setTab(2)}
+          <br />
+          <hr className="or_text" />
+          <br />
+          <button
+            className="d-flex align-items-center w-100"
+            style={{
+              backgroundColor: "#4285F4",
+              border: "none",
+              borderRadius: "5px",
+              margin: "4px 0",
+              padding: "8px 0",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <div style={{ backgroundColor: "transparent", width: "20%" }}>
+              <img
+                alt=""
+                height={20}
+                src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Search_GSA.original.png"
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+            <span style={{ backgroundColor: "transparent", width: "80%" }}>
+              Continue with Google
+            </span>
+          </button>
+          <button
+            className="d-flex align-items-center w-100"
+            style={{
+              backgroundColor: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              margin: "4px 0 64px 0",
+              padding: "8px 0",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <div style={{ backgroundColor: "transparent", width: "20%" }}>
+              <img
+                alt=""
+                height={20}
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/625px-Apple_logo_black.svg.png"
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: "5px",
+                }}
+                width="auto"
+              />
+            </div>
+            <span
+              style={{
+                backgroundColor: "transparent",
+                color: "#000",
+                width: "80%",
+              }}
             >
-              Зарегистрироваться
-            </a>
+              Continue with Apple
+            </span>
+          </button>
+          <div className="signup_wrapper">
+            <hr className="signup_text" />
+            <button className="sign_up_link" onClick={() => setTab(2)}>
+              Sign Up
+            </button>
           </div>
         </form>
       ) : (
         <form className="signup_form" onSubmit={handleSignUp}>
-          <div id="signup_logo_wrapper" className="logo_wrapper">
-            <img
-              className="signup_logo"
-              src={require("../assets/images/logo.png")}
-              alt="logo"
-            />
-            <h3 className="signup_title">Регистрация</h3>
-          </div>
-
+          <h1 className="signup_title">Sign Up</h1>
           <div className="fields">
             <input
               className="name_input"
-              type="text"
-              placeholder="Имя"
               name="name"
               onChange={(e) => setUserName(e.target.value)}
+              placeholder="Name"
               required
+              type="text"
             />
-
             <input
               className="email_input"
-              type="email"
-              placeholder="Электронная почта"
               name="email"
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
               required
+              type="email"
             />
-
             <input
               className="psw_input"
-              type="password"
-              placeholder="Пароль"
               name="psw"
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
               required
+              type="password"
             />
-
             <input
               className="psw_input"
-              type="password"
-              placeholder="Повторите пароль"
               name="psw"
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Repeat Password"
               required
+              type="password"
             />
-
             <input
               className="psw_input"
-              type="text"
-              placeholder="реферальный код"
               name="psw"
               onChange={(e) => setReferralCode(e.target.value)}
+              placeholder="Referral Code"
+              type="text"
             />
           </div>
-
           <button className="button" type="submit">
-            Зарегистрироваться
+            Sign Up
           </button>
-
-          <div className="login_wrapper">
-            <p className="login">Есть аккаунт?</p>
-            <a className="login_link cursor-pointer" onClick={() => setTab(1)}>
-              Войти
-            </a>
+          <div className="login_wrapper" style={{ marginTop: "64px" }}>
+            <hr className="login_text" />
+            <button className="login_link " onClick={() => setTab(1)}>
+              Log in
+            </button>
           </div>
         </form>
       )}
