@@ -996,6 +996,7 @@ export default function HomeRu() {
         ordersDiv.style.height = "4%";
         tradeDiv.style.height = "92%";
         rows = 5;
+        handleMouseUp();
       }
       setDealsRow(rows);
     };
@@ -1572,6 +1573,7 @@ export default function HomeRu() {
                 <button
                   className="btn btn-secondary btn-sm px-4"
                   onClick={() => {
+                    isHidden && setDealsRow(5);
                     setIsHidden(!isHidden);
                   }}
                 >
