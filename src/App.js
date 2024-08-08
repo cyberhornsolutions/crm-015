@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Auth from "./components/auth";
 import Home from "./components/Home";
@@ -26,6 +26,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "highcharts/css/stocktools/gui.css";
 import "highcharts/css/annotations/popup.css";
 import "./components/style.css";
+
+import blurImg from "./assets/images/blur-dark.png";
+
 const App = () => {
   const [isLogin, setIsLogin] = useState(() =>
     localStorage.getItem("USER") ? true : false
@@ -38,6 +41,18 @@ const App = () => {
   //     </Routes>
   //   </Router>
   // );
+
+  useEffect(() => {
+    const root = document.getElementById("root");
+    if (isLogin) {
+      root.removeAttribute("style");
+      return;
+    }
+    root.style.backgroundImage = `url(${blurImg})`;
+    root.style.backgroundPosition = "center";
+    root.style.backgroundRepeat = "no-repeat";
+    root.style.backgroundSize = "cover";
+  }, [isLogin]);
 
   const router = createBrowserRouter(
     createRoutesFromElements(<Route path="/" Component={Auth} />)

@@ -1,12 +1,12 @@
 const languages = {
+  arabic: require("./arabic.png"),
+  // chinese: require("./chinese.png"),
   english: require("./english.png"),
-  spanish: require("./spanish.png"),
   german: require("./german.png"),
+  // hindi: require("./hindi.png"),
   // portuguese: require("./portuguese.png"),
   russian: require("./russian.png"),
-  // chinese: require("./chinese.png"),
-  arabic: require("./arabic.png"),
-  // hindi: require("./hindi.png"),
+  spanish: require("./spanish.png"),
 };
 
 export default languages;
