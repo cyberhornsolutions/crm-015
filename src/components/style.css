@@ -980,7 +980,7 @@ thead {
   color: #fff;
   content: "Don't have an account?";
   left: 50%;
-  padding: 0 16px;
+  padding: 0 8px;
   position: absolute;
   transform: translate(-50%, -50%);
 }
@@ -990,7 +990,7 @@ thead {
   color: #fff;
   content: "Do you have an account?";
   left: 50%;
-  padding: 0 16px;
+  padding: 0 4px;
   position: absolute;
   transform: translate(-50%, -50%);
 }

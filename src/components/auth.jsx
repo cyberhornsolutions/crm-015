@@ -9,7 +9,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { Button, Dropdown } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import { getIPRange } from "../helper/helpers";
 import { signOut } from "firebase/auth";
 import { toastify } from "../helper/toastHelper";
@@ -26,11 +26,20 @@ export default function Auth() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [referralCode, setReferralCode] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
   const [tab, setTab] = useState(1);
-  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
+
+  const [signUpFormData, setSignUpFormData] = useState({
+    city: "",
+    country: "",
+    email: "",
+    name: "",
+    password: "",
+    phone: "",
+    refCode: "",
+    surname: "",
+  });
 
   function generateRandomCode(length) {
     const characters =
@@ -80,25 +89,47 @@ export default function Auth() {
   const handleSignUp = (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
+    if (signUpFormData.password !== confirmPassword) {
       toastify("Password does not match");
     } else {
-      createUserWithEmailAndPassword(auth, email, password)
+      createUserWithEmailAndPassword(
+        auth,
+        signUpFormData.email,
+        signUpFormData.password
+      )
         .then((userCredential) => {
           const user = userCredential.user;
           const userRef = doc(db, "users", user.uid);
           setDoc(userRef, {
+            city: signUpFormData.city || "",
+            country: signUpFormData.country || "",
             createdAt: serverTimestamp(),
             email: user.email,
             isUserEdited: false,
-            name: userName,
+            name: signUpFormData.name,
             onlineStatus: false,
+            password: signUpFormData.password,
+            phone: signUpFormData.phone || "",
             refCode: generateRandomCode(8),
             role: "user",
             status: "Xsd9VUhM2geOW8w8HDsI",
-            useRefCode: referralCode,
+            surname: signUpFormData.surname,
+            useRefCode: signUpFormData.refCode || "",
           })
             .then(() => {
+              toastify("Account created successfully", "success");
+              setSignUpFormData({
+                city: "",
+                country: "",
+                email: "",
+                name: "",
+                password: "",
+                phone: "",
+                refCode: "",
+                surname: "",
+              });
+              setConfirmPassword("");
+              setTab(1);
               signOut(auth)
                 .then(() => {
                   navigate("/");
@@ -144,6 +175,7 @@ export default function Auth() {
               placeholder="Username or Email"
               required
               type="email"
+              value={email}
             />
             <input
               className="psw_input"
@@ -152,6 +184,7 @@ export default function Auth() {
               placeholder="Password"
               required
               type="password"
+              value={password}
             />
           </div>
           <button className="button" type="submit">
@@ -167,7 +200,7 @@ export default function Auth() {
                 backgroundColor: "#4285F4",
                 border: "none",
                 borderRadius: "5px",
-                margin: "4px 0",
+                margin: "8px 0",
                 padding: "8px 0",
               }}
               onClick={(e) => {
@@ -201,7 +234,7 @@ export default function Auth() {
                 backgroundColor: "#fff",
                 border: "none",
                 borderRadius: "5px",
-                margin: "4px 0",
+                margin: "8px 0",
                 padding: "8px 0",
               }}
               onClick={(e) => {
@@ -250,7 +283,7 @@ export default function Auth() {
                   alt={selectedLanguage}
                   height="auto"
                   src={languages[selectedLanguage]}
-                  width={30}
+                  width={36}
                 />
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -277,8 +310,10 @@ export default function Auth() {
             >
               <img
                 alt=""
+                height="auto"
                 src={themeIcon}
                 style={{ background: "transparent" }}
+                width={30}
               />
             </button>
           </div>
@@ -290,47 +325,113 @@ export default function Auth() {
             <input
               className="name_input"
               name="name"
-              onChange={(e) => setUserName(e.target.value)}
+              onChange={(e) =>
+                setSignUpFormData({ ...signUpFormData, name: e.target.value })
+              }
               placeholder="Name"
               required
               type="text"
+              value={signUpFormData.name}
+            />
+            <input
+              className="name_input"
+              name="surname"
+              onChange={(e) =>
+                setSignUpFormData({
+                  ...signUpFormData,
+                  surname: e.target.value,
+                })
+              }
+              placeholder="Surname"
+              required
+              type="text"
+              value={signUpFormData.surname}
             />
             <input
               className="email_input"
               name="email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) =>
+                setSignUpFormData({ ...signUpFormData, email: e.target.value })
+              }
               placeholder="Email"
               required
               type="email"
+              value={signUpFormData.email}
             />
             <input
               className="psw_input"
-              name="psw"
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              onChange={(e) =>
+                setSignUpFormData({
+                  ...signUpFormData,
+                  password: e.target.value,
+                })
+              }
               placeholder="Password"
               required
               type="password"
+              value={signUpFormData.password}
             />
             <input
               className="psw_input"
-              name="psw"
+              name="confirm_password"
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Repeat Password"
               required
               type="password"
+              value={confirmPassword}
             />
             <input
               className="psw_input"
-              name="psw"
-              onChange={(e) => setReferralCode(e.target.value)}
+              name="phone"
+              onChange={(e) =>
+                setSignUpFormData({ ...signUpFormData, phone: e.target.value })
+              }
+              placeholder="Phone"
+              type="tel"
+              value={signUpFormData.phone}
+            />
+            <input
+              className="psw_input"
+              name="country"
+              onChange={(e) =>
+                setSignUpFormData({
+                  ...signUpFormData,
+                  country: e.target.value,
+                })
+              }
+              placeholder="Country"
+              type="text"
+              value={signUpFormData.country}
+            />
+            <input
+              className="psw_input"
+              name="city"
+              onChange={(e) =>
+                setSignUpFormData({ ...signUpFormData, city: e.target.value })
+              }
+              placeholder="City"
+              type="text"
+              value={signUpFormData.city}
+            />
+            <input
+              className="psw_input"
+              name="refCode"
+              onChange={(e) =>
+                setSignUpFormData({
+                  ...signUpFormData,
+                  refCode: e.target.value,
+                })
+              }
               placeholder="Referral Code"
               type="text"
+              value={signUpFormData.refCode}
             />
           </div>
           <button className="button" type="submit">
             Sign Up
           </button>
-          <div className="login_wrapper" style={{ marginTop: "64px" }}>
+          <div className="login_wrapper" style={{ marginTop: "16px" }}>
             <hr className="login_text" />
             <button className="login_link " onClick={() => setTab(1)}>
               Log in
@@ -343,7 +444,7 @@ export default function Auth() {
                   alt={selectedLanguage}
                   height="auto"
                   src={languages[selectedLanguage]}
-                  width={30}
+                  width={36}
                 />
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -370,8 +471,10 @@ export default function Auth() {
             >
               <img
                 alt=""
+                height="auto"
                 src={themeIcon}
                 style={{ background: "transparent" }}
+                width={30}
               />
             </button>
           </div>
